@@ -1,10 +1,12 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
 import {ShopAnalysisComponent} from './shop-analysis/shop-analysis.component';
+import {SharedModule} from '../../shared/shared.module';
+import {ShopAnalysisRoutingModule} from './shop-analysis-routing.module';
 
 @NgModule({
   imports: [
-    CommonModule
+    SharedModule,
+    ShopAnalysisRoutingModule
   ],
   declarations: [ShopAnalysisComponent]
 })

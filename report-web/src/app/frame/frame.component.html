@@ -3,40 +3,33 @@
   <!-- 左侧导航 -->
   <div class="menu-container" #menuContainer>
     <ul nz-menu nzMode="inline" nzTheme='dark' [nzInlineCollapsed]="isCollapsed">
-      <li nz-menu-item>
+      <ng-container *ngFor="let menu of menuList">
+
+        <ng-container *ngIf="!menu.children || !menu.children.length">
+          <li nz-menu-item [routerLink]="menu.path" [nzSelected]="menu.selected">
           <span title>
-            <i class="anticon anticon-mail"></i>
-            <span>Navigation One</span>
+            <i class="anticon {{menu.icon}}"></i>
+            <span>{{menu.name}}</span>
           </span>
-      </li>
-      <li nz-submenu>
-          <span title>
-            <i class="anticon anticon-appstore"></i>
-            <span>Navigation Two</span>
-          </span>
-        <ul>
-          <li nz-menu-item>Option 5</li>
-          <li nz-menu-item>Option 6</li>
-          <li nz-submenu>
-            <span title>Submenu</span>
+          </li>
+        </ng-container>
+
+        <ng-container *ngIf="menu.children && menu.children.length">
+          <li nz-submenu [nzOpen]="menu.open">
+            <span title>
+              <i class="anticon {{menu.icon}}"></i>
+              <span>{{menu.name}}</span>
+            </span>
             <ul>
-              <li nz-menu-item>Option 7</li>
-              <li nz-menu-item>Option 8</li>
+              <ng-container *ngFor="let subMenu of menu.children">
+                <li nz-menu-item [nzSelected]="subMenu.selected" [routerLink]="subMenu.path">
+                  {{subMenu.name}}
+                </li>
+              </ng-container>
             </ul>
           </li>
-        </ul>
-      </li>
-      <li nz-submenu>
-          <span title>
-            <i class="anticon anticon-setting"></i>
-            <span>Navigation Three</span>
-          </span>
-        <ul>
-          <li nz-menu-item>Option 9</li>
-          <li nz-menu-item>Option 10</li>
-          <li nz-menu-item>Option 11</li>
-        </ul>
-      </li>
+        </ng-container>
+      </ng-container>
     </ul>
   </div>
 

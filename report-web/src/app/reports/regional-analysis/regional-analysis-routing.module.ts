@@ -5,7 +5,7 @@ import {StoreSalesDistributionComponent} from './store-sales-distribution/store-
 import {EnterprisesAndEmployeesComponent} from './enterprises-and-employees/enterprises-and-employees.component';
 
 const routes: Routes = [
-  {path: '', redirectTo: 'e-commerce-overall'},
+  {path: '', redirectTo: 'category'},
 
   // 品类分析
   {path: 'category', component: CategoryComponent},
@@ -21,5 +21,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TrendAnalysisRoutingModule {
+export class RegionalAnalysisRoutingModule {
 }
