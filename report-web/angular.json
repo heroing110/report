@@ -28,9 +28,12 @@
             ],
             "styles": [
               "node_modules/ng-zorro-antd/src/ng-zorro-antd.min.css",
+              "src/angular-material.layout-attributes.min.css",
               "src/styles.less"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/hamsterjs/hamster.js"
+            ]
           },
           "configurations": {
             "production": {
