@@ -1,10 +1,15 @@
 server:
-  port: 8080
+  port: 80
+
+# 打印sql
+logging:
+  level:
+     com.example.dao : debug
 
 spring:
     datasource:
-        name: test
-        url: jdbc:mysql://127.0.0.1:3306/report
+        name: report
+        url: jdbc:mysql://127.0.0.1:3306/dianshang_dw
         username: root
         password: root
         # 使用druid数据源
@@ -33,3 +38,4 @@ pagehelper:
     reasonable: true
     supportMethodsArguments: true
     params: count=countSql
+

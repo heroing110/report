@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.StaTotalMapper">
+    <resultMap id="BaseResultMap" type="com.example.entity.StaTotal">
+        <id column="ID" jdbcType="INTEGER" property="id"/>
+        <result column="DATE" jdbcType="DATE" property="date"/>
+        <result column="YEAR" jdbcType="VARCHAR" property="year"/>
+        <result column="MONTH" jdbcType="VARCHAR" property="month"/>
+        <result column="COUNTRY" jdbcType="VARCHAR" property="country"/>
+        <result column="PROVINCE" jdbcType="VARCHAR" property="province"/>
+        <result column="CITY" jdbcType="VARCHAR" property="city"/>
+        <result column="DISTRICT" jdbcType="VARCHAR" property="district"/>
+        <result column="INDEX_TYPE" jdbcType="VARCHAR" property="indexType"/>
+        <result column="INDEX_VALUE" jdbcType="REAL" property="indexValue"/>
+        <result column="MOM" jdbcType="REAL" property="mom"/>
+        <result column="YOY" jdbcType="REAL" property="yoy"/>
+        <result column="UNIT_TYPE" jdbcType="VARCHAR" property="unitType"/>
+        <result column="RANK_IN_COUNTRY" jdbcType="INTEGER" property="rankInCountry"/>
+        <result column="RANK_IN_PROVINCE" jdbcType="INTEGER" property="rankInProvince"/>
+        <result column="RANK_IN_CITY" jdbcType="INTEGER" property="rankInCity"/>
+        <result column="INSERT_TIME" jdbcType="TIMESTAMP" property="insertTime"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="UPDATE_USER" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="STATUS" jdbcType="INTEGER" property="status"/>
+        <result column="RAMARK1" jdbcType="VARCHAR" property="ramark1"/>
+        <result column="REMARK2" jdbcType="VARCHAR" property="remark2"/>
+        <result column="REMARK3" jdbcType="VARCHAR" property="remark3"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    ID, DATE, YEAR, MONTH, COUNTRY, PROVINCE, CITY, DISTRICT, INDEX_TYPE, INDEX_VALUE, 
+    MOM, YOY, UNIT_TYPE, RANK_IN_COUNTRY, RANK_IN_PROVINCE, RANK_IN_CITY, INSERT_TIME, 
+    UPDATE_TIME, UPDATE_USER, STATUS, RAMARK1, REMARK2, REMARK3
+  </sql>
+
+    <select id="selectList" parameterType="com.example.entity.StaTotal" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_sta_total
+        <include refid="dynamicWhere"/>
+    </select>
+
+    <sql id="dynamicWhere">
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id!=null">
+                AND ID = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="dateBegin!=null">
+                AND date  <![CDATA[>=]]> to_date(#{dateBegin,jdbcType=VARCHAR},'yyyy-mm-dd hh:mi:ss')
+            </if>
+            <if test="dateEnd!=null">
+                AND date  <![CDATA[<=]]> to_date(#{dateEnd,jdbcType=VARCHAR},'yyyy-mm-dd hh:mi:ss')
+            </if>
+            <if test="year!=null">
+                AND YEAR = #{year,jdbcType=VARCHAR}
+            </if>
+            <if test="month!=null">
+                AND MONTH = #{month,jdbcType=VARCHAR}
+            </if>
+            <if test="months!=null">
+                AND MONTH in
+                <foreach collection="months" item="item" index="index" open="(" close=")" separator=",">
+                  ${item}
+                </foreach>
+            </if>
+            <if test="province!=null">
+                AND PROVINCE = #{province,jdbcType=VARCHAR}
+            </if>
+            <if test="city!=null">
+                AND CITY = #{city,jdbcType=VARCHAR}
+            </if>
+            <if test="indexType!=null">
+                AND INDEX_TYPE = #{indexType,jdbcType=VARCHAR}
+            </if>
+            <if test="ramark1!=null">
+                AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_sta_total
+        where ID = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_sta_total
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.example.entity.StaTotal">
+    insert into tb_sta_total (ID, DATE, YEAR, 
+      MONTH, COUNTRY, PROVINCE, 
+      CITY, DISTRICT, INDEX_TYPE, 
+      INDEX_VALUE, MOM, YOY, UNIT_TYPE, 
+      RANK_IN_COUNTRY, RANK_IN_PROVINCE, RANK_IN_CITY, 
+      INSERT_TIME, UPDATE_TIME, UPDATE_USER, 
+      STATUS, RAMARK1, REMARK2, 
+      REMARK3)
+    values (#{id,jdbcType=INTEGER}, #{date,jdbcType=DATE}, #{year,jdbcType=VARCHAR}, 
+      #{month,jdbcType=VARCHAR}, #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, #{indexType,jdbcType=VARCHAR}, 
+      #{indexValue,jdbcType=REAL}, #{mom,jdbcType=REAL}, #{yoy,jdbcType=REAL}, #{unitType,jdbcType=VARCHAR}, 
+      #{rankInCountry,jdbcType=INTEGER}, #{rankInProvince,jdbcType=INTEGER}, #{rankInCity,jdbcType=INTEGER}, 
+      #{insertTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{ramark1,jdbcType=VARCHAR}, #{remark2,jdbcType=VARCHAR}, 
+      #{remark3,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.example.entity.StaTotal">
+        insert into tb_sta_total
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="date != null">
+                DATE,
+            </if>
+            <if test="year != null">
+                YEAR,
+            </if>
+            <if test="month != null">
+                MONTH,
+            </if>
+            <if test="country != null">
+                COUNTRY,
+            </if>
+            <if test="province != null">
+                PROVINCE,
+            </if>
+            <if test="city != null">
+                CITY,
+            </if>
+            <if test="district != null">
+                DISTRICT,
+            </if>
+            <if test="indexType != null">
+                INDEX_TYPE,
+            </if>
+            <if test="indexValue != null">
+                INDEX_VALUE,
+            </if>
+            <if test="mom != null">
+                MOM,
+            </if>
+            <if test="yoy != null">
+                YOY,
+            </if>
+            <if test="unitType != null">
+                UNIT_TYPE,
+            </if>
+            <if test="rankInCountry != null">
+                RANK_IN_COUNTRY,
+            </if>
+            <if test="rankInProvince != null">
+                RANK_IN_PROVINCE,
+            </if>
+            <if test="rankInCity != null">
+                RANK_IN_CITY,
+            </if>
+            <if test="insertTime != null">
+                INSERT_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+            <if test="updateUser != null">
+                UPDATE_USER,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+            <if test="ramark1 != null">
+                RAMARK1,
+            </if>
+            <if test="remark2 != null">
+                REMARK2,
+            </if>
+            <if test="remark3 != null">
+                REMARK3,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="date != null">
+                #{date,jdbcType=DATE},
+            </if>
+            <if test="year != null">
+                #{year,jdbcType=VARCHAR},
+            </if>
+            <if test="month != null">
+                #{month,jdbcType=VARCHAR},
+            </if>
+            <if test="country != null">
+                #{country,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="district != null">
+                #{district,jdbcType=VARCHAR},
+            </if>
+            <if test="indexType != null">
+                #{indexType,jdbcType=VARCHAR},
+            </if>
+            <if test="indexValue != null">
+                #{indexValue,jdbcType=REAL},
+            </if>
+            <if test="mom != null">
+                #{mom,jdbcType=REAL},
+            </if>
+            <if test="yoy != null">
+                #{yoy,jdbcType=REAL},
+            </if>
+            <if test="unitType != null">
+                #{unitType,jdbcType=VARCHAR},
+            </if>
+            <if test="rankInCountry != null">
+                #{rankInCountry,jdbcType=INTEGER},
+            </if>
+            <if test="rankInProvince != null">
+                #{rankInProvince,jdbcType=INTEGER},
+            </if>
+            <if test="rankInCity != null">
+                #{rankInCity,jdbcType=INTEGER},
+            </if>
+            <if test="insertTime != null">
+                #{insertTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="ramark1 != null">
+                #{ramark1,jdbcType=VARCHAR},
+            </if>
+            <if test="remark2 != null">
+                #{remark2,jdbcType=VARCHAR},
+            </if>
+            <if test="remark3 != null">
+                #{remark3,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.StaTotal">
+        update tb_sta_total
+        <set>
+            <if test="date != null">
+                DATE = #{date,jdbcType=DATE},
+            </if>
+            <if test="year != null">
+                YEAR = #{year,jdbcType=VARCHAR},
+            </if>
+            <if test="month != null">
+                MONTH = #{month,jdbcType=VARCHAR},
+            </if>
+            <if test="country != null">
+                COUNTRY = #{country,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                PROVINCE = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                CITY = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="district != null">
+                DISTRICT = #{district,jdbcType=VARCHAR},
+            </if>
+            <if test="indexType != null">
+                INDEX_TYPE = #{indexType,jdbcType=VARCHAR},
+            </if>
+            <if test="indexValue != null">
+                INDEX_VALUE = #{indexValue,jdbcType=REAL},
+            </if>
+            <if test="mom != null">
+                MOM = #{mom,jdbcType=REAL},
+            </if>
+            <if test="yoy != null">
+                YOY = #{yoy,jdbcType=REAL},
+            </if>
+            <if test="unitType != null">
+                UNIT_TYPE = #{unitType,jdbcType=VARCHAR},
+            </if>
+            <if test="rankInCountry != null">
+                RANK_IN_COUNTRY = #{rankInCountry,jdbcType=INTEGER},
+            </if>
+            <if test="rankInProvince != null">
+                RANK_IN_PROVINCE = #{rankInProvince,jdbcType=INTEGER},
+            </if>
+            <if test="rankInCity != null">
+                RANK_IN_CITY = #{rankInCity,jdbcType=INTEGER},
+            </if>
+            <if test="insertTime != null">
+                INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                UPDATE_USER = #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="ramark1 != null">
+                RAMARK1 = #{ramark1,jdbcType=VARCHAR},
+            </if>
+            <if test="remark2 != null">
+                REMARK2 = #{remark2,jdbcType=VARCHAR},
+            </if>
+            <if test="remark3 != null">
+                REMARK3 = #{remark3,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

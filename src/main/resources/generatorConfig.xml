@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+	<classPathEntry location="C:\Users\heying\Program Files\apache-maven-3.2.5\jar\mysql\mysql-connector-java\5.1.44\mysql-connector-java-5.1.44.jar" />
+
+
+	<context id="report" targetRuntime="MyBatis3">
+		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+
+		<!-- 这个插件只会增加字符串字段映射到一个JDBC字符的方法 -->
+		<plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin" />
+
+		<commentGenerator>
+			<!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+						connectionURL="jdbc:mysql://127.0.0.1:3306/dianshang_dw" userId="root"
+						password="root" />
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+		<javaModelGenerator targetProject="C:\Users\heying\IdeaProjects\report\src\main\java" targetPackage="com.example.entity"/>
+
+		<sqlMapGenerator targetProject="C:\Users\heying\IdeaProjects\report\src\main\resources" targetPackage="mapper"/>
+
+		<javaClientGenerator type="XMLMAPPER" targetProject="C:\Users\heying\IdeaProjects\report\src\main\java" targetPackage="com.example.dao"/>
+
+		<table schema="root" tableName="tb_sta_total"
+			   enableUpdateByExample="false" enableSelectByExample="false"
+			   enableDeleteByExample="false" enableCountByExample="false"
+			   domainObjectName="StaTotal">
+		</table>
+
+	</context>
+</generatorConfiguration>
