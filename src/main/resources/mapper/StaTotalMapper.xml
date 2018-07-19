@@ -36,45 +36,53 @@
         select
         <include refid="Base_Column_List"/>
         from tb_sta_total
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+    </select>
+
+    <select id="selectAllWithPage" parameterType="com.example.entity.StaTotal" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_sta_total
+        where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
         <include refid="dynamicWhere"/>
     </select>
 
     <sql id="dynamicWhere">
-        <trim prefix="where" prefixOverrides="and | or">
-            <if test="id!=null">
-                AND ID = #{id,jdbcType=INTEGER}
-            </if>
-            <if test="dateBegin!=null">
-                AND date  <![CDATA[>=]]> to_date(#{dateBegin,jdbcType=VARCHAR},'yyyy-mm-dd hh:mi:ss')
-            </if>
-            <if test="dateEnd!=null">
-                AND date  <![CDATA[<=]]> to_date(#{dateEnd,jdbcType=VARCHAR},'yyyy-mm-dd hh:mi:ss')
-            </if>
-            <if test="year!=null">
-                AND YEAR = #{year,jdbcType=VARCHAR}
-            </if>
-            <if test="month!=null">
-                AND MONTH = #{month,jdbcType=VARCHAR}
-            </if>
-            <if test="months!=null">
-                AND MONTH in
-                <foreach collection="months" item="item" index="index" open="(" close=")" separator=",">
-                  ${item}
-                </foreach>
-            </if>
-            <if test="province!=null">
-                AND PROVINCE = #{province,jdbcType=VARCHAR}
-            </if>
-            <if test="city!=null">
-                AND CITY = #{city,jdbcType=VARCHAR}
-            </if>
-            <if test="indexType!=null">
-                AND INDEX_TYPE = #{indexType,jdbcType=VARCHAR}
-            </if>
-            <if test="ramark1!=null">
-                AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
-            </if>
-        </trim>
+        <if test="id!=null">
+            AND ID = #{id,jdbcType=INTEGER}
+        </if>
+        <if test="dateBegin!=null">
+            AND date  <![CDATA[>=]]> to_date(#{dateBegin,jdbcType=VARCHAR},'yyyy-mm-dd hh:mi:ss')
+        </if>
+        <if test="dateEnd!=null">
+            AND date  <![CDATA[<=]]> to_date(#{dateEnd,jdbcType=VARCHAR},'yyyy-mm-dd hh:mi:ss')
+        </if>
+        <if test="year!=null">
+            AND YEAR = #{year,jdbcType=VARCHAR}
+        </if>
+        <if test="month!=null">
+            AND MONTH = #{month,jdbcType=VARCHAR}
+        </if>
+        <if test="months!=null">
+            AND MONTH in
+            <foreach collection="months" item="item" index="index" open="(" close=")" separator=",">
+                ${item}
+            </foreach>
+        </if>
+        <if test="province!=null">
+            AND PROVINCE = #{province,jdbcType=VARCHAR}
+        </if>
+        <if test="city!=null">
+            AND CITY = #{city,jdbcType=VARCHAR}
+        </if>
+        <if test="indexType!=null">
+            AND INDEX_TYPE = #{indexType,jdbcType=VARCHAR}
+        </if>
+        <if test="ramark1!=null">
+            AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
+        </if>
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select

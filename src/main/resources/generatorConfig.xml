@@ -27,10 +27,10 @@
 
 		<javaClientGenerator type="XMLMAPPER" targetProject="C:\Users\heying\IdeaProjects\report\src\main\java" targetPackage="com.example.dao"/>
 
-		<table schema="root" tableName="tb_sta_total"
+		<table schema="root" tableName="tb_sta_cat"
 			   enableUpdateByExample="false" enableSelectByExample="false"
 			   enableDeleteByExample="false" enableCountByExample="false"
-			   domainObjectName="StaTotal">
+			   domainObjectName="StaCat">
 		</table>
 
 	</context>

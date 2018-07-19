@@ -3,20 +3,12 @@ package com.example.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-public class StaTotal implements Serializable {
+public class StaCat implements Serializable {
     private Integer id;
-
-    private Date date;
-
-    private String dateBegin;
-
-    private String dateEnd;
 
     private String year;
 
     private String month;
-
-    private String[] months;
 
     private String country;
 
@@ -26,21 +18,27 @@ public class StaTotal implements Serializable {
 
     private String district;
 
-    private String indexType;
+    private String platform;
 
-    private Float indexValue;
+    private String sCat1Name;
 
-    private Float mom;
+    private String cat1Name;
 
-    private Float yoy;
+    private String cat2Name;
+
+    private String cat3Name;
+
+    private Long pCount;
+
+    private Double mSlaesCount;
+
+    private Double mSalesVolume;
 
     private String unitType;
 
-    private Integer rankInCountry;
+    private Long totalSalesVolume;
 
-    private Integer rankInProvince;
-
-    private Integer rankInCity;
+    private Long salesVolume;
 
     private Date insertTime;
 
@@ -48,13 +46,15 @@ public class StaTotal implements Serializable {
 
     private String updateUser;
 
-    private Integer status;
+    private Long status;
 
-    private String ramark1;
+    private String remark1;
 
     private String remark2;
 
     private String remark3;
+
+    private String date;
 
     private Integer pageNo;
 
@@ -78,44 +78,12 @@ public class StaTotal implements Serializable {
         this.pageSize = pageSize;
     }
 
-    public String[] getMonths() {
-        return months;
-    }
-
-    public void setMonths(String[] months) {
-        this.months = months;
-    }
-
-    public String getDateBegin() {
-        return dateBegin;
-    }
-
-    public void setDateBegin(String dateBegin) {
-        this.dateBegin = dateBegin;
-    }
-
-    public String getDateEnd() {
-        return dateEnd;
-    }
-
-    public void setDateEnd(String dateEnd) {
-        this.dateEnd = dateEnd;
-    }
-
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     public String getYear() {
@@ -166,36 +134,68 @@ public class StaTotal implements Serializable {
         this.district = district;
     }
 
-    public String getIndexType() {
-        return indexType;
+    public String getPlatform() {
+        return platform;
     }
 
-    public void setIndexType(String indexType) {
-        this.indexType = indexType;
+    public void setPlatform(String platform) {
+        this.platform = platform;
     }
 
-    public Float getIndexValue() {
-        return indexValue;
+    public String getsCat1Name() {
+        return sCat1Name;
     }
 
-    public void setIndexValue(Float indexValue) {
-        this.indexValue = indexValue;
+    public void setsCat1Name(String sCat1Name) {
+        this.sCat1Name = sCat1Name;
     }
 
-    public Float getMom() {
-        return mom;
+    public String getCat1Name() {
+        return cat1Name;
     }
 
-    public void setMom(Float mom) {
-        this.mom = mom;
+    public void setCat1Name(String cat1Name) {
+        this.cat1Name = cat1Name;
     }
 
-    public Float getYoy() {
-        return yoy;
+    public String getCat2Name() {
+        return cat2Name;
     }
 
-    public void setYoy(Float yoy) {
-        this.yoy = yoy;
+    public void setCat2Name(String cat2Name) {
+        this.cat2Name = cat2Name;
+    }
+
+    public String getCat3Name() {
+        return cat3Name;
+    }
+
+    public void setCat3Name(String cat3Name) {
+        this.cat3Name = cat3Name;
+    }
+
+    public Long getpCount() {
+        return pCount;
+    }
+
+    public void setpCount(Long pCount) {
+        this.pCount = pCount;
+    }
+
+    public Double getmSlaesCount() {
+        return mSlaesCount;
+    }
+
+    public void setmSlaesCount(Double mSlaesCount) {
+        this.mSlaesCount = mSlaesCount;
+    }
+
+    public Double getmSalesVolume() {
+        return mSalesVolume;
+    }
+
+    public void setmSalesVolume(Double mSalesVolume) {
+        this.mSalesVolume = mSalesVolume;
     }
 
     public String getUnitType() {
@@ -206,28 +206,20 @@ public class StaTotal implements Serializable {
         this.unitType = unitType;
     }
 
-    public Integer getRankInCountry() {
-        return rankInCountry;
+    public Long getTotalSalesVolume() {
+        return totalSalesVolume;
     }
 
-    public void setRankInCountry(Integer rankInCountry) {
-        this.rankInCountry = rankInCountry;
+    public void setTotalSalesVolume(Long totalSalesVolume) {
+        this.totalSalesVolume = totalSalesVolume;
     }
 
-    public Integer getRankInProvince() {
-        return rankInProvince;
+    public Long getSalesVolume() {
+        return salesVolume;
     }
 
-    public void setRankInProvince(Integer rankInProvince) {
-        this.rankInProvince = rankInProvince;
-    }
-
-    public Integer getRankInCity() {
-        return rankInCity;
-    }
-
-    public void setRankInCity(Integer rankInCity) {
-        this.rankInCity = rankInCity;
+    public void setSalesVolume(Long salesVolume) {
+        this.salesVolume = salesVolume;
     }
 
     public Date getInsertTime() {
@@ -254,20 +246,20 @@ public class StaTotal implements Serializable {
         this.updateUser = updateUser;
     }
 
-    public Integer getStatus() {
+    public Long getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(Long status) {
         this.status = status;
     }
 
-    public String getRamark1() {
-        return ramark1;
+    public String getRemark1() {
+        return remark1;
     }
 
-    public void setRamark1(String ramark1) {
-        this.ramark1 = ramark1;
+    public void setRemark1(String remark1) {
+        this.remark1 = remark1;
     }
 
     public String getRemark2() {
@@ -284,5 +276,13 @@ public class StaTotal implements Serializable {
 
     public void setRemark3(String remark3) {
         this.remark3 = remark3;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

@@ -27,9 +27,21 @@ public class StaToalController {
 
     @RequestMapping(value = "/list",method = RequestMethod.POST)
     @ResponseBody
-    public List<StaTotal> toIndex(@RequestBody StaTotal staTotal){
+    public List<StaTotal> list(@RequestBody StaTotal staTotal){
         logger.info("/total/list");
         List<StaTotal> list = this.staTotalService.selectList(staTotal);
+        return list;
+    }
+
+    @RequestMapping(value = "/listview",method = RequestMethod.POST)
+    @ResponseBody
+    public List<StaTotal> listview(@RequestBody StaTotal staTotal){
+        logger.info("/total/listview");
+        if (staTotal.getPageNo()==null || staTotal.getPageSize()==null) {
+            staTotal.setPageNo(1);
+            staTotal.setPageSize(10);
+        }
+        List<StaTotal> list = this.staTotalService.selectAllWithPage(staTotal);
         return list;
     }
 }

@@ -18,4 +18,6 @@ public interface StaTotalMapper {
     int updateByPrimaryKey(StaTotal record);
 
     List<StaTotal> selectList(StaTotal record);
+
+    List<StaTotal> selectAllWithPage(StaTotal record);
 }

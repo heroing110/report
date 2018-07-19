@@ -17,4 +17,9 @@ public class StaTotalServiceImpl implements StaTotalService {
     public List<StaTotal> selectList(StaTotal record) {
         return staTotalMapper.selectList(record);
     }
+
+    @Override
+    public List<StaTotal> selectAllWithPage(StaTotal record) {
+        return staTotalMapper.selectAllWithPage(record);
+    }
 }
