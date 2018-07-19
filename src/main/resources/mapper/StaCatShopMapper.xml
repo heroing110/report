@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.dao.StaCatShopMapper" >
+  <resultMap id="BaseResultMap" type="com.example.entity.StaCatShop" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="YEAR" property="year" jdbcType="VARCHAR" />
+    <result column="MONTH" property="month" jdbcType="VARCHAR" />
+    <result column="COUNTRY" property="country" jdbcType="VARCHAR" />
+    <result column="PROVINCE" property="province" jdbcType="VARCHAR" />
+    <result column="CITY" property="city" jdbcType="VARCHAR" />
+    <result column="DISTRICT" property="district" jdbcType="VARCHAR" />
+    <result column="PLATFORM" property="platform" jdbcType="VARCHAR" />
+    <result column="S_CAT1_NAME" property="sCat1Name" jdbcType="VARCHAR" />
+    <result column="SHOP_ID" property="shopId" jdbcType="VARCHAR" />
+    <result column="SHOP_NAME" property="shopName" jdbcType="VARCHAR" />
+    <result column="P_COUNT" property="pCount" jdbcType="BIGINT" />
+    <result column="M_SLAES_COUNT" property="mSlaesCount" jdbcType="DOUBLE" />
+    <result column="M_SALES_VOLUME" property="mSalesVolume" jdbcType="DOUBLE" />
+    <result column="M_SALES_VOLUME_LEVEL" property="mSalesVolumeLevel" jdbcType="CHAR" />
+    <result column="UNIT_TYPE" property="unitType" jdbcType="VARCHAR" />
+    <result column="INSERT_TIME" property="insertTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_USER" property="updateUser" jdbcType="CHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="REMARK1" property="remark1" jdbcType="CHAR" />
+    <result column="REMARK2" property="remark2" jdbcType="CHAR" />
+    <result column="REMARK3" property="remark3" jdbcType="CHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.example.entity.StaCatShop" extends="BaseResultMap" >
+    <result column="DATE" property="date" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, YEAR, MONTH, COUNTRY, PROVINCE, CITY, DISTRICT, PLATFORM, S_CAT1_NAME, SHOP_ID, 
+    SHOP_NAME, P_COUNT, M_SLAES_COUNT, M_SALES_VOLUME, M_SALES_VOLUME_LEVEL, UNIT_TYPE, 
+    INSERT_TIME, UPDATE_TIME, UPDATE_USER, STATUS, REMARK1, REMARK2, REMARK3
+  </sql>
+  <sql id="Blob_Column_List" >
+    DATE
+  </sql>
+
+  <select id="selectList" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tb_sta_cat_shop
+    <trim prefix="where" prefixOverrides="and | or">
+        <include refid="dynamicWhere"/>
+    </trim>
+  </select>
+
+  <select id="selectAllWithPage" resultMap="ResultMapWithBLOBs" parameterType="com.example.entity.StaCatShop">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tb_sta_cat_shop
+    where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
+    <include refid="dynamicWhere"/>
+  </select>
+
+  <sql id="dynamicWhere">
+    <if test="year!=null">
+        AND YEAR = #{year,jdbcType=VARCHAR}
+    </if>
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="com.example.entity.StaCatShop" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tb_sta_cat_shop
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tb_sta_cat_shop
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.example.entity.StaCatShop" >
+    insert into tb_sta_cat_shop (ID, YEAR, MONTH, 
+      COUNTRY, PROVINCE, CITY, 
+      DISTRICT, PLATFORM, S_CAT1_NAME, 
+      SHOP_ID, SHOP_NAME, P_COUNT, 
+      M_SLAES_COUNT, M_SALES_VOLUME, M_SALES_VOLUME_LEVEL, 
+      UNIT_TYPE, INSERT_TIME, UPDATE_TIME, 
+      UPDATE_USER, STATUS, REMARK1, 
+      REMARK2, REMARK3, DATE
+      )
+    values (#{id,jdbcType=INTEGER}, #{year,jdbcType=VARCHAR}, #{month,jdbcType=VARCHAR}, 
+      #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{district,jdbcType=VARCHAR}, #{platform,jdbcType=VARCHAR}, #{sCat1Name,jdbcType=VARCHAR}, 
+      #{shopId,jdbcType=VARCHAR}, #{shopName,jdbcType=VARCHAR}, #{pCount,jdbcType=BIGINT}, 
+      #{mSlaesCount,jdbcType=DOUBLE}, #{mSalesVolume,jdbcType=DOUBLE}, #{mSalesVolumeLevel,jdbcType=CHAR}, 
+      #{unitType,jdbcType=VARCHAR}, #{insertTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updateUser,jdbcType=CHAR}, #{status,jdbcType=INTEGER}, #{remark1,jdbcType=CHAR}, 
+      #{remark2,jdbcType=CHAR}, #{remark3,jdbcType=CHAR}, #{date,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.entity.StaCatShop" >
+    insert into tb_sta_cat_shop
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="year != null" >
+        YEAR,
+      </if>
+      <if test="month != null" >
+        MONTH,
+      </if>
+      <if test="country != null" >
+        COUNTRY,
+      </if>
+      <if test="province != null" >
+        PROVINCE,
+      </if>
+      <if test="city != null" >
+        CITY,
+      </if>
+      <if test="district != null" >
+        DISTRICT,
+      </if>
+      <if test="platform != null" >
+        PLATFORM,
+      </if>
+      <if test="sCat1Name != null" >
+        S_CAT1_NAME,
+      </if>
+      <if test="shopId != null" >
+        SHOP_ID,
+      </if>
+      <if test="shopName != null" >
+        SHOP_NAME,
+      </if>
+      <if test="pCount != null" >
+        P_COUNT,
+      </if>
+      <if test="mSlaesCount != null" >
+        M_SLAES_COUNT,
+      </if>
+      <if test="mSalesVolume != null" >
+        M_SALES_VOLUME,
+      </if>
+      <if test="mSalesVolumeLevel != null" >
+        M_SALES_VOLUME_LEVEL,
+      </if>
+      <if test="unitType != null" >
+        UNIT_TYPE,
+      </if>
+      <if test="insertTime != null" >
+        INSERT_TIME,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="updateUser != null" >
+        UPDATE_USER,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="remark1 != null" >
+        REMARK1,
+      </if>
+      <if test="remark2 != null" >
+        REMARK2,
+      </if>
+      <if test="remark3 != null" >
+        REMARK3,
+      </if>
+      <if test="date != null" >
+        DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="year != null" >
+        #{year,jdbcType=VARCHAR},
+      </if>
+      <if test="month != null" >
+        #{month,jdbcType=VARCHAR},
+      </if>
+      <if test="country != null" >
+        #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="district != null" >
+        #{district,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null" >
+        #{platform,jdbcType=VARCHAR},
+      </if>
+      <if test="sCat1Name != null" >
+        #{sCat1Name,jdbcType=VARCHAR},
+      </if>
+      <if test="shopId != null" >
+        #{shopId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopName != null" >
+        #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="pCount != null" >
+        #{pCount,jdbcType=BIGINT},
+      </if>
+      <if test="mSlaesCount != null" >
+        #{mSlaesCount,jdbcType=DOUBLE},
+      </if>
+      <if test="mSalesVolume != null" >
+        #{mSalesVolume,jdbcType=DOUBLE},
+      </if>
+      <if test="mSalesVolumeLevel != null" >
+        #{mSalesVolumeLevel,jdbcType=CHAR},
+      </if>
+      <if test="unitType != null" >
+        #{unitType,jdbcType=VARCHAR},
+      </if>
+      <if test="insertTime != null" >
+        #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=CHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark1 != null" >
+        #{remark1,jdbcType=CHAR},
+      </if>
+      <if test="remark2 != null" >
+        #{remark2,jdbcType=CHAR},
+      </if>
+      <if test="remark3 != null" >
+        #{remark3,jdbcType=CHAR},
+      </if>
+      <if test="date != null" >
+        #{date,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.StaCatShop" >
+    update tb_sta_cat_shop
+    <set >
+      <if test="year != null" >
+        YEAR = #{year,jdbcType=VARCHAR},
+      </if>
+      <if test="month != null" >
+        MONTH = #{month,jdbcType=VARCHAR},
+      </if>
+      <if test="country != null" >
+        COUNTRY = #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        PROVINCE = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        CITY = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="district != null" >
+        DISTRICT = #{district,jdbcType=VARCHAR},
+      </if>
+      <if test="platform != null" >
+        PLATFORM = #{platform,jdbcType=VARCHAR},
+      </if>
+      <if test="sCat1Name != null" >
+        S_CAT1_NAME = #{sCat1Name,jdbcType=VARCHAR},
+      </if>
+      <if test="shopId != null" >
+        SHOP_ID = #{shopId,jdbcType=VARCHAR},
+      </if>
+      <if test="shopName != null" >
+        SHOP_NAME = #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="pCount != null" >
+        P_COUNT = #{pCount,jdbcType=BIGINT},
+      </if>
+      <if test="mSlaesCount != null" >
+        M_SLAES_COUNT = #{mSlaesCount,jdbcType=DOUBLE},
+      </if>
+      <if test="mSalesVolume != null" >
+        M_SALES_VOLUME = #{mSalesVolume,jdbcType=DOUBLE},
+      </if>
+      <if test="mSalesVolumeLevel != null" >
+        M_SALES_VOLUME_LEVEL = #{mSalesVolumeLevel,jdbcType=CHAR},
+      </if>
+      <if test="unitType != null" >
+        UNIT_TYPE = #{unitType,jdbcType=VARCHAR},
+      </if>
+      <if test="insertTime != null" >
+        INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        UPDATE_USER = #{updateUser,jdbcType=CHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark1 != null" >
+        REMARK1 = #{remark1,jdbcType=CHAR},
+      </if>
+      <if test="remark2 != null" >
+        REMARK2 = #{remark2,jdbcType=CHAR},
+      </if>
+      <if test="remark3 != null" >
+        REMARK3 = #{remark3,jdbcType=CHAR},
+      </if>
+      <if test="date != null" >
+        DATE = #{date,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.example.entity.StaCatShop" >
+    update tb_sta_cat_shop
+    set YEAR = #{year,jdbcType=VARCHAR},
+      MONTH = #{month,jdbcType=VARCHAR},
+      COUNTRY = #{country,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      CITY = #{city,jdbcType=VARCHAR},
+      DISTRICT = #{district,jdbcType=VARCHAR},
+      PLATFORM = #{platform,jdbcType=VARCHAR},
+      S_CAT1_NAME = #{sCat1Name,jdbcType=VARCHAR},
+      SHOP_ID = #{shopId,jdbcType=VARCHAR},
+      SHOP_NAME = #{shopName,jdbcType=VARCHAR},
+      P_COUNT = #{pCount,jdbcType=BIGINT},
+      M_SLAES_COUNT = #{mSlaesCount,jdbcType=DOUBLE},
+      M_SALES_VOLUME = #{mSalesVolume,jdbcType=DOUBLE},
+      M_SALES_VOLUME_LEVEL = #{mSalesVolumeLevel,jdbcType=CHAR},
+      UNIT_TYPE = #{unitType,jdbcType=VARCHAR},
+      INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      UPDATE_USER = #{updateUser,jdbcType=CHAR},
+      STATUS = #{status,jdbcType=INTEGER},
+      REMARK1 = #{remark1,jdbcType=CHAR},
+      REMARK2 = #{remark2,jdbcType=CHAR},
+      REMARK3 = #{remark3,jdbcType=CHAR},
+      DATE = #{date,jdbcType=LONGVARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.entity.StaCatShop" >
+    update tb_sta_cat_shop
+    set YEAR = #{year,jdbcType=VARCHAR},
+      MONTH = #{month,jdbcType=VARCHAR},
+      COUNTRY = #{country,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      CITY = #{city,jdbcType=VARCHAR},
+      DISTRICT = #{district,jdbcType=VARCHAR},
+      PLATFORM = #{platform,jdbcType=VARCHAR},
+      S_CAT1_NAME = #{sCat1Name,jdbcType=VARCHAR},
+      SHOP_ID = #{shopId,jdbcType=VARCHAR},
+      SHOP_NAME = #{shopName,jdbcType=VARCHAR},
+      P_COUNT = #{pCount,jdbcType=BIGINT},
+      M_SLAES_COUNT = #{mSlaesCount,jdbcType=DOUBLE},
+      M_SALES_VOLUME = #{mSalesVolume,jdbcType=DOUBLE},
+      M_SALES_VOLUME_LEVEL = #{mSalesVolumeLevel,jdbcType=CHAR},
+      UNIT_TYPE = #{unitType,jdbcType=VARCHAR},
+      INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      UPDATE_USER = #{updateUser,jdbcType=CHAR},
+      STATUS = #{status,jdbcType=INTEGER},
+      REMARK1 = #{remark1,jdbcType=CHAR},
+      REMARK2 = #{remark2,jdbcType=CHAR},
+      REMARK3 = #{remark3,jdbcType=CHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
