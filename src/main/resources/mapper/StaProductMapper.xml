@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.dao.StaProductMapper">
+    <resultMap id="BaseResultMap" type="com.example.entity.StaProduct">
+        <id column="ID" property="id" jdbcType="INTEGER"/>
+        <result column="YEAR" property="year" jdbcType="VARCHAR"/>
+        <result column="MONTH" property="month" jdbcType="VARCHAR"/>
+        <result column="COUNTRY" property="country" jdbcType="VARCHAR"/>
+        <result column="PROVINCE" property="province" jdbcType="VARCHAR"/>
+        <result column="CITY" property="city" jdbcType="VARCHAR"/>
+        <result column="DISTRICT" property="district" jdbcType="VARCHAR"/>
+        <result column="PLATFORM" property="platform" jdbcType="VARCHAR"/>
+        <result column="PRODUCT_ID" property="productId" jdbcType="VARCHAR"/>
+        <result column="PRODUCT_NAME" property="productName" jdbcType="VARCHAR"/>
+        <result column="SALES_COUNT" property="salesCount" jdbcType="VARCHAR"/>
+        <result column="SALES_VOLUME" property="salesVolume" jdbcType="DOUBLE"/>
+        <result column="c_rank_p" property="cRankP" jdbcType="INTEGER"/>
+        <result column="c_rank_c" property="cRankC" jdbcType="INTEGER"/>
+        <result column="s_rank_p" property="sRankP" jdbcType="INTEGER"/>
+        <result column="s_rank_c" property="sRankC" jdbcType="INTEGER"/>
+        <result column="UNIT_TYPE" property="unitType" jdbcType="VARCHAR"/>
+        <result column="INSERT_TIME" property="insertTime" jdbcType="TIMESTAMP"/>
+        <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="UPDATE_USER" property="updateUser" jdbcType="CHAR"/>
+        <result column="STATUS" property="status" jdbcType="INTEGER"/>
+        <result column="RAMARK1" property="ramark1" jdbcType="CHAR"/>
+        <result column="RAMARK2" property="ramark2" jdbcType="CHAR"/>
+        <result column="RAMARK3" property="ramark3" jdbcType="CHAR"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.example.entity.StaProduct" extends="BaseResultMap">
+        <result column="DATA" property="data" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    ID, YEAR, MONTH, COUNTRY, PROVINCE, CITY, DISTRICT, PLATFORM, PRODUCT_ID, PRODUCT_NAME, 
+    SALES_COUNT, SALES_VOLUME, c_rank_p, c_rank_c, s_rank_p, s_rank_c, UNIT_TYPE, INSERT_TIME, 
+    UPDATE_TIME, UPDATE_USER, STATUS, RAMARK1, RAMARK2, RAMARK3
+  </sql>
+    <sql id="Blob_Column_List">
+    DATA
+  </sql>
+
+    <select id="selectList" resultMap="ResultMapWithBLOBs" parameterType="com.example.entity.StaProduct">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from tb_sta_product
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+    </select>
+
+    <select id="selectAllWithPage" resultMap="ResultMapWithBLOBs" parameterType="com.example.entity.StaProduct">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from tb_sta_product
+        where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
+        <include refid="dynamicWhere"/>
+    </select>
+
+    <sql id="dynamicWhere">
+        <if test="year!=null">
+            AND YEAR = #{year,jdbcType=VARCHAR}
+        </if>
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from tb_sta_product
+        where ID = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_sta_product
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.example.entity.StaProduct">
+    insert into tb_sta_product (ID, YEAR, MONTH, 
+      COUNTRY, PROVINCE, CITY, 
+      DISTRICT, PLATFORM, PRODUCT_ID, 
+      PRODUCT_NAME, SALES_COUNT, SALES_VOLUME, 
+      c_rank_p, c_rank_c, s_rank_p, 
+      s_rank_c, UNIT_TYPE, INSERT_TIME, 
+      UPDATE_TIME, UPDATE_USER, STATUS, 
+      RAMARK1, RAMARK2, RAMARK3, DATA
+      )
+    values (#{id,jdbcType=INTEGER}, #{year,jdbcType=VARCHAR}, #{month,jdbcType=VARCHAR}, 
+      #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{district,jdbcType=VARCHAR}, #{platform,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, 
+      #{productName,jdbcType=VARCHAR}, #{salesCount,jdbcType=VARCHAR}, #{salesVolume,jdbcType=DOUBLE}, 
+      #{cRankP,jdbcType=INTEGER}, #{cRankC,jdbcType=INTEGER}, #{sRankP,jdbcType=INTEGER}, 
+      #{sRankC,jdbcType=INTEGER}, #{unitType,jdbcType=VARCHAR}, #{insertTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=CHAR}, #{status,jdbcType=INTEGER}, 
+      #{ramark1,jdbcType=CHAR}, #{ramark2,jdbcType=CHAR}, #{ramark3,jdbcType=CHAR}, #{data,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.example.entity.StaProduct">
+        insert into tb_sta_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="year != null">
+                YEAR,
+            </if>
+            <if test="month != null">
+                MONTH,
+            </if>
+            <if test="country != null">
+                COUNTRY,
+            </if>
+            <if test="province != null">
+                PROVINCE,
+            </if>
+            <if test="city != null">
+                CITY,
+            </if>
+            <if test="district != null">
+                DISTRICT,
+            </if>
+            <if test="platform != null">
+                PLATFORM,
+            </if>
+            <if test="productId != null">
+                PRODUCT_ID,
+            </if>
+            <if test="productName != null">
+                PRODUCT_NAME,
+            </if>
+            <if test="salesCount != null">
+                SALES_COUNT,
+            </if>
+            <if test="salesVolume != null">
+                SALES_VOLUME,
+            </if>
+            <if test="cRankP != null">
+                c_rank_p,
+            </if>
+            <if test="cRankC != null">
+                c_rank_c,
+            </if>
+            <if test="sRankP != null">
+                s_rank_p,
+            </if>
+            <if test="sRankC != null">
+                s_rank_c,
+            </if>
+            <if test="unitType != null">
+                UNIT_TYPE,
+            </if>
+            <if test="insertTime != null">
+                INSERT_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+            <if test="updateUser != null">
+                UPDATE_USER,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+            <if test="ramark1 != null">
+                RAMARK1,
+            </if>
+            <if test="ramark2 != null">
+                RAMARK2,
+            </if>
+            <if test="ramark3 != null">
+                RAMARK3,
+            </if>
+            <if test="data != null">
+                DATA,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="year != null">
+                #{year,jdbcType=VARCHAR},
+            </if>
+            <if test="month != null">
+                #{month,jdbcType=VARCHAR},
+            </if>
+            <if test="country != null">
+                #{country,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="district != null">
+                #{district,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                #{platform,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="salesCount != null">
+                #{salesCount,jdbcType=VARCHAR},
+            </if>
+            <if test="salesVolume != null">
+                #{salesVolume,jdbcType=DOUBLE},
+            </if>
+            <if test="cRankP != null">
+                #{cRankP,jdbcType=INTEGER},
+            </if>
+            <if test="cRankC != null">
+                #{cRankC,jdbcType=INTEGER},
+            </if>
+            <if test="sRankP != null">
+                #{sRankP,jdbcType=INTEGER},
+            </if>
+            <if test="sRankC != null">
+                #{sRankC,jdbcType=INTEGER},
+            </if>
+            <if test="unitType != null">
+                #{unitType,jdbcType=VARCHAR},
+            </if>
+            <if test="insertTime != null">
+                #{insertTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=CHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="ramark1 != null">
+                #{ramark1,jdbcType=CHAR},
+            </if>
+            <if test="ramark2 != null">
+                #{ramark2,jdbcType=CHAR},
+            </if>
+            <if test="ramark3 != null">
+                #{ramark3,jdbcType=CHAR},
+            </if>
+            <if test="data != null">
+                #{data,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.StaProduct">
+        update tb_sta_product
+        <set>
+            <if test="year != null">
+                YEAR = #{year,jdbcType=VARCHAR},
+            </if>
+            <if test="month != null">
+                MONTH = #{month,jdbcType=VARCHAR},
+            </if>
+            <if test="country != null">
+                COUNTRY = #{country,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                PROVINCE = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                CITY = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="district != null">
+                DISTRICT = #{district,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                PLATFORM = #{platform,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                PRODUCT_NAME = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="salesCount != null">
+                SALES_COUNT = #{salesCount,jdbcType=VARCHAR},
+            </if>
+            <if test="salesVolume != null">
+                SALES_VOLUME = #{salesVolume,jdbcType=DOUBLE},
+            </if>
+            <if test="cRankP != null">
+                c_rank_p = #{cRankP,jdbcType=INTEGER},
+            </if>
+            <if test="cRankC != null">
+                c_rank_c = #{cRankC,jdbcType=INTEGER},
+            </if>
+            <if test="sRankP != null">
+                s_rank_p = #{sRankP,jdbcType=INTEGER},
+            </if>
+            <if test="sRankC != null">
+                s_rank_c = #{sRankC,jdbcType=INTEGER},
+            </if>
+            <if test="unitType != null">
+                UNIT_TYPE = #{unitType,jdbcType=VARCHAR},
+            </if>
+            <if test="insertTime != null">
+                INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                UPDATE_USER = #{updateUser,jdbcType=CHAR},
+            </if>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="ramark1 != null">
+                RAMARK1 = #{ramark1,jdbcType=CHAR},
+            </if>
+            <if test="ramark2 != null">
+                RAMARK2 = #{ramark2,jdbcType=CHAR},
+            </if>
+            <if test="ramark3 != null">
+                RAMARK3 = #{ramark3,jdbcType=CHAR},
+            </if>
+            <if test="data != null">
+                DATA = #{data,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.example.entity.StaProduct">
+    update tb_sta_product
+    set YEAR = #{year,jdbcType=VARCHAR},
+      MONTH = #{month,jdbcType=VARCHAR},
+      COUNTRY = #{country,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      CITY = #{city,jdbcType=VARCHAR},
+      DISTRICT = #{district,jdbcType=VARCHAR},
+      PLATFORM = #{platform,jdbcType=VARCHAR},
+      PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+      PRODUCT_NAME = #{productName,jdbcType=VARCHAR},
+      SALES_COUNT = #{salesCount,jdbcType=VARCHAR},
+      SALES_VOLUME = #{salesVolume,jdbcType=DOUBLE},
+      c_rank_p = #{cRankP,jdbcType=INTEGER},
+      c_rank_c = #{cRankC,jdbcType=INTEGER},
+      s_rank_p = #{sRankP,jdbcType=INTEGER},
+      s_rank_c = #{sRankC,jdbcType=INTEGER},
+      UNIT_TYPE = #{unitType,jdbcType=VARCHAR},
+      INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      UPDATE_USER = #{updateUser,jdbcType=CHAR},
+      STATUS = #{status,jdbcType=INTEGER},
+      RAMARK1 = #{ramark1,jdbcType=CHAR},
+      RAMARK2 = #{ramark2,jdbcType=CHAR},
+      RAMARK3 = #{ramark3,jdbcType=CHAR},
+      DATA = #{data,jdbcType=LONGVARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.entity.StaProduct">
+    update tb_sta_product
+    set YEAR = #{year,jdbcType=VARCHAR},
+      MONTH = #{month,jdbcType=VARCHAR},
+      COUNTRY = #{country,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      CITY = #{city,jdbcType=VARCHAR},
+      DISTRICT = #{district,jdbcType=VARCHAR},
+      PLATFORM = #{platform,jdbcType=VARCHAR},
+      PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+      PRODUCT_NAME = #{productName,jdbcType=VARCHAR},
+      SALES_COUNT = #{salesCount,jdbcType=VARCHAR},
+      SALES_VOLUME = #{salesVolume,jdbcType=DOUBLE},
+      c_rank_p = #{cRankP,jdbcType=INTEGER},
+      c_rank_c = #{cRankC,jdbcType=INTEGER},
+      s_rank_p = #{sRankP,jdbcType=INTEGER},
+      s_rank_c = #{sRankC,jdbcType=INTEGER},
+      UNIT_TYPE = #{unitType,jdbcType=VARCHAR},
+      INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      UPDATE_USER = #{updateUser,jdbcType=CHAR},
+      STATUS = #{status,jdbcType=INTEGER},
+      RAMARK1 = #{ramark1,jdbcType=CHAR},
+      RAMARK2 = #{ramark2,jdbcType=CHAR},
+      RAMARK3 = #{ramark3,jdbcType=CHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
