@@ -1,6 +1,9 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MenuItem, MenuService} from '../shared/menu.service';
 import {Router} from '@angular/router';
+import echarts from 'echarts';
+
+console.log('echarts', echarts);
 
 @Component({
   selector: 'app-frame',
@@ -61,11 +64,13 @@ export class FrameComponent implements OnInit, AfterViewInit {
   // 使得左侧菜单可以支持鼠标滚动事件
   initMenuMouseWheel() {
     // 滚动事件使用Hamster组件来处理
-    const hamster = window['Hamster'](this.menuContainer.nativeElement, true);
-    hamster.wheel((event, delta, deltaX, deltaY) => {
-      // 根据每次滚动向上或者向下移动20px
-      this.menuContainer.nativeElement.scrollTop += deltaY > 0 ? -20 : 20;
-    });
+    if (window['Hamster']) {
+      const hamster = window['Hamster'](this.menuContainer.nativeElement, true);
+      hamster.wheel((event, delta, deltaX, deltaY) => {
+        // 根据每次滚动向上或者向下移动20px
+        this.menuContainer.nativeElement.scrollTop += deltaY > 0 ? -20 : 20;
+      });
+    }
   }
 
 
