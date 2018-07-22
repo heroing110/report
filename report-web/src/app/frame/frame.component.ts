@@ -1,9 +1,9 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MenuItem, MenuService} from '../shared/menu.service';
 import {Router} from '@angular/router';
-import echarts from 'echarts';
+import {init} from 'echarts';
 
-console.log('echarts', echarts);
+console.log('echarts', init);
 
 @Component({
   selector: 'app-frame',

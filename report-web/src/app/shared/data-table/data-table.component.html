@@ -1,0 +1,50 @@
+<div class="table-operations" layout="row">
+  <div flex>
+    <nz-radio-group [(ngModel)]="valueRange">
+      <label nz-radio-button nzValue="0">总体</label>
+      <label nz-radio-button nzValue="1">天猫</label>
+      <label nz-radio-button nzValue="2">淘宝</label>
+      <label nz-radio-button nzValue="3">京东</label>
+    </nz-radio-group>
+  </div>
+  <div>
+    <button nz-button>导出 Excel</button>
+  </div>
+</div>
+
+<nz-table #table
+          nzBordered
+          nzSize="middle"
+          nzTitle="asdf"
+          [nzShowSizeChanger]="true"
+          [nzData]="dataSource"
+          [nzLoading]="loading"
+          [(nzPageIndex)]="pageIndex"
+          [(nzPageSize)]="pageSize"
+          [nzTotal]="total"
+          [nzShowQuickJumper]="true"
+          [nzHideOnSinglePage]="true"
+          [nzFrontPagination]="false"
+          (nzPageIndexChange)="searchData()"
+          (nzPageSizeChange)="searchData(true)">
+  <thead>
+  <tr>
+    <ng-container *ngFor="let header of columns">
+      <th [nzShowSort]="header.sort"
+          [(nzSort)]="sortMap[header.column]" (nzSortChange)="sort($event,header)"
+
+          [nzShowFilter]="header.filter"
+          [nzFilters]="header.filterList"
+          (nzFilterChange)="updateFilter($event, header)">{{header.title}}
+      </th>
+    </ng-container>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let row of table.data">
+    <td *ngFor="let col of columns">
+      {{getColumnData(row,col)}}
+    </td>
+  </tr>
+  </tbody>
+</nz-table>

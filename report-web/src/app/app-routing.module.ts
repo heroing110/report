@@ -15,8 +15,8 @@ const routes: Routes = [
   },
 
   {path: 'login', loadChildren: './login/login.module#LoginModule'}, // 登录模块
-  {path: '404', component: NotFoundComponent}, // 未找到页面
   {path: 'no-authority', component: NoAuthorityComponent}, // 无权限访问
+  {path: '**', component: NotFoundComponent}, // 未找到页面
 ];
 
 @NgModule({
