@@ -22,4 +22,9 @@ public class StaShopServiceImpl implements StaShopService {
     public List<StaShop> selectList(StaShop staShop) {
         return staShopMapper.selectList(staShop);
     }
+
+    @Override
+    public int selectPageCount(StaShop staShop) {
+        return staShopMapper.selectPageCount(staShop);
+    }
 }

@@ -20,4 +20,6 @@ public interface StaTotalMapper {
     List<StaTotal> selectList(StaTotal record);
 
     List<StaTotal> selectAllWithPage(StaTotal record);
+
+    int selectPageCount(StaTotal staTotal);
 }

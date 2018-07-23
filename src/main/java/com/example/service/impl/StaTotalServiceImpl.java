@@ -22,4 +22,9 @@ public class StaTotalServiceImpl implements StaTotalService {
     public List<StaTotal> selectAllWithPage(StaTotal record) {
         return staTotalMapper.selectAllWithPage(record);
     }
+
+    @Override
+    public int selectPageCount(StaTotal staTotal) {
+        return staTotalMapper.selectPageCount(staTotal);
+    }
 }

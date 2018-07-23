@@ -49,12 +49,13 @@
     <include refid="dynamicWhere"/>
   </select>
 
-  <select id="selectPageCount" resultMap="BaseResultMap" parameterType="com.example.entity.StaShop">
+  <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaShop">
     select
-    <include refid="Base_Column_List" />
+    count(1)
     from tb_sta_shop
-    where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
-    <include refid="dynamicWhere"/>
+    <trim prefix="where" prefixOverrides="and | or">
+      <include refid="dynamicWhere"/>
+    </trim>
   </select>
 
   <sql id="dynamicWhere">

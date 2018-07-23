@@ -20,4 +20,6 @@ public interface StaShopMapper {
     List<StaShop> selectList(StaShop record);
 
     List<StaShop> selectAllWithPage(StaShop record);
+
+    int selectPageCount(StaShop staShop);
 }

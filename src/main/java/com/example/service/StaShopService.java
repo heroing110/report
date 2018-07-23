@@ -10,4 +10,6 @@ public interface StaShopService {
     List<StaShop> selectAllWithPage(StaShop staShop);
 
     List<StaShop> selectList(StaShop staShop);
+
+    int selectPageCount(StaShop staShop);
 }

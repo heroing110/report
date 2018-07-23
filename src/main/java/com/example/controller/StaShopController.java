@@ -2,6 +2,10 @@ package com.example.controller;
 
 import com.example.entity.StaCat;
 import com.example.entity.StaShop;
+import com.example.entity.StaShop;
+import com.example.po.Constants;
+import com.example.po.PagingResult;
+import com.example.po.Result;
 import com.example.service.StaCatService;
 import com.example.service.StaShopService;
 import org.slf4j.Logger;
@@ -26,21 +30,46 @@ public class StaShopController {
 
     @RequestMapping(value = "/listview", method = RequestMethod.POST)
     @ResponseBody
-    public List<StaShop> listview(@RequestBody StaShop staShop) {
+    public Result<PagingResult> listview(@RequestBody StaShop staShop) {
         logger.info("/shop/listview");
+        Result<PagingResult> result = new Result<>();
+        List<StaShop> list = null;
         if (staShop.getPageNo() == null || staShop.getPageSize() == null) {
             staShop.setPageNo(1);
             staShop.setPageSize(10);
         }
-        List<StaShop> list = this.staShopService.selectAllWithPage(staShop);
-        return list;
+        try {
+            list = this.staShopService.selectAllWithPage(staShop);
+            PagingResult<List<StaShop>> pagingResult = new PagingResult<>(list);
+            pagingResult.setPageIndex(staShop.getPageNo());
+            pagingResult.setPageSize(staShop.getPageSize());
+            int count = this.staShopService.selectPageCount(staShop);
+            pagingResult.setTotal(count);
+            result.setData(pagingResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/shop/listview,查询异常");
+            logger.error("/shop/listview,查询异常");
+        }
+
+        return result;
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
-    public List<StaShop> list(@RequestBody StaShop staShop) {
+    public Result<List<StaShop>> list(@RequestBody StaShop staShop) {
         logger.info("/shop/list");
-        List<StaShop> list = this.staShopService.selectList(staShop);
-        return list;
+        Result<List<StaShop>> result = new Result<>();
+        try {
+            List<StaShop> list = this.staShopService.selectList(staShop);
+            result.setData(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/shop/list,查询异常");
+            logger.error("/shop/list,查询异常");
+        }
+        return result;
     }
 }

@@ -49,6 +49,15 @@
         <include refid="dynamicWhere"/>
     </select>
 
+    <select id="selectPageCount" parameterType="com.example.entity.StaTotal" resultType="java.lang.Integer">
+        select
+        count(1)
+        from tb_sta_total
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+    </select>
+
     <sql id="dynamicWhere">
         <if test="id!=null">
             AND ID = #{id,jdbcType=INTEGER}

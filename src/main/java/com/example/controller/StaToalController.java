@@ -1,7 +1,11 @@
 package com.example.controller;
 
 import com.example.entity.StaTotal;
+import com.example.entity.StaTotal;
 import com.example.entity.User;
+import com.example.po.Constants;
+import com.example.po.PagingResult;
+import com.example.po.Result;
 import com.example.service.StaTotalService;
 import com.example.service.UserService;
 import org.slf4j.Logger;
@@ -26,23 +30,48 @@ public class StaToalController {
     @Resource
     private StaTotalService staTotalService;
 
-    @RequestMapping(value = "/list",method = RequestMethod.POST)
+    @RequestMapping(value = "/listview", method = RequestMethod.POST)
     @ResponseBody
-    public List<StaTotal> list(@RequestBody StaTotal staTotal){
-        logger.info("/total/list");
-        List<StaTotal> list = this.staTotalService.selectList(staTotal);
-        return list;
-    }
-
-    @RequestMapping(value = "/listview",method = RequestMethod.POST)
-    @ResponseBody
-    public List<StaTotal> listview(@RequestBody StaTotal staTotal){
+    public Result<PagingResult> listview(@RequestBody StaTotal staTotal) {
         logger.info("/total/listview");
-        if (staTotal.getPageNo()==null || staTotal.getPageSize()==null) {
+        Result<PagingResult> result = new Result<>();
+        List<StaTotal> list = null;
+        if (staTotal.getPageNo() == null || staTotal.getPageSize() == null) {
             staTotal.setPageNo(1);
             staTotal.setPageSize(10);
         }
-        List<StaTotal> list = this.staTotalService.selectAllWithPage(staTotal);
-        return list;
+        try {
+            list = this.staTotalService.selectAllWithPage(staTotal);
+            PagingResult<List<StaTotal>> pagingResult = new PagingResult<>(list);
+            pagingResult.setPageIndex(staTotal.getPageNo());
+            pagingResult.setPageSize(staTotal.getPageSize());
+            int count = this.staTotalService.selectPageCount(staTotal);
+            pagingResult.setTotal(count);
+            result.setData(pagingResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/total/listview,查询异常");
+            logger.error("/total/listview,查询异常");
+        }
+
+        return result;
+    }
+
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaTotal>> list(@RequestBody StaTotal staTotal) {
+        logger.info("/total/list");
+        Result<List<StaTotal>> result = new Result<>();
+        try {
+            List<StaTotal> list = this.staTotalService.selectList(staTotal);
+            result.setData(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/total/list,查询异常");
+            logger.error("/total/list,查询异常");
+        }
+        return result;
     }
 }
