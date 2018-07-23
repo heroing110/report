@@ -7,7 +7,6 @@ import com.example.po.PagingResult;
 import com.example.po.Result;
 import com.example.service.StaCatService;
 import com.example.service.StaTotalService;
-import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
