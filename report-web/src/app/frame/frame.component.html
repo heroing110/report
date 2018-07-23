@@ -1,0 +1,66 @@
+<div layout="row" layout-fill>
+
+  <!-- 左侧导航 -->
+  <div class="menu-container" #menuContainer>
+    <ul nz-menu nzMode="inline" nzTheme='dark' [nzInlineCollapsed]="isCollapsed">
+      <ng-container *ngFor="let menu of menuList">
+
+        <ng-container *ngIf="!menu.children || !menu.children.length">
+          <li nz-menu-item [routerLink]="menu.path" [nzSelected]="menu.selected">
+          <span title>
+            <i class="anticon {{menu.icon}}"></i>
+            <span>{{menu.name}}</span>
+          </span>
+          </li>
+        </ng-container>
+
+        <ng-container *ngIf="menu.children && menu.children.length">
+          <li nz-submenu [nzOpen]="menu.open">
+            <span title>
+              <i class="anticon {{menu.icon}}"></i>
+              <span>{{menu.name}}</span>
+            </span>
+            <ul>
+              <ng-container *ngFor="let subMenu of menu.children">
+                <li nz-menu-item [nzSelected]="subMenu.selected" [routerLink]="subMenu.path">
+                  {{subMenu.name}}
+                </li>
+              </ng-container>
+            </ul>
+          </li>
+        </ng-container>
+      </ng-container>
+    </ul>
+  </div>
+
+  <!-- 右侧主体部分 -->
+  <div flex layout="column">
+
+    <!-- 主体部分导航 -->
+    <div layout="row">
+      <button nz-button [nzType]="'primary'" (click)="toggleCollapsed()">
+        <i class="anticon"
+           [class.anticon-menu-unfold]="isCollapsed"
+           [class.anticon-menu-fold]="!isCollapsed">
+        </i>
+      </button>
+      <div class="logo"></div>
+      <ul nz-menu [nzTheme]="'dark'" [nzMode]="'horizontal'" style="line-height: 64px;">
+        <li nz-menu-item>nav 1</li>
+        <li nz-menu-item>nav 2</li>
+        <li nz-menu-item>nav 3</li>
+      </ul>
+    </div>
+
+    <!-- 内容展示部分 -->
+    <div flex layout="column" style="overflow:auto;">
+      <div flex layout-padding>
+        <router-outlet></router-outlet>
+      </div>
+
+      <nz-footer style="text-align: center;">
+        copyright ©2018 DataSalt荣誉出品
+      </nz-footer>
+    </div>
+  </div>
+</div>
