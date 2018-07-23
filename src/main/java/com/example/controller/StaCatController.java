@@ -18,10 +18,10 @@ import java.util.List;
 
 /**
  * Created by heying on 2018/3/30.
+ * 品类
  */
 @RestController
 @EnableAutoConfiguration
-@Api(value = "/cat", tags = "品类分析")
 @RequestMapping("/cat")
 public class StaCatController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
