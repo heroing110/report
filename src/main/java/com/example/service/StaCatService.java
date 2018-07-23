@@ -10,4 +10,6 @@ public interface StaCatService {
     List<StaCat> selectAllWithPage(StaCat staCat);
 
     List<StaCat> selectList(StaCat staCat);
+
+    int selectPageCount(StaCat record);
 }

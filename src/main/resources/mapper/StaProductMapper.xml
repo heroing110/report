@@ -60,6 +60,15 @@
         <include refid="dynamicWhere"/>
     </select>
 
+    <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaProduct">
+        select
+        count(1)
+        from tb_sta_product
+        <trim prefix="where" prefixOverrides="and | or">
+          <include refid="dynamicWhere"/>
+        </trim>
+    </select>
+
     <sql id="dynamicWhere">
         <if test="year!=null">
             AND YEAR = #{year,jdbcType=VARCHAR}

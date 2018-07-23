@@ -25,4 +25,9 @@ public class StaCatServiceImpl implements StaCatService {
     public List<StaCat> selectList(StaCat staCat) {
         return staCatMapper.selectList(staCat);
     }
+
+    @Override
+    public int selectPageCount(StaCat record) {
+        return staCatMapper.selectPageCount(record);
+    }
 }

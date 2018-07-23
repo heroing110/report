@@ -32,7 +32,7 @@
     UPDATE_USER, STATUS, REMARK1, REMARK2, RAMARK3
   </sql>
 
-  <select id="selectList">
+  <select id="selectList" resultMap="BaseResultMap" parameterType="com.example.entity.StaShop">
     select
     <include refid="Base_Column_List" />
     from tb_sta_shop
@@ -41,7 +41,15 @@
     </trim>
   </select>
 
-  <select id="selectAllWithPage">
+  <select id="selectAllWithPage" resultMap="BaseResultMap" parameterType="com.example.entity.StaShop">
+    select
+    <include refid="Base_Column_List" />
+    from tb_sta_shop
+    where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
+    <include refid="dynamicWhere"/>
+  </select>
+
+  <select id="selectPageCount" resultMap="BaseResultMap" parameterType="com.example.entity.StaShop">
     select
     <include refid="Base_Column_List" />
     from tb_sta_shop

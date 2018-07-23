@@ -48,6 +48,14 @@
         where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
         <include refid="dynamicWhere"/>
     </select>
+
+    <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaCat">
+        select count(1)
+        from tb_sta_cat
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+    </select>
     <select id="selectList" resultMap="ResultMapWithBLOBs" parameterType="com.example.entity.StaCat">
         select
         <include refid="Base_Column_List"/>

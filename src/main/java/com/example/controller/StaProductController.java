@@ -1,8 +1,11 @@
 package com.example.controller;
 
-import com.example.entity.StaCat;
 import com.example.entity.StaProduct;
-import com.example.service.StaCatService;
+import com.example.entity.StaProduct;
+import com.example.po.Constants;
+import com.example.po.PagingResult;
+import com.example.po.Result;
+import com.example.service.StaProductService;
 import com.example.service.StaProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,21 +28,46 @@ public class StaProductController {
 
     @RequestMapping(value = "/listview", method = RequestMethod.POST)
     @ResponseBody
-    public List<StaProduct> listview(@RequestBody StaProduct staProduct) {
+    public Result<PagingResult> listview(@RequestBody StaProduct staProduct) {
         logger.info("/product/listview");
+        Result<PagingResult> result = new Result<>();
+        List<StaProduct> list = null;
         if (staProduct.getPageNo() == null || staProduct.getPageSize() == null) {
             staProduct.setPageNo(1);
             staProduct.setPageSize(10);
         }
-        List<StaProduct> list = this.staProductService.selectAllWithPage(staProduct);
-        return list;
+        try {
+            list = this.staProductService.selectAllWithPage(staProduct);
+            PagingResult<List<StaProduct>> pagingResult = new PagingResult<>(list);
+            pagingResult.setPageIndex(staProduct.getPageNo());
+            pagingResult.setPageSize(staProduct.getPageSize());
+            int count = this.staProductService.selectPageCount(staProduct);
+            pagingResult.setTotal(count);
+            result.setData(pagingResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/product/listview,查询异常");
+            logger.error("/product/listview,查询异常");
+        }
+
+        return result;
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
-    public List<StaProduct> list(@RequestBody StaProduct staProduct) {
+    public Result<List<StaProduct>> list(@RequestBody StaProduct staProduct) {
         logger.info("/product/list");
-        List<StaProduct> list = this.staProductService.selectList(staProduct);
-        return list;
+        Result<List<StaProduct>> result = new Result<>();
+        try {
+            List<StaProduct> list = this.staProductService.selectList(staProduct);
+            result.setData(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/product/list,查询异常");
+            logger.error("/product/list,查询异常");
+        }
+        return result;
     }
 }

@@ -9,4 +9,6 @@ public interface StaProductService {
     List<StaProduct> selectAllWithPage(StaProduct staCat);
 
     List<StaProduct> selectList(StaProduct staCat);
+
+    int selectPageCount(StaProduct record);
 }

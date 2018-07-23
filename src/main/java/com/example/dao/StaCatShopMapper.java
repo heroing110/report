@@ -22,4 +22,6 @@ public interface StaCatShopMapper {
     List<StaCatShop> selectList(StaCatShop staCatShop);
 
     List<StaCatShop> selectAllWithPage(StaCatShop staCatShop);
+
+    int selectPageCount(StaCatShop staCatShop);
 }

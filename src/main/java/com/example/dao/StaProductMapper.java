@@ -22,4 +22,6 @@ public interface StaProductMapper {
     List<StaProduct> selectList(StaProduct record);
 
     List<StaProduct> selectAllWithPage(StaProduct record);
+
+    int selectPageCount(StaProduct record);
 }

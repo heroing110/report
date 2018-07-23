@@ -22,4 +22,6 @@ public interface StaCatMapper {
     List<StaCat> selectAllWithPage(StaCat record);
 
     List<StaCat> selectList(StaCat record);
+
+    int selectPageCount(StaCat record);
 }

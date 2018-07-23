@@ -22,4 +22,9 @@ public class StaCatShopServiceImpl implements StaCatShopService {
     public List<StaCatShop> selectList(StaCatShop staCatShop) {
         return staCatShopMapper.selectList(staCatShop);
     }
+
+    @Override
+    public int selectPageCount(StaCatShop staCatShop) {
+        return staCatShopMapper.selectPageCount(staCatShop);
+    }
 }
