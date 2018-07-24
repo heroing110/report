@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ColumnItem} from '../../shared/data-table/data-table.component';
 
 @Component({
@@ -6,7 +6,7 @@ import {ColumnItem} from '../../shared/data-table/data-table.component';
   templateUrl: './quick-view.component.html',
   styleUrls: ['./quick-view.component.less']
 })
-export class QuickViewComponent implements OnInit {
+export class QuickViewComponent implements OnInit, AfterViewInit {
 
   columnConfigs: ColumnItem[] = [
     {
@@ -45,6 +45,10 @@ export class QuickViewComponent implements OnInit {
       ];
       return Promise.resolve({data: {rows: list, total: 300}});
     };
+  }
+
+  ngAfterViewInit() {
+
   }
 
 }

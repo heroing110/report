@@ -1,3 +1,26 @@
-<p>
-  shop-analysis works!
-</p>
+<div layout="row" layout-align="end center" style="margin-bottom: 2em;">
+  <app-range-month [(dates)]="dateRange"
+                   (datesChange)="doQuery(volumeTable);doQuery(countTable)"></app-range-month>
+</div>
+
+<app-common-operation title="销售额TOP30店铺"
+                      [loading]="loading"
+                      [(platform)]="volumeParam.platform"
+                      [noCategory]="true"
+                      (chagned)="doQuery(volumeTable)"></app-common-operation>
+<app-data-table [columns]="salesVolumeConfigs"
+                [pageSize]="volumeParam.pageSize"
+                [queryDataService]="getSalesVolumeTableDataFn"
+                [hideOnSinglePage]="true"
+                #volumeTable></app-data-table>
+
+<app-common-operation title="销量TOP30店铺"
+                      [loading]="loading2"
+                      [(platform)]="countParam.platform"
+                      [noCategory]="true"
+                      (chagned)="doQuery(countTable)"></app-common-operation>
+<app-data-table [columns]="slaesCountConfigs"
+                [pageSize]="countParam.pageSize"
+                [queryDataService]="getSlaesCountTableDataFn"
+                [hideOnSinglePage]="true"
+                #countTable></app-data-table>

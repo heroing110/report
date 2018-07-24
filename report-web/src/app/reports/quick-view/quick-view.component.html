@@ -2,4 +2,14 @@
   main works!
 </p>
 
+<div layout="row">
+  <div flex>
+    <app-data-chart [height]="300" #dataChartLeft></app-data-chart>
+  </div>
+  <div flex>
+    <app-data-chart [height]="300" #dataChartRight></app-data-chart>
+  </div>
+</div>
+
+<app-common-operation title="测试一下呗"></app-common-operation>
 <app-data-table [columns]="columnConfigs" [queryDataService]="getTableDataFn"></app-data-table>
