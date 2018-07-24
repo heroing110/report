@@ -3,7 +3,7 @@ package com.example.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-public class StaProduct implements Serializable {
+public class StaProduct extends SortFilter  implements Serializable {
     private Integer id;
 
     private String year;

@@ -3,7 +3,7 @@ package com.example.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-public class StaCat implements Serializable {
+public class StaCat extends SortFilter implements Serializable {
     private Integer id;
 
     private String year;
@@ -56,11 +56,31 @@ public class StaCat implements Serializable {
 
     private String date;
 
+    private String dateBegin;
+
+    private String dateEnd;
+
     private Integer pageNo;
 
     private Integer pageSize;
 
     private static final long serialVersionUID = 1L;
+
+    public String getDateBegin() {
+        return dateBegin;
+    }
+
+    public void setDateBegin(String dateBegin) {
+        this.dateBegin = dateBegin;
+    }
+
+    public String getDateEnd() {
+        return dateEnd;
+    }
+
+    public void setDateEnd(String dateEnd) {
+        this.dateEnd = dateEnd;
+    }
 
     public Integer getPageNo() {
         return pageNo;
