@@ -1,5 +1,7 @@
 package com.example.po;
 
+import com.example.entity.StaCat;
+
 public class PagingResult<T> {
     private T rows;
     private int pageIndex;

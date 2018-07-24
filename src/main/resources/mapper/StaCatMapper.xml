@@ -30,6 +30,8 @@
     </resultMap>
     <resultMap id="ResultMapWithBLOBs" type="com.example.entity.StaCat" extends="BaseResultMap">
         <result column="DATE" property="date" jdbcType="LONGVARCHAR"/>
+        <result column="salesPercent" property="salesPercent" jdbcType="VARCHAR"/>
+        <result column="countPercent" property="countPercent" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
     ID, YEAR, MONTH, COUNTRY, PROVINCE, CITY, DISTRICT, PLATFORM, S_CAT1_NAME, CAT1_NAME, 
@@ -40,13 +42,22 @@
     DATE
   </sql>
     <select id="selectAllWithPage" resultMap="ResultMapWithBLOBs" parameterType="com.example.entity.StaCat">
+        select * from (
         select
         <include refid="Base_Column_List"/>
         ,
-        <include refid="Blob_Column_List"/>
-        from tb_sta_cat
+        <include refid="Blob_Column_List"/>,
+        m_sales_volume*100/(select sum(m_sales_volume) from tb_sta_cat  t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM and t1.S_CAT1_NAME = t.S_CAT1_NAME) salesPercent,
+        M_SLAES_COUNT*100/(select sum(M_SLAES_COUNT) from tb_sta_cat  t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM and t1.S_CAT1_NAME = t.S_CAT1_NAME) countPercent
+        from tb_sta_cat t
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        <if test="orderBy!=null">
+            ORDER BY ${orderBy} desc
+        </if>
+        ) t2
         where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
-        <include refid="dynamicWhere"/>
     </select>
 
     <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaCat">
@@ -56,22 +67,75 @@
             <include refid="dynamicWhere"/>
         </trim>
     </select>
-    <select id="selectList" resultMap="ResultMapWithBLOBs" parameterType="com.example.entity.StaCat">
-        select
-        <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
+
+    <select id="selectList" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+        select t.city,t.S_CAT1_NAME sCat1Name,
+        sum(M_SLAES_COUNT)*100/(select sum(t1.M_SLAES_COUNT) from tb_sta_cat t1 group by PROVINCE = #{province,jdbcType=VARCHAR}) countPercent,
+        sum(M_SALES_VOLUME)*100/(select sum(t2.M_SALES_VOLUME) from tb_sta_cat t2 GROUP BY PROVINCE = #{province,jdbcType=VARCHAR}) salesPercent
+        from tb_sta_cat t
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY t.CITY,t.S_CAT1_NAME
+    </select>
+
+    <select id="selectWholeList" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+        select t.S_CAT1_NAME sCat1Name,
+        sum(M_SLAES_COUNT)*100/(select sum(t1.M_SLAES_COUNT) from tb_sta_cat t1 group by PROVINCE = #{province,jdbcType=VARCHAR}) countPercent,
+        sum(M_SALES_VOLUME)*100/(select sum(t2.M_SALES_VOLUME) from tb_sta_cat t2 GROUP BY PROVINCE = #{province,jdbcType=VARCHAR}) salesPercent
+        from tb_sta_cat t
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY t.S_CAT1_NAME
+    </select>
+
+    <select id="selectSalesAndCountByProvince" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+        select sum(M_SLAES_COUNT) mSlaesCount, sum(M_SALES_VOLUME) mSalesVolume
         from tb_sta_cat
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY PROVINCE
+    </select>
+
+    <select id="selectListByParam" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+        select
+        s_cat1_name sCat1Name,cat1_name cat1Name,cat2_name cat2Name,cat3_name cat3Name,M_SLAES_COUNT mSlaesCount,id
+        from tb_sta_cat t
         <trim prefix="where" prefixOverrides="and | or">
             <include refid="dynamicWhere"/>
         </trim>
     </select>
 
     <sql id="dynamicWhere">
-        <if test="year!=null">
-            AND YEAR = #{year,jdbcType=VARCHAR}
+        <if test="platform!=null">
+            AND PLATFORM = #{platform,jdbcType=VARCHAR}
+        </if>
+        <if test="sCat1Name!=null">
+            AND S_CAT1_NAME = #{sCat1Name,jdbcType=VARCHAR}
+        </if>
+        <if test="cat1Name!=null">
+            AND CAT1_NAME = #{cat1Name,jdbcType=VARCHAR}
+        </if>
+        <if test="cat2Name!=null">
+            AND CAT2_NAME = #{cat2Name,jdbcType=VARCHAR}
+        </if>
+        <if test="dateBegin!=null and dateEnd!=null">
+            AND date between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
+        </if>
+        <if test="province!=null">
+            AND PROVINCE = #{province,jdbcType=VARCHAR}
         </if>
     </sql>
+
+    <select id="selectCatNameListGroupByCat" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+        select DISTINCT ${name} name
+        from tb_sta_cat
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+    </select>
 
     <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
         select

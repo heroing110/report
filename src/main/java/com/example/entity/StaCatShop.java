@@ -3,10 +3,12 @@ package com.example.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-public class StaCatShop implements Serializable {
+public class StaCatShop extends SortFilter  implements Serializable {
     private Integer id;
 
     private String year;
+
+    private String[] years;
 
     private String month;
 
@@ -52,11 +54,59 @@ public class StaCatShop implements Serializable {
 
     private String date;
 
+    private String dateBegin;
+
+    private String dateEnd;
+
     private Integer pageNo;
 
     private Integer pageSize;
 
+    private String salesPercent;
+
+    private String countPercent;
+
     private static final long serialVersionUID = 1L;
+
+    public String getCountPercent() {
+        return countPercent;
+    }
+
+    public void setCountPercent(String countPercent) {
+        this.countPercent = countPercent;
+    }
+
+    public String getDateBegin() {
+        return dateBegin;
+    }
+
+    public void setDateBegin(String dateBegin) {
+        this.dateBegin = dateBegin;
+    }
+
+    public String getDateEnd() {
+        return dateEnd;
+    }
+
+    public void setDateEnd(String dateEnd) {
+        this.dateEnd = dateEnd;
+    }
+
+    public String getSalesPercent() {
+        return salesPercent;
+    }
+
+    public void setSalesPercent(String salesPercent) {
+        this.salesPercent = salesPercent;
+    }
+
+    public String[] getYears() {
+        return years;
+    }
+
+    public void setYears(String[] years) {
+        this.years = years;
+    }
 
     public Integer getPageNo() {
         return pageNo;

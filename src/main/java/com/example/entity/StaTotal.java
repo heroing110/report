@@ -3,7 +3,7 @@ package com.example.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-public class StaTotal implements Serializable {
+public class StaTotal extends SortFilter implements Serializable {
     private Integer id;
 
     private Date date;

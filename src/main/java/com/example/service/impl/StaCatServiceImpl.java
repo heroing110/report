@@ -1,11 +1,8 @@
 package com.example.service.impl;
 
 import com.example.dao.StaCatMapper;
-import com.example.dao.StaTotalMapper;
 import com.example.entity.StaCat;
-import com.example.entity.StaTotal;
 import com.example.service.StaCatService;
-import com.example.service.StaTotalService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -30,4 +27,21 @@ public class StaCatServiceImpl implements StaCatService {
     public int selectPageCount(StaCat record) {
         return staCatMapper.selectPageCount(record);
     }
+
+    @Override
+    public List<StaCat> selectCatTreeMap(StaCat record) {
+        List<StaCat> staCatsList = staCatMapper.selectListByParam(record);
+        return staCatsList;
+    }
+
+    @Override
+    public List<StaCat> selectWholeList(StaCat staCat) {
+        return staCatMapper.selectWholeList(staCat);
+    }
+
+    @Override
+    public StaCat selectSalesAndCountByProvince(StaCat record) {
+        return staCatMapper.selectSalesAndCountByProvince(record);
+    }
+
 }
