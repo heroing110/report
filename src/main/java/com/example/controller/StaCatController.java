@@ -71,4 +71,55 @@ public class StaCatController {
         }
         return result;
     }
+
+    @RequestMapping(value = "/whole_list", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaCat>> whole_list(@RequestBody StaCat staCat) {
+        logger.info("/cat/whole_list");
+        Result<List<StaCat>> result = new Result<>();
+        try {
+            List<StaCat> list = this.staCatService.selectWholeList(staCat);
+            result.setData(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/cat/whole_list,查询异常");
+            logger.error("/cat/whole_list,查询异常");
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/sales_count", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<StaCat> sales_count(@RequestBody StaCat staCat) {
+        logger.info("/cat/sales_count");
+        Result<StaCat> result = new Result<>();
+        try {
+            StaCat cat = this.staCatService.selectSalesAndCountByProvince(staCat);
+            result.setData(cat);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/cat/sales_count,查询异常");
+            logger.error("/cat/sales_count,查询异常");
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/tree", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaCat>> tree(@RequestBody StaCat staCat) {
+        logger.info("/cat/tree");
+        Result<List<StaCat>> result = new Result<>();
+        try {
+            List<StaCat> list = this.staCatService.selectCatTreeMap(staCat);
+            result.setData(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/cat/tree,查询异常");
+            logger.error("/cat/tree,查询异常");
+        }
+        return result;
+    }
 }

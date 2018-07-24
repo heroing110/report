@@ -23,5 +23,13 @@ public interface StaCatMapper {
 
     List<StaCat> selectList(StaCat record);
 
+    List<StaCat> selectWholeList(StaCat record);
+
+    List<StaCat> selectListByParam(StaCat record);
+
+    List<StaCat> selectCatNameListGroupByCat(StaCat record);
+
     int selectPageCount(StaCat record);
+
+    StaCat selectSalesAndCountByProvince(StaCat record);
 }

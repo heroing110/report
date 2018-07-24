@@ -2,6 +2,7 @@ package com.example.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class StaCat extends SortFilter implements Serializable {
     private Integer id;
@@ -64,7 +65,47 @@ public class StaCat extends SortFilter implements Serializable {
 
     private Integer pageSize;
 
+    private Float salesPercent;
+
+    private Float countPercent;
+
+    private String name;
+
+    private List<StaCat> children;
+
     private static final long serialVersionUID = 1L;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<StaCat> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<StaCat> children) {
+        this.children = children;
+    }
+
+    public Float getSalesPercent() {
+        return salesPercent;
+    }
+
+    public void setSalesPercent(Float salesPercent) {
+        this.salesPercent = salesPercent;
+    }
+
+    public Float getCountPercent() {
+        return countPercent;
+    }
+
+    public void setCountPercent(Float countPercent) {
+        this.countPercent = countPercent;
+    }
 
     public String getDateBegin() {
         return dateBegin;
