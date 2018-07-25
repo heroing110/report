@@ -1,20 +1,20 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {QuickViewComponent} from './quick-view.component';
+import {ContrastComponent} from './contrast.component';
 
-describe('RegionQuickViewComponent', () => {
-  let component: QuickViewComponent;
-  let fixture: ComponentFixture<QuickViewComponent>;
+describe('ContrastComponent', () => {
+  let component: ContrastComponent;
+  let fixture: ComponentFixture<ContrastComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [QuickViewComponent]
+      declarations: [ContrastComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(QuickViewComponent);
+    fixture = TestBed.createComponent(ContrastComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

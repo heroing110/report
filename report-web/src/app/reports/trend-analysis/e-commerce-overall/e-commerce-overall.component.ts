@@ -1,16 +1,107 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {CategoryAndShopDataItem} from '../../../shared/category.service';
+import {ColumnItem} from '../../../shared/data-table/data-table.component';
+import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
+import {TrendService} from '../../../shared/trend.service';
+import * as echarts from 'echarts';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-e-commerce-overall',
   templateUrl: './e-commerce-overall.component.html',
   styleUrls: ['./e-commerce-overall.component.less']
 })
-export class ECommerceOverallComponent implements OnInit {
+export class ECommerceOverallComponent implements OnInit, AfterViewInit {
+  trendConfigs: ColumnItem[];
+  getTrendTableDataFn: GetTableDataFn;
 
-  constructor() {
+  @ViewChild('dataChart')
+  dataChart: DataChartComponent; // 交易量图
+
+  dateRange: Date[] = [];
+
+  constructor(private trendService: TrendService) {
   }
 
   ngOnInit() {
+    this.trendConfigs = this.createColumnConfigs();
+
+    this.getTrendTableDataFn = (pageIndex, pageSize) => {
+      return this.trendService.pagingTrendListView({
+        indexType1: '交易额',
+        pageNo: pageIndex,
+        pageSize: pageSize,
+      });
+    };
   }
 
+  async ngAfterViewInit() {
+    this.setChartOption();
+  }
+
+  async setChartOption() {
+    const lineSourceData = (await this.getLineChartData()).data;
+
+    const lineCategoryList = [], lineDataList = [];
+    for (let i = 0; i < lineSourceData.length; i++) {
+      const data = lineSourceData[i];
+      lineCategoryList.push(data.dateStr);
+      lineDataList.push(data.totalVolume);
+    }
+
+    const lineOption = {
+      xAxis: {
+        type: 'category',
+        data: lineCategoryList
+      },
+      tooltip: {
+        trigger: 'axis'
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [{
+        data: lineDataList,
+        type: 'line',
+        name: '交易额',
+        smooth: true,
+        areaStyle: {
+          normal: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0,
+              color: '#8ec6ad'
+            }, {
+              offset: 1,
+              color: '#ffe'
+            }])
+          }
+        },
+      }]
+    };
+    this.dataChart.setOption(lineOption);
+  }
+
+  getLineChartData(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
+    const [s, e] = this.dateRange;
+    return this.trendService.getTrendLineData({
+      indexType1: '交易额',
+      dateBegin: `${moment(s).format('YYYY-MM')}-01`,
+      dateEnd: `${moment(e).format('YYYY-MM')}-02`
+    });
+  }
+
+  private createColumnConfigs() {
+    const configs: ColumnItem[] = [
+      {column: 'dateStr', title: '时间'},
+      {column: 'totalVolume', title: '交易额'},
+      {
+        column: 'totalMum', title: '环比',
+        formatter: (row, val) => {
+          return `${val || 0}%`;
+        }
+      },
+    ];
+
+    return configs;
+  }
 }

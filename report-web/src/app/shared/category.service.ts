@@ -60,8 +60,11 @@ export class CategoryAndShopDataItem {
   salesPercent?: string;
   countPercent?: string;
   date?: string;
+  dateStr?: string;
   data?: string;
   type?: string;
+  indexType1?: string;
+  indexType2?: string;
   dateBegin?: string;
   dateEnd?: string;
 

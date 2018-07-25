@@ -68,7 +68,7 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
         type: 'category',
         data: lineCategoryList
       },
-      tooltip: {},
+      tooltip: {trigger: 'axis'},
       yAxis: {
         type: 'value'
       },

@@ -3,14 +3,14 @@ import {CategoryComponent} from './category/category.component';
 import {StoreSalesDistributionComponent} from './store-sales-distribution/store-sales-distribution.component';
 import {EnterprisesAndEmployeesComponent} from './enterprises-and-employees/enterprises-and-employees.component';
 import {SharedModule} from '../../shared/shared.module';
-import {RegionalAnalysisRoutingModule} from './regional-analysis-routing.module';
+import {DistrictAnalysisRoutingModule} from './district-analysis-routing.module';
 
 @NgModule({
   imports: [
     SharedModule,
-    RegionalAnalysisRoutingModule
+    DistrictAnalysisRoutingModule
   ],
   declarations: [CategoryComponent, StoreSalesDistributionComponent, EnterprisesAndEmployeesComponent]
 })
-export class RegionalAnalysisModule {
+export class DistrictAnalysisModule {
 }
