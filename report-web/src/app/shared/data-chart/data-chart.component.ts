@@ -50,6 +50,10 @@ export class DataChartComponent implements OnInit, AfterViewInit, OnDestroy {
       this.chartObj.setOption(option, noMerge);
     }
   }
+
+  static registerMap(name, mapJson) {
+    echarts.registerMap(name, mapJson);
+  }
 }
 
 function optionMergeAsDefault(option: echarts.EChartOption) {

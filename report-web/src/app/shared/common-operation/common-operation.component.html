@@ -24,7 +24,7 @@
                  [nzDisabled]="loading"
                  [(ngModel)]="category"
                  (ngModelChange)="chagneFn(categoryChange,category)">
-        <nz-option nzValue="" nzLabel="选择品类"></nz-option>
+        <nz-option nzValue="" nzLabel="全部"></nz-option>
         <nz-option *ngFor="let category of categoryList"
                    [nzLabel]="category.label"
                    [nzValue]="category.value"></nz-option>

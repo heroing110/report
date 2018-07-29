@@ -11,6 +11,10 @@ export class DataTableComponent implements OnInit {
   hideOnSinglePage: boolean; // 当只有一页数据的时候，是否隐藏分页器
   @Input()
   columns: ColumnItem[] = []; // 数据列表配置
+  @Input()
+  showQuickJumper = true;
+  @Input()
+  showSizeChanger = true;
 
   @Input()
   queryDataService: (pageIndex: number, pageSize: number, sortMap: any, filterMap: any) =>
@@ -71,9 +75,9 @@ export class DataTableComponent implements OnInit {
   }
 
   // 获取数据
-  getColumnData(row: any, col: ColumnItem) {
+  getColumnData(row: any, col: ColumnItem, index: number) {
     if (isFunction(col.formatter)) {
-      return col.formatter(row, row[col.column]);
+      return col.formatter(row, row[col.column], index);
     }
     return row[col.column];
   }
@@ -82,7 +86,7 @@ export class DataTableComponent implements OnInit {
 export class ColumnItem {
   title?: string;
   column?: string;
-  formatter?: (row: any, value) => string; // 格式化要显示的数据
+  formatter?: (row, value, index) => string; // 格式化要显示的数据
   sort?: boolean; // 排序支持
   filter?: boolean; // 过滤支持，需要提供filterList 来过滤
   filterList?: { text: string, value: string }[];

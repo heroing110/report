@@ -6,6 +6,8 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./not-found.component.less']
 })
 export class NotFoundComponent implements OnInit {
+  title = 'Uh oh!';
+  subtitle = '小怪兽断开了页面链接...';
 
   constructor() {
   }

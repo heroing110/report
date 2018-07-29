@@ -1,13 +1,13 @@
 <nz-table #table
           nzBordered
           nzSize="middle"
-          [nzShowSizeChanger]="true"
+          [nzShowSizeChanger]="showSizeChanger"
           [nzData]="dataSource"
           [nzLoading]="loading"
           [(nzPageIndex)]="pageIndex"
           [(nzPageSize)]="pageSize"
           [nzTotal]="total"
-          [nzShowQuickJumper]="true"
+          [nzShowQuickJumper]="showQuickJumper"
           [nzHideOnSinglePage]="hideOnSinglePage"
           [nzFrontPagination]="false"
           (nzPageIndexChange)="searchData()"
@@ -27,8 +27,8 @@
   </thead>
   <tbody>
   <tr *ngFor="let row of table.data">
-    <td *ngFor="let col of columns">
-      {{getColumnData(row,col)}}
+    <td *ngFor="let col of columns;let i=index;">
+      {{getColumnData(row,col,i)}}
     </td>
   </tr>
   </tbody>

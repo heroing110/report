@@ -27,10 +27,6 @@
     ],
     "interface-over-type-literal": true,
     "label-position": true,
-    "max-line-length": [
-      true,
-      140
-    ],
     "member-access": false,
     "member-ordering": [
       true,
@@ -79,14 +75,9 @@
       true,
       "check-open-brace",
       "check-catch",
-      "check-else",
-      "check-whitespace"
+      "check-else"
     ],
     "prefer-const": true,
-    "quotemark": [
-      true,
-      "single"
-    ],
     "radix": true,
     "semicolon": [
       true,
@@ -112,9 +103,7 @@
       true,
       "check-branch",
       "check-decl",
-      "check-operator",
-      "check-separator",
-      "check-type"
+      "check-operator"
     ],
     "no-output-on-prefix": true,
     "use-input-property-decorator": true,

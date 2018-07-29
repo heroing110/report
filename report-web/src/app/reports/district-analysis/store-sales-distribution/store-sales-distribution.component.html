@@ -1,3 +1,19 @@
-<p>
-  store-sales-distribution works!
-</p>
+<div layout="row" layout-align="end center" style="margin-bottom: 2em;">
+  <app-range-month [(dates)]="dateRange"
+                   (datesChange)="setChartOption()"></app-range-month>
+</div>
+
+
+<app-common-operation title="区域店铺交易额分布"
+                      [loading]="loading"
+                      [noExportData]="true"
+                      [(platform)]="platform"
+                      (platformChange)="setChartOption()"
+                      [noCategory]="true"></app-common-operation>
+
+<app-data-chart #dataChart [height]="450"></app-data-chart>
+
+
+<app-common-operation [noPlatform]="true" [noCategory]="true"></app-common-operation>
+<app-data-table [columns]="salesVolumeConfigs"
+                [queryDataService]="getSalesVolumeTableDataFn"></app-data-table>

@@ -15,7 +15,7 @@ export class HttpProxyInterceptorService implements HttpInterceptor {
    */
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let secureReq = req;
-    if (!environment.production) {// 判断是否为非生产环境
+    if (!environment.production && req.params.get('noProxy') !== 'true') {// 判断是否为非生产环境
       secureReq = req.clone({
         url: '/api/' + req.url
       });

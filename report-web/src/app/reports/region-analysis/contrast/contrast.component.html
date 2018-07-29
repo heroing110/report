@@ -1,3 +1,19 @@
-<p>
-  contrast works!
-</p>
+<div layout="row" layout-align="end center" style="margin-bottom: 2em;">
+  <app-range-month [(dates)]="dateRange"
+                   (datesChange)="setChartOption()"></app-range-month>
+</div>
+
+
+<app-common-operation title="各地核心电商指标速览"
+                      [loading]="loading"
+                      [noExportData]="true"
+                      [(platform)]="platform"
+                      (platformChange)="setChartOption()"
+                      [categoryList]="categoryList"></app-common-operation>
+
+<app-data-chart #dataChart [height]="450"></app-data-chart>
+
+
+<app-common-operation [noPlatform]="true" [noCategory]="true"></app-common-operation>
+<app-data-table [columns]="salesVolumeConfigs"
+                [queryDataService]="getSalesVolumeTableDataFn"></app-data-table>

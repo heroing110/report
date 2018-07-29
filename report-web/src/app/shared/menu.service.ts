@@ -13,16 +13,14 @@ export class MenuService {
       icon: 'anticon-dashboard'
     },
 
-    // 品类分析
+    // 趋势分析
     {
-      name: '品类分析',
-      path: '/reports/category-analysis',
-      icon: 'anticon-schedule',
+      name: '趋势分析',
+      path: '/reports/trend-analysis',
+      icon: 'anticon-line-chart',
       children: [
-        {name: '整体分析', path: '/reports/category-analysis/whole'},
-        {name: '品类细分', path: '/reports/category-analysis/subdivision'},
-        {name: '品类区域分析', path: '/reports/category-analysis/category-area'},
-        {name: '各品类下头部店铺', path: '/reports/category-analysis/category-top-shop'},
+        {name: '电商总体交易走势', path: '/reports/trend-analysis/e-commerce-overall'},
+        {name: '网络零售交易走势', path: '/reports/trend-analysis/network-retailing'},
       ]
     },
 
@@ -49,6 +47,19 @@ export class MenuService {
       ]
     },
 
+    // 品类分析
+    {
+      name: '品类分析',
+      path: '/reports/category-analysis',
+      icon: 'anticon-schedule',
+      children: [
+        {name: '整体分析', path: '/reports/category-analysis/whole'},
+        {name: '品类细分', path: '/reports/category-analysis/subdivision'},
+        {name: '品类区域分析', path: '/reports/category-analysis/category-area'},
+        {name: '各品类下头部店铺', path: '/reports/category-analysis/category-top-shop'},
+      ]
+    },
+
     // 店铺分析
     {
       name: '店铺分析',
@@ -64,17 +75,6 @@ export class MenuService {
       children: [
         {name: '人气单品', path: '/reports/single-product-analysis/popularity'},
         {name: '重点品类', path: '/reports/single-product-analysis/emphases'},
-      ]
-    },
-
-    // 趋势分析
-    {
-      name: '趋势分析',
-      path: '/reports/trend-analysis',
-      icon: 'anticon-line-chart',
-      children: [
-        {name: '电商总体交易走势', path: '/reports/trend-analysis/e-commerce-overall'},
-        {name: '网络零售交易走势', path: '/reports/trend-analysis/network-retailing'},
       ]
     },
   ];
