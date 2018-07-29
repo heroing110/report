@@ -1,0 +1,28 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+POST http://10.1.13.4/cat/listview
+Content-Type: application/json
+Accept: application/json
+
+{
+"pageSize" : 30,
+"pageNo" : 1
+}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+client.test("Request executed data length is 30", function() {
+  client.assert(response.body.code === 0, '请求异常：' + response.body.code + response.body.msg);
+});
+client.test("Request executed data length is 30", function() {
+  client.assert(response.body.data.rows.length === 30, '返回的数据没有30条');
+});
+%}
+###

@@ -1,3 +1,38 @@
-<p>
-  whole works!
-</p>
+<div layout="row" layout-align="end center" style="margin-bottom: 2em;">
+  <app-range-month [(dates)]="dateRange"
+                   (datesChange)="setChartOption();setChartOption2();"></app-range-month>
+</div>
+
+<app-common-operation title="一级品类销售额占比"
+                      [noExportData]="true"
+                      [loading]="loading"
+                      [(platform)]="salesPlatform"
+                      (platformChange)="setChartOption()"
+                      [noCategory]="true"></app-common-operation>
+<div layout="row">
+  <div flex>
+    <app-data-chart #salesDataChart1 [height]="450"></app-data-chart>
+  </div>
+  <div flex>
+    <app-data-chart #salesDataChart2 [height]="450"></app-data-chart>
+  </div>
+</div>
+
+<app-common-operation title="一级品类销量占比"
+                      [noExportData]="true"
+                      [loading]="loading2"
+                      [(platform)]="countPlatform"
+                      (platformChange)="setChartOption2()"
+                      [noCategory]="true"></app-common-operation>
+<div layout="row">
+  <div flex>
+    <app-data-chart #countDataChart1 [height]="450"></app-data-chart>
+  </div>
+  <div flex>
+    <app-data-chart #countDataChart2 [height]="450"></app-data-chart>
+  </div>
+</div>
+
+<app-common-operation [noPlatform]="true" [noCategory]="true"></app-common-operation>
+<app-data-table [columns]="salesVolumeConfigs"
+                [queryDataService]="getSalesVolumeTableDataFn"></app-data-table>

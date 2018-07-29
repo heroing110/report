@@ -26,15 +26,26 @@ export class MenuService {
       ]
     },
 
+    // 地域分析
+    {
+      name: '地域分析',
+      path: '/reports/region-analysis',
+      icon: 'anticon-global',
+      children: [
+        {name: '各地速览', path: '/reports/region-analysis/quick-view'},
+        {name: '各地对比', path: '/reports/region-analysis/contrast'}
+      ]
+    },
+
     // 区域分析
     {
       name: '区域分析',
-      path: '/reports/regional-analysis',
+      path: '/reports/district-analysis',
       icon: 'anticon-global',
       children: [
-        {name: '品类分析', path: '/reports/regional-analysis/category'},
-        {name: '店铺销售额分步', path: '/reports/regional-analysis/store-sales-distribution'},
-        {name: '企业数、从业人数统计', path: '/reports/regional-analysis/enterprises-and-employees'},
+        {name: '品类分析', path: '/reports/district-analysis/category'},
+        {name: '店铺销售额分步', path: '/reports/district-analysis/store-sales-distribution'},
+        {name: '企业数、从业人数统计', path: '/reports/district-analysis/enterprises-and-employees'},
       ]
     },
 

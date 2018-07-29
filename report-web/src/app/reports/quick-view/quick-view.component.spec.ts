@@ -2,7 +2,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {QuickViewComponent} from './quick-view.component';
 
-describe('QuickViewComponent', () => {
+describe('RegionQuickViewComponent', () => {
   let component: QuickViewComponent;
   let fixture: ComponentFixture<QuickViewComponent>;
 

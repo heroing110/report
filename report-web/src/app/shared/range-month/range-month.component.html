@@ -1,0 +1,25 @@
+<div *ngIf="startOpen || endOpen" class="back-lock" (click)="closeAllPicker()"></div>
+<div layout="row" layout-align="start center">
+  <div style="margin-right: 1em;">
+    <a href="javascript:" (click)="setPrevMonth()">上月</a>
+  </div>
+  <div style="margin-right: 1em;">
+    <a href="javascript:" (click)="setAllYear()">全年</a>
+  </div>
+  <div layout="row"
+       layout-align="start center"
+       (click)="openPicker()">
+    <nz-month-picker [nzOpen]="startOpen"
+                     [(ngModel)]="startValue"
+                     nzPlaceHolder="开始月份"
+                     (ngModelChange)="onStartChange($event)"
+                     (nzOnOpenChange)="handleStartOpenChange($event)"></nz-month-picker>
+    <div class="split">~</div>
+    <nz-month-picker [nzDisabledDate]="disabledEndDate"
+                     [nzOpen]="endOpen"
+                     [(ngModel)]="endValue"
+                     nzPlaceHolder="结束月份"
+                     (ngModelChange)="onEndChange($event)"
+                     (nzOnOpenChange)="handleEndOpenChange($event)"></nz-month-picker>
+  </div>
+</div>

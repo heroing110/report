@@ -1,9 +1,7 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MenuItem, MenuService} from '../shared/menu.service';
 import {Router} from '@angular/router';
-import {init} from 'echarts';
-
-console.log('echarts', init);
+import {WindowResizeService} from '../shared/window-resize.service';
 
 @Component({
   selector: 'app-frame',
@@ -16,13 +14,15 @@ export class FrameComponent implements OnInit, AfterViewInit {
   isCollapsed = false;
 
   // 左侧菜单
-  @ViewChild('menuContainer') menuContainer: ElementRef<HTMLDivElement>;
+  @ViewChild('menuContainer')
+  menuContainer: ElementRef<HTMLDivElement>;
 
   // 菜单列表
   menuList: MenuItem[];
 
   constructor(private menuService: MenuService,
-              private router: Router) {
+              private router: Router,
+              private windowResize: WindowResizeService) {
   }
 
   ngOnInit() {
@@ -59,6 +59,10 @@ export class FrameComponent implements OnInit, AfterViewInit {
   // 切换导航的收起展开状态
   toggleCollapsed() {
     this.isCollapsed = !this.isCollapsed;
+    setTimeout(() => {
+      // 200ms后，左侧菜单切换已经完成，可触发事件来通知图标组件调整大小
+      this.windowResize.emit();
+    }, 200);
   }
 
   // 使得左侧菜单可以支持鼠标滚动事件

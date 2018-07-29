@@ -11,8 +11,11 @@ const routes: Routes = [
   // 本地速览 quickView
   {path: 'quick-view', component: QuickViewComponent},
 
-  // 区域分析  regionalAnalysis
-  {path: 'regional-analysis', loadChildren: './regional-analysis/regional-analysis.module#RegionalAnalysisModule'},
+  // 地域分析  regionAnalysis
+  {path: 'region-analysis', loadChildren: './region-analysis/region-analysis.module#RegionAnalysisModule'},
+
+  // 区域分析  districtAnalysis
+  {path: 'district-analysis', loadChildren: './district-analysis/district-analysis.module#DistrictAnalysisModule'},
 
   // 店铺分析 shopAnalysis
   {path: 'shop-analysis', loadChildren: './shop-analysis/shop-analysis.module#ShopAnalysisModule'},

@@ -8,6 +8,8 @@ import {isFunction} from 'lodash';
 })
 export class DataTableComponent implements OnInit {
   @Input()
+  hideOnSinglePage: boolean; // 当只有一页数据的时候，是否隐藏分页器
+  @Input()
   columns: ColumnItem[] = []; // 数据列表配置
 
   @Input()
@@ -16,8 +18,8 @@ export class DataTableComponent implements OnInit {
 
   loading = false; // 是否遮罩层
   dataSource = []; // 数据列表
-  valueRange = '0'; // 数据范围 0：总体 1：天猫 2：淘宝 3：京东
 
+  @Input()
   pageSize = 10; // 每页展示数量
   pageIndex = 1; // 当前页数
   total = 0; // 总条数
@@ -80,7 +82,7 @@ export class DataTableComponent implements OnInit {
 export class ColumnItem {
   title?: string;
   column?: string;
-  formatter?: Function; // 格式化要显示的数据
+  formatter?: (row: any, value) => string; // 格式化要显示的数据
   sort?: boolean; // 排序支持
   filter?: boolean; // 过滤支持，需要提供filterList 来过滤
   filterList?: { text: string, value: string }[];

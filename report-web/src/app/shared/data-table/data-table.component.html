@@ -1,21 +1,6 @@
-<div class="table-operations" layout="row">
-  <div flex>
-    <nz-radio-group [(ngModel)]="valueRange">
-      <label nz-radio-button nzValue="0">总体</label>
-      <label nz-radio-button nzValue="1">天猫</label>
-      <label nz-radio-button nzValue="2">淘宝</label>
-      <label nz-radio-button nzValue="3">京东</label>
-    </nz-radio-group>
-  </div>
-  <div>
-    <button nz-button>导出 Excel</button>
-  </div>
-</div>
-
 <nz-table #table
           nzBordered
           nzSize="middle"
-          nzTitle="asdf"
           [nzShowSizeChanger]="true"
           [nzData]="dataSource"
           [nzLoading]="loading"
@@ -23,7 +8,7 @@
           [(nzPageSize)]="pageSize"
           [nzTotal]="total"
           [nzShowQuickJumper]="true"
-          [nzHideOnSinglePage]="true"
+          [nzHideOnSinglePage]="hideOnSinglePage"
           [nzFrontPagination]="false"
           (nzPageIndexChange)="searchData()"
           (nzPageSizeChange)="searchData(true)">
