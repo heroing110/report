@@ -28,6 +28,8 @@ public class StaTotal extends SortFilter implements Serializable {
 
     private String city;
 
+    private String type;
+
     private String district;
 
     private String indexType;
@@ -83,6 +85,14 @@ public class StaTotal extends SortFilter implements Serializable {
     private Double total;
 
     private static final long serialVersionUID = 1L;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public Integer getRow() {
         return row;

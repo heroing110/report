@@ -143,6 +143,28 @@ public class StaToalController {
     }
 
     /**
+     * 首页-电子商务市场结构
+     * @param staTotal
+     * @return
+     */
+    @RequestMapping(value = "/home_buisness", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaTotal>> selectHomeBusiness(@RequestBody StaTotal staTotal) {
+        logger.info("/total/home_buisness");
+        Result<List<StaTotal>> result = new Result<>();
+        try {
+            List<StaTotal> list = this.staTotalService.selectHomeBusiness(staTotal);
+            result.setData(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/total/home_buisness,查询异常");
+            logger.error("/total/home_buisness,查询异常");
+        }
+        return result;
+    }
+
+    /**
      * 网络零售交易走势,各地核心电商指标速览
      * @param staTotal
      * @return

@@ -74,6 +74,11 @@ public class StaTotalServiceImpl implements StaTotalService {
     }
 
     @Override
+    public List<StaTotal> selectHomeBusiness(StaTotal record) {
+        return staTotalMapper.selectHomeBusiness(record);
+    }
+
+    @Override
     public List<StaTotal> selectLine(StaTotal record) {
         return staTotalMapper.selectLine(record);
     }

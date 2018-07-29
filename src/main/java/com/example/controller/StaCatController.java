@@ -134,12 +134,23 @@ public class StaCatController {
      */
     @RequestMapping(value = "/home_top30", method = RequestMethod.POST)
     @ResponseBody
-    public Result<List<StaCat>> home_top30(@RequestBody StaCat staCat) {
+    public Result<PagingResult> home_top30(@RequestBody StaCat staCat) {
         logger.info("/cat/home_top30");
-        Result<List<StaCat>> result = new Result<>();
+        Result<PagingResult> result = new Result<>();
+        List<StaCat> list = null;
+        if (staCat.getPageNo() == null || staCat.getPageSize() == null) {
+            staCat.setPageNo(1);
+            staCat.setPageSize(10);
+        }
+
+        staCat.setPageRow((staCat.getPageNo()-1)*staCat.getPageSize());
         try {
-            List<StaCat> list = this.staCatService.selectHomeTop30(staCat);
-            result.setData(list);
+            list = this.staCatService.selectHomeTop30(staCat);
+            PagingResult<List<StaCat>> pagingResult = new PagingResult<>(list);
+            pagingResult.setPageIndex(staCat.getPageNo());
+            pagingResult.setPageSize(staCat.getPageSize());
+            pagingResult.setTotal(30);
+            result.setData(pagingResult);
         } catch (Exception e) {
             e.printStackTrace();
             result.setCode(Constants.RESULT_TYPE_FAILURE);
@@ -162,6 +173,29 @@ public class StaCatController {
             result.setCode(Constants.RESULT_TYPE_FAILURE);
             result.setMsg("/cat/whole_list,查询异常");
             logger.error("/cat/whole_list,查询异常");
+        }
+        return result;
+    }
+
+
+    /**
+     * 首页-主要电商平台交易额走势
+     * @param staCat
+     * @return
+     */
+    @RequestMapping(value = "/home_business_line", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaCat>> selectBusinessLine(@RequestBody StaCat staCat) {
+        logger.info("/cat/home_business_line");
+        Result<List<StaCat>> result = new Result<>();
+        try {
+            List<StaCat> list = this.staCatService.selectBusinessLine(staCat);
+            result.setData(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/cat/home_business_line,查询异常");
+            logger.error("/cat/home_business_line,查询异常");
         }
         return result;
     }
