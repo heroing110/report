@@ -96,8 +96,8 @@
     <!--首页-网络零售热销品类TOP30-->
     <select id="selectHomeTop30" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
         select * from (
-        SELECT CAT2_NAME cat2Name,sum(M_SLAES_COUNT) totalCount,sum(M_SALES_VOLUME), (@i:=@i+1) as row totalVolume from tb_sta_cat,(select @i:=0) as it where CAT2_NAME is not null GROUP BY CAT2_NAME ) t
-        ORDER BY totalCount desc,totalVolume DESC limit (#{pageNo}-1)*#{pageSize},{pageSize}
+        SELECT CAT2_NAME cat2Name,sum(M_SLAES_COUNT) totalCount,sum(M_SALES_VOLUME) totalVolume from tb_sta_cat where CAT2_NAME is not null <include refid="dynamicWhere"/> GROUP BY CAT2_NAME ) t
+        ORDER BY totalCount desc,totalVolume DESC limit #{pageRow},#{pageSize}
     </select>
 
     <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaCat">
@@ -117,6 +117,13 @@
             <include refid="dynamicWhere"/>
         </trim>
         GROUP BY t.CITY,t.S_CAT1_NAME
+    </select>
+
+    <!--首页-主要电商平台交易额走势-->
+    <select id="selectBusinessLine" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+        SELECT date dateStr,sum(M_SALES_VOLUME) totalVolume from tb_sta_cat where PLATFORM='天猫' <include refid="dynamicWhere"/> GROUP BY date
+        UNION
+        SELECT date dateStr,sum(M_SALES_VOLUME) totalVolume  from tb_sta_cat where PLATFORM='京东' <include refid="dynamicWhere"/> GROUP BY date
     </select>
 
     <select id="selectWholeList" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">

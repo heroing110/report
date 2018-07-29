@@ -35,7 +35,7 @@
     <!--首页指标-->
     <select id="selectHomeIndex" resultType="com.example.entity.StaTotal"
             parameterType="com.example.entity.StaTotal">
-        select index_type,sum(INDEX_VALUE) totalVolume from tb_sta_total GROUP BY index_type
+        select index_type indexType,sum(INDEX_VALUE) totalVolume from tb_sta_total GROUP BY index_type
     </select>
 
     <!--首页全国排名-->
@@ -54,6 +54,26 @@
         select * from (
         select CITY,sum(INDEX_VALUE) total, (@i:=@i+1) as row from tb_sta_total,(select @i:=0) as it where INDEX_TYPE='电商整体交易额' <include refid="dynamicWhere"/> GROUP BY CITY)t
         ORDER BY total desc
+    </select>
+
+    <!--首页-电子商务市场结构-->
+    <select id="selectHomeBusiness" resultType="com.example.entity.StaTotal"
+            parameterType="com.example.entity.StaTotal">
+            SELECT
+            sum(index_value)*100/(SELECT sum(index_value) from tb_sta_total where INDEX_TYPE in ('B2B交易额','网络零售交易额','大宗商品现货交易额','服务类交易额') <include refid="dynamicWhere"/>) total,'B2B交易额' type
+             from tb_sta_total where INDEX_TYPE in ('B2B交易额') <include refid="dynamicWhere"/>
+            UNION
+            SELECT
+            sum(index_value)*100/(SELECT sum(index_value) from tb_sta_total where INDEX_TYPE in ('B2B交易额','网络零售交易额','大宗商品现货交易额','服务类交易额') <include refid="dynamicWhere"/>) total,'网络零售交易额' type
+             from tb_sta_total where INDEX_TYPE in ('网络零售交易额') <include refid="dynamicWhere"/>
+            UNION
+            SELECT
+            sum(index_value)*100/(SELECT sum(index_value) from tb_sta_total where INDEX_TYPE in ('B2B交易额','网络零售交易额','大宗商品现货交易额','服务类交易额') <include refid="dynamicWhere"/>) total,'大宗商品现货交易额' type
+             from tb_sta_total where INDEX_TYPE in ('大宗商品现货交易额') <include refid="dynamicWhere"/>
+            UNION
+            SELECT
+            sum(index_value)*100/(SELECT sum(index_value) from tb_sta_total where INDEX_TYPE in ('B2B交易额','网络零售交易额','大宗商品现货交易额','服务类交易额') <include refid="dynamicWhere"/>) total,'服务类交易额' type
+            from tb_sta_total where INDEX_TYPE in ('服务类交易额') <include refid="dynamicWhere"/>
     </select>
 
     <select id="selectLine" resultType="com.example.entity.StaTotal" parameterType="com.example.entity.StaTotal">

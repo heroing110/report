@@ -69,6 +69,8 @@ public class StaCat extends SortFilter implements Serializable {
 
     private Integer pageSize;
 
+    private Integer pageRow;
+
     private Float salesPercent;
 
     private Float countPercent;
@@ -82,6 +84,14 @@ public class StaCat extends SortFilter implements Serializable {
     private List<StaCat> children;
 
     private static final long serialVersionUID = 1L;
+
+    public Integer getPageRow() {
+        return pageRow;
+    }
+
+    public void setPageRow(Integer pageRow) {
+        this.pageRow = pageRow;
+    }
 
     public Integer getRow() {
         return row;

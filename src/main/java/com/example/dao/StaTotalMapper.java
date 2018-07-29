@@ -41,5 +41,7 @@ public interface StaTotalMapper {
 
     List<StaTotal> selectHomeProvinceRank(StaTotal record);
 
+    List<StaTotal> selectHomeBusiness(StaTotal record);
+
     int selectAreaQysWithPageCount(StaTotal staTotal);
 }

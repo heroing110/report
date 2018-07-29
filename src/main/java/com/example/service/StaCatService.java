@@ -25,4 +25,6 @@ public interface StaCatService {
     List<StaCat> selectAreaCatLine(StaCat record);
 
     List<StaCat> selectHomeTop30(StaCat record);
+
+    List<StaCat> selectBusinessLine(StaCat record);
 }

@@ -31,4 +31,6 @@ public interface StaTotalService {
     List<StaTotal> selectHomeCountryRank(StaTotal record);
 
     List<StaTotal> selectHomeProvinceRank(StaTotal record);
+
+    List<StaTotal> selectHomeBusiness(StaTotal record);
 }

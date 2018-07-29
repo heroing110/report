@@ -35,6 +35,8 @@ public interface StaCatMapper {
 
     List<StaCat> selectAreaCatWithPage(StaCat record);
 
+    List<StaCat> selectBusinessLine(StaCat record);
+
     int selectAreaCatWithPageCount(StaCat record);
 
     int selectPageCount(StaCat record);

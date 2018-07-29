@@ -74,7 +74,7 @@ public class StaShopController {
     }
 
     /**
-     * 区域-店铺销售额分布,分页
+     * 区域店铺交易额分布,分页
      * @param staShop
      * @return
      */
@@ -107,7 +107,7 @@ public class StaShopController {
     }
 
     /**
-     * 区域-店铺销售额分布,柱形图
+     * 区域店铺交易额分布,柱形图
      * @param staShop
      * @return
      */

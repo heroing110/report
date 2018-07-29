@@ -31,6 +31,11 @@ public class StaToalController {
     @Resource
     private StaTotalService staTotalService;
 
+    /**
+     * 电商总体交易额走势，网络零售交易走势-分页
+     * @param staTotal
+     * @return
+     */
     @RequestMapping(value = "/listview", method = RequestMethod.POST)
     @ResponseBody
     public Result<PagingResult> listview(@RequestBody StaTotal staTotal) {
@@ -60,7 +65,7 @@ public class StaToalController {
     }
 
     /**
-     * 地域分析-各地速览,分页
+     * 各地核心电商指标速览,各地核心指标对比排名分页
      * @param staTotal
      * @return
      */
@@ -93,7 +98,7 @@ public class StaToalController {
     }
 
     /**
-     * 区域电商企业数、从业人数统计
+     * 区域电商企业数、从业人数统计，分页
      * @param staTotal
      * @return
      */
@@ -143,7 +148,29 @@ public class StaToalController {
     }
 
     /**
-     * 网络零售交易走势,各地核心电商指标速览
+     * 首页-电子商务市场结构
+     * @param staTotal
+     * @return
+     */
+    @RequestMapping(value = "/home_buisness", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaTotal>> selectHomeBusiness(@RequestBody StaTotal staTotal) {
+        logger.info("/total/home_buisness");
+        Result<List<StaTotal>> result = new Result<>();
+        try {
+            List<StaTotal> list = this.staTotalService.selectHomeBusiness(staTotal);
+            result.setData(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/total/home_buisness,查询异常");
+            logger.error("/total/home_buisness,查询异常");
+        }
+        return result;
+    }
+
+    /**
+     * 电商总体交易额走势,网络零售交易走势,各地核心电商指标速览-折线图
      * @param staTotal
      * @return
      */
@@ -165,7 +192,7 @@ public class StaToalController {
     }
 
     /**
-     * 区域电商企业数、从业人数统计
+     * 区域电商企业数、从业人数统计，折线图
      * @param staTotal
      * @return
      */
@@ -187,7 +214,7 @@ public class StaToalController {
     }
 
     /**
-     * 各地核心指标对比排名
+     * 各地核心指标对比排名-柱形图
      * @param staTotal
      * @return
      */
