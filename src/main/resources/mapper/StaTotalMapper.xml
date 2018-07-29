@@ -32,6 +32,100 @@
     UPDATE_TIME, UPDATE_USER, STATUS, RAMARK1, REMARK2, REMARK3
   </sql>
 
+    <!--首页指标-->
+    <select id="selectHomeIndex" resultType="com.example.entity.StaTotal"
+            parameterType="com.example.entity.StaTotal">
+        select index_type,sum(INDEX_VALUE) totalVolume from tb_sta_total GROUP BY index_type
+    </select>
+
+    <select id="selectLine" resultType="com.example.entity.StaTotal" parameterType="com.example.entity.StaTotal">
+        select * from
+        (select sum(INDEX_VALUE) totalVolume,date dateStr
+        from tb_sta_total
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="indexType1!=null">
+                AND INDEX_TYPE like CONCAT('%',#{indexType1,jdbcType=VARCHAR},'%')
+            </if>
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by date
+        ORDER BY date asc) t1
+        <if test="indexType2!=null">
+            left join
+            ( select sum(INDEX_VALUE) totalCount,date dateStr2
+            from tb_sta_total
+            <trim prefix="where" prefixOverrides="and | or">
+                AND INDEX_TYPE like CONCAT('%',#{indexType2,jdbcType=VARCHAR},'%')
+                <include refid="dynamicWhere"/>
+            </trim>
+            group by date
+            ORDER BY date asc) t2
+            on t1.dateStr = t2.dateStr2
+        </if>
+    </select>
+
+    <select id="selectAllWithPage" resultType="com.example.entity.StaTotal" parameterType="com.example.entity.StaTotal">
+        select * from
+        (select sum(INDEX_VALUE) totalVolume,sum(mom) totalMum,date dateStr,id
+        from tb_sta_total
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="indexType1!=null">
+                AND INDEX_TYPE like CONCAT('%',#{indexType1,jdbcType=VARCHAR},'%')
+            </if>
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by date,index_type
+        ORDER BY date asc) t1
+        <if test="indexType2!=null">
+            left join
+            (select sum(INDEX_VALUE) totalCount,sum(mom) totalCountMum,date dateStr2
+            from tb_sta_total
+            <trim prefix="where" prefixOverrides="and | or">
+                AND INDEX_TYPE like CONCAT('%',#{indexType2,jdbcType=VARCHAR},'%')
+                <include refid="dynamicWhere"/>
+            </trim>
+            group by date
+            ORDER BY date asc) t2
+            on t1.dateStr = t2.dateStr2
+        </if>
+        where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
+    </select>
+
+    <!--各地速览-->
+    <select id="selectAreaWithPage" resultType="com.example.entity.StaTotal"
+            parameterType="com.example.entity.StaTotal">
+        select * from (
+        select
+        <include refid="Base_Column_List"/>
+        from tb_sta_total t
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        <if test="orderBy!=null">
+            ORDER BY ${orderBy} desc
+        </if>
+        ) t2
+        where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
+    </select>
+
+    <select id="selectAreaPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaTotal">
+        select count(1) from (
+        select 1 from tb_sta_total
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        ) t
+    </select>
+
+    <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaTotal">
+        select count(1) from (
+        select 1 from tb_sta_total
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by date) t
+    </select>
+
     <select id="selectList" parameterType="com.example.entity.StaTotal" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -41,32 +135,59 @@
         </trim>
     </select>
 
-    <select id="selectAllWithPage" parameterType="com.example.entity.StaTotal" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from tb_sta_total
-        where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
-        <include refid="dynamicWhere"/>
-    </select>
-
-    <select id="selectPageCount" parameterType="com.example.entity.StaTotal" resultType="java.lang.Integer">
-        select
-        count(1)
+    <select id="selectAreaContrastLine" resultType="com.example.entity.StaTotal"
+            parameterType="com.example.entity.StaTotal">
+        select sum(INDEX_VALUE) totalVolume,CITY
         from tb_sta_total
         <trim prefix="where" prefixOverrides="and | or">
             <include refid="dynamicWhere"/>
         </trim>
+        group by CITY
+        ORDER BY totalVolume desc
+    </select>
+
+
+    <select id="selectAreaQysLine" resultType="com.example.entity.StaTotal"
+            parameterType="com.example.entity.StaTotal">
+        select t1.PROVINCE,t1.city,t1.qys,t2.cyrs from
+        (SELECT PROVINCE,city,sum(index_value) qys from tb_sta_total where index_type = '企业数' <include refid="dynamicWhere"/>
+        GROUP BY PROVINCE,city) t1
+        left JOIN
+        (
+        SELECT PROVINCE,city,sum(index_value) cyrs from tb_sta_total where index_type = '从业人数' <include refid="dynamicWhere"/>
+        GROUP BY PROVINCE,city) t2
+        on t1.city = t2.city and t1.PROVINCE=t2.PROVINCE
+    </select>
+
+    <!--区域分析-企业数，从业人数,分页-->
+    <select id="selectAreaQysWithPage" resultType="com.example.entity.StaTotal"
+            parameterType="com.example.entity.StaTotal">
+        SELECT * from (
+        select t1.date,t1.PROVINCE,t1.city,t1.qys,t2.cyrs from
+        (SELECT date,PROVINCE,city,sum(index_value) qys from tb_sta_total where index_type = '企业数'
+        GROUP BY date,PROVINCE,city) t1
+        left JOIN
+        (
+        SELECT date,PROVINCE,city,sum(index_value) cyrs from tb_sta_total where index_type = '从业人数'
+        GROUP BY date,PROVINCE,city) t2
+        on t1.city = t2.city and t1.date=t2.date and t1.PROVINCE=t2.PROVINCE
+        )c
+        limit (#{pageNo}-1)*#{pageSize},{pageSize}
+    </select>
+
+    <select id="selectAreaQysWithPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaTotal">
+        select count(1) from (
+            SELECT 1 from tb_sta_total where index_type = '企业数'
+            GROUP BY date,PROVINCE,city
+        )t
     </select>
 
     <sql id="dynamicWhere">
         <if test="id!=null">
             AND ID = #{id,jdbcType=INTEGER}
         </if>
-        <if test="dateBegin!=null">
-            AND date  <![CDATA[>=]]> to_date(#{dateBegin,jdbcType=VARCHAR},'yyyy-mm-dd hh:mi:ss')
-        </if>
-        <if test="dateEnd!=null">
-            AND date  <![CDATA[<=]]> to_date(#{dateEnd,jdbcType=VARCHAR},'yyyy-mm-dd hh:mi:ss')
+        <if test="dateBegin!=null and dateEnd!=null">
+            AND date between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
         </if>
         <if test="year!=null">
             AND YEAR = #{year,jdbcType=VARCHAR}
@@ -87,7 +208,7 @@
             AND CITY = #{city,jdbcType=VARCHAR}
         </if>
         <if test="indexType!=null">
-            AND INDEX_TYPE = #{indexType,jdbcType=VARCHAR}
+            AND INDEX_TYPE like CONCAT('%',#{indexType,jdbcType=VARCHAR},'%')
         </if>
         <if test="ramark1!=null">
             AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}

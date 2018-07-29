@@ -10,5 +10,21 @@ public interface StaTotalService {
 
     public List<StaTotal> selectAllWithPage(StaTotal record);
 
+    public List<StaTotal> selectAreaWithPage(StaTotal record);
+
     int selectPageCount(StaTotal staTotal);
+
+    List<StaTotal> selectLine(StaTotal record);
+
+    public int selectAreaPageCount(StaTotal staTotal);
+
+    List<StaTotal> selectAreaContrastLine(StaTotal record);
+
+    List<StaTotal> selectAreaQysWithPage(StaTotal record);
+
+    int selectAreaQysWithPageCount(StaTotal staTotal);
+
+    List<StaTotal> selectAreaQysLine(StaTotal record);
+
+    List<StaTotal> selectHomeIndex(StaTotal record);
 }

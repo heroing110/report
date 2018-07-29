@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.entity.StaProduct;
 import com.example.entity.StaTotal;
 import com.example.entity.StaTotal;
 import com.example.entity.User;
@@ -58,6 +59,67 @@ public class StaToalController {
         return result;
     }
 
+    @RequestMapping(value = "/area_listview", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<PagingResult> area_listview(@RequestBody StaTotal staTotal) {
+        logger.info("/total/area_listview");
+        Result<PagingResult> result = new Result<>();
+        List<StaTotal> list = null;
+        if (staTotal.getPageNo() == null || staTotal.getPageSize() == null) {
+            staTotal.setPageNo(1);
+            staTotal.setPageSize(10);
+        }
+        try {
+            list = this.staTotalService.selectAreaWithPage(staTotal);
+            PagingResult<List<StaTotal>> pagingResult = new PagingResult<>(list);
+            pagingResult.setPageIndex(staTotal.getPageNo());
+            pagingResult.setPageSize(staTotal.getPageSize());
+            int count = this.staTotalService.selectAreaPageCount(staTotal);
+            pagingResult.setTotal(count);
+            result.setData(pagingResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/total/area_listview,查询异常");
+            logger.error("/total/area_listview,查询异常");
+        }
+
+        return result;
+    }
+
+    /**
+     * 区域电商企业数、从业人数统计
+     * @param staTotal
+     * @return
+     */
+    @RequestMapping(value = "/area_qys_listview", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<PagingResult> area_qys_listview(@RequestBody StaTotal staTotal) {
+        logger.info("/total/area_qys_listview");
+        Result<PagingResult> result = new Result<>();
+        List<StaTotal> list = null;
+        if (staTotal.getPageNo() == null || staTotal.getPageSize() == null) {
+            staTotal.setPageNo(1);
+            staTotal.setPageSize(10);
+        }
+        try {
+            list = this.staTotalService.selectAreaQysWithPage(staTotal);
+            PagingResult<List<StaTotal>> pagingResult = new PagingResult<>(list);
+            pagingResult.setPageIndex(staTotal.getPageNo());
+            pagingResult.setPageSize(staTotal.getPageSize());
+            int count = this.staTotalService.selectAreaQysWithPageCount(staTotal);
+            pagingResult.setTotal(count);
+            result.setData(pagingResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/total/area_qys_listview,查询异常");
+            logger.error("/total/area_qys_listview,查询异常");
+        }
+
+        return result;
+    }
+
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
     public Result<List<StaTotal>> list(@RequestBody StaTotal staTotal) {
@@ -71,6 +133,57 @@ public class StaToalController {
             result.setCode(Constants.RESULT_TYPE_FAILURE);
             result.setMsg("/total/list,查询异常");
             logger.error("/total/list,查询异常");
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/line", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaTotal>> line(@RequestBody StaTotal staTotal) {
+        logger.info("/total/line");
+        Result<List<StaTotal>> result = new Result<>();
+        try {
+            List<StaTotal> staTotalList = this.staTotalService.selectLine(staTotal);
+            result.setData(staTotalList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/total/line,查询异常");
+            logger.error("/total/line,查询异常");
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/area_qys_line", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaTotal>> area_qys_line(@RequestBody StaTotal staTotal) {
+        logger.info("/total/area_qys_line");
+        Result<List<StaTotal>> result = new Result<>();
+        try {
+            List<StaTotal> staTotalList = this.staTotalService.selectAreaQysLine(staTotal);
+            result.setData(staTotalList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/total/area_qys_line,查询异常");
+            logger.error("/total/area_qys_line,查询异常");
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/area_contrast_line", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaTotal>> area_contrast_line(@RequestBody StaTotal staTotal) {
+        logger.info("/total/area_contrast_line");
+        Result<List<StaTotal>> result = new Result<>();
+        try {
+            List<StaTotal> staTotalList = this.staTotalService.selectAreaContrastLine(staTotal);
+            result.setData(staTotalList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/area_contrast_line/line,查询异常");
+            logger.error("/area_contrast_line/line,查询异常");
         }
         return result;
     }

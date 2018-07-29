@@ -27,4 +27,19 @@ public class StaShopServiceImpl implements StaShopService {
     public int selectPageCount(StaShop staShop) {
         return staShopMapper.selectPageCount(staShop);
     }
+
+    @Override
+    public List<StaShop> selectAreaShopWithPage(StaShop record) {
+        return staShopMapper.selectAreaShopWithPage(record);
+    }
+
+    @Override
+    public int selectAreaShopWithPageCount(StaShop staShop) {
+        return staShopMapper.selectAreaShopWithPageCount(staShop);
+    }
+
+    @Override
+    public List<StaShop> selectAreaShopLine(StaShop record) {
+        return staShopMapper.selectAreaShopLine(record);
+    }
 }

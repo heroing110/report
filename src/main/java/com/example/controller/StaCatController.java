@@ -55,6 +55,61 @@ public class StaCatController {
         return result;
     }
 
+    /**
+     * 区域分析-品类分析，分页
+     * @param staCat
+     * @return
+     */
+    @RequestMapping(value = "/area_cat_listview", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<PagingResult> area_cat_listview(@RequestBody StaCat staCat) {
+        logger.info("/cat/area_cat_listview");
+        Result<PagingResult> result = new Result<>();
+        List<StaCat> list = null;
+        if (staCat.getPageNo() == null || staCat.getPageSize() == null) {
+            staCat.setPageNo(1);
+            staCat.setPageSize(10);
+        }
+        try {
+            list = this.staCatService.selectAreaCatWithPage(staCat);
+            PagingResult<List<StaCat>> pagingResult = new PagingResult<>(list);
+            pagingResult.setPageIndex(staCat.getPageNo());
+            pagingResult.setPageSize(staCat.getPageSize());
+            int count = this.staCatService.selectAreaCatWithPageCount(staCat);
+            pagingResult.setTotal(count);
+            result.setData(pagingResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/cat/area_cat_listview,查询异常");
+            logger.error("/cat/area_cat_listview,查询异常");
+        }
+
+        return result;
+    }
+
+    /**
+     * 区域分析-品类分析，柱形图
+     * @param staCat
+     * @return
+     */
+    @RequestMapping(value = "/area_cat_line", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaCat>> area_cat_line(@RequestBody StaCat staCat) {
+        logger.info("/cat/area_cat_line");
+        Result<List<StaCat>> result = new Result<>();
+        try {
+            List<StaCat> list = this.staCatService.selectAreaCatLine(staCat);
+            result.setData(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/cat/area_cat_line,查询异常");
+            logger.error("/cat/area_cat_line,查询异常");
+        }
+        return result;
+    }
+
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
     public Result<List<StaCat>> list(@RequestBody StaCat staCat) {

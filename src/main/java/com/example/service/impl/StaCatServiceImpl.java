@@ -44,4 +44,19 @@ public class StaCatServiceImpl implements StaCatService {
         return staCatMapper.selectSalesAndCountByProvince(record);
     }
 
+    @Override
+    public List<StaCat> selectAreaCatWithPage(StaCat record) {
+        return staCatMapper.selectAreaCatWithPage(record);
+    }
+
+    @Override
+    public int selectAreaCatWithPageCount(StaCat record) {
+        return staCatMapper.selectAreaCatWithPageCount(record);
+    }
+
+    @Override
+    public List<StaCat> selectAreaCatLine(StaCat record) {
+        return staCatMapper.selectAreaCatLine(record);
+    }
+
 }

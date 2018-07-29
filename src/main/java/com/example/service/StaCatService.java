@@ -17,4 +17,10 @@ public interface StaCatService {
     public List<StaCat> selectWholeList(StaCat staCat);
 
     StaCat selectSalesAndCountByProvince(StaCat record);
+
+    List<StaCat> selectAreaCatWithPage(StaCat record);
+
+    int selectAreaCatWithPageCount(StaCat record);
+
+    List<StaCat> selectAreaCatLine(StaCat record);
 }

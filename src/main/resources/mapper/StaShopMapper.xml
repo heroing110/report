@@ -1,79 +1,190 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.example.dao.StaShopMapper" >
-  <resultMap id="BaseResultMap" type="com.example.entity.StaShop" >
-    <id column="ID" property="id" jdbcType="INTEGER" />
-    <result column="DATE" property="date" jdbcType="DATE" />
-    <result column="YEAR" property="year" jdbcType="VARCHAR" />
-    <result column="MONTH" property="month" jdbcType="VARCHAR" />
-    <result column="COUNTRY" property="country" jdbcType="VARCHAR" />
-    <result column="PROVINCE" property="province" jdbcType="VARCHAR" />
-    <result column="CITY" property="city" jdbcType="VARCHAR" />
-    <result column="DISRICT" property="disrict" jdbcType="CHAR" />
-    <result column="PLATFORM" property="platform" jdbcType="VARCHAR" />
-    <result column="SHOP_ID" property="shopId" jdbcType="VARCHAR" />
-    <result column="SHOP_NAME" property="shopName" jdbcType="VARCHAR" />
-    <result column="P_COUNT" property="pCount" jdbcType="BIGINT" />
-    <result column="SALES_COUNT" property="salesCount" jdbcType="DOUBLE" />
-    <result column="SALES_VOLUME" property="salesVolume" jdbcType="DOUBLE" />
-    <result column="sales_volume_LEVEL" property="salesVolumeLevel" jdbcType="CHAR" />
-    <result column="UNIT_TYPE" property="unitType" jdbcType="VARCHAR" />
-    <result column="INSERT_TIME" property="insertTime" jdbcType="TIMESTAMP" />
-    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
-    <result column="UPDATE_USER" property="updateUser" jdbcType="CHAR" />
-    <result column="STATUS" property="status" jdbcType="BIGINT" />
-    <result column="REMARK1" property="remark1" jdbcType="CHAR" />
-    <result column="REMARK2" property="remark2" jdbcType="CHAR" />
-    <result column="RAMARK3" property="ramark3" jdbcType="CHAR" />
-  </resultMap>
-  <sql id="Base_Column_List" >
+<mapper namespace="com.example.dao.StaShopMapper">
+    <resultMap id="BaseResultMap" type="com.example.entity.StaShop">
+        <id column="ID" property="id" jdbcType="INTEGER"/>
+        <result column="DATE" property="date" jdbcType="DATE"/>
+        <result column="YEAR" property="year" jdbcType="VARCHAR"/>
+        <result column="MONTH" property="month" jdbcType="VARCHAR"/>
+        <result column="COUNTRY" property="country" jdbcType="VARCHAR"/>
+        <result column="PROVINCE" property="province" jdbcType="VARCHAR"/>
+        <result column="CITY" property="city" jdbcType="VARCHAR"/>
+        <result column="DISRICT" property="disrict" jdbcType="CHAR"/>
+        <result column="PLATFORM" property="platform" jdbcType="VARCHAR"/>
+        <result column="SHOP_ID" property="shopId" jdbcType="VARCHAR"/>
+        <result column="SHOP_NAME" property="shopName" jdbcType="VARCHAR"/>
+        <result column="P_COUNT" property="pCount" jdbcType="BIGINT"/>
+        <result column="SALES_COUNT" property="salesCount" jdbcType="DOUBLE"/>
+        <result column="SALES_VOLUME" property="salesVolume" jdbcType="DOUBLE"/>
+        <result column="sales_volume_LEVEL" property="salesVolumeLevel" jdbcType="CHAR"/>
+        <result column="UNIT_TYPE" property="unitType" jdbcType="VARCHAR"/>
+        <result column="INSERT_TIME" property="insertTime" jdbcType="TIMESTAMP"/>
+        <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="UPDATE_USER" property="updateUser" jdbcType="CHAR"/>
+        <result column="STATUS" property="status" jdbcType="BIGINT"/>
+        <result column="REMARK1" property="remark1" jdbcType="CHAR"/>
+        <result column="REMARK2" property="remark2" jdbcType="CHAR"/>
+        <result column="RAMARK3" property="ramark3" jdbcType="CHAR"/>
+        <result column="salesPercent" property="salesPercent" jdbcType="VARCHAR"/>
+        <result column="countPercent" property="countPercent" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     ID, DATE, YEAR, MONTH, COUNTRY, PROVINCE, CITY, DISRICT, PLATFORM, SHOP_ID, SHOP_NAME, 
     P_COUNT, SALES_COUNT, SALES_VOLUME, sales_volume_LEVEL, UNIT_TYPE, INSERT_TIME, UPDATE_TIME, 
     UPDATE_USER, STATUS, REMARK1, REMARK2, RAMARK3
   </sql>
 
-  <select id="selectList" resultMap="BaseResultMap" parameterType="com.example.entity.StaShop">
-    select
-    <include refid="Base_Column_List" />
-    from tb_sta_shop
-    <trim prefix="where" prefixOverrides="and | or">
-      <include refid="dynamicWhere"/>
-    </trim>
-  </select>
+    <select id="selectList" resultMap="BaseResultMap" parameterType="com.example.entity.StaShop">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_sta_shop
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+    </select>
 
-  <select id="selectAllWithPage" resultMap="BaseResultMap" parameterType="com.example.entity.StaShop">
-    select
-    <include refid="Base_Column_List" />
-    from tb_sta_shop
-    where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
-    <include refid="dynamicWhere"/>
-  </select>
+    <select id="selectAllWithPage" resultMap="BaseResultMap" parameterType="com.example.entity.StaShop">
+        select * from (
+        select
+        <include refid="Base_Column_List"/>,
+        sales_volume*100/(select sum(sales_volume) from tb_sta_shop t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and
+        t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM ) salesPercent,
+        sales_COUNT*100/(select sum(sales_COUNT) from tb_sta_shop t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and
+        t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM) countPercent
+        from tb_sta_shop t
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        <if test="orderBy!=null">
+            ORDER BY ${orderBy} desc
+        </if>
+        ) t2
+        where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
+    </select>
 
-  <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaShop">
-    select
-    count(1)
-    from tb_sta_shop
-    <trim prefix="where" prefixOverrides="and | or">
-      <include refid="dynamicWhere"/>
-    </trim>
-  </select>
+    <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaShop">
+        select
+        count(1)
+        from tb_sta_shop
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+    </select>
 
-  <sql id="dynamicWhere">
-      <if test="year!=null">
-          AND YEAR = #{year,jdbcType=VARCHAR}
-      </if>
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from tb_sta_shop
-    where ID = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    <!--区域-店铺销售额分布,分页-->
+    <select id="selectAreaShopWithPage" resultType="com.example.entity.StaShop"
+            parameterType="com.example.entity.StaShop">
+        select * from (
+           select sum(SALES_VOLUME)*100/(select sum(SALES_VOLUME) from tb_sta_shop  t1 where t1.PROVINCE = t.PROVINCE and t1.year = t.year and t.month = t1.month) salesPercent,
+			min(SALES_VOLUME) minSalesVolume,max(SALES_VOLUME) maxSalesVolume,
+        PROVINCE,CITY,date
+        from tb_sta_shop t
+        where city is not null
+         group by PROVINCE,CITY,date
+        ORDER BY date desc
+        ) t
+        limit (#{pageNo}-1)*#{pageSize},{pageSize}
+    </select>
+
+
+    <!--区域-店铺销售额分布,柱形图-->
+    <select id="selectAreaShopLine" resultType="com.example.entity.StaShop" parameterType="com.example.entity.StaShop">
+        select count(1),city ,'0-20000' from (
+        select sum(SALES_VOLUME) totalSalesVolume,
+        CITY,SHOP_NAME
+        from tb_sta_shop t
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by CITY,SHOP_NAME
+        )t
+        where t.totalSalesVolume<![CDATA[<]]>20000
+        GROUP BY t.city
+
+        UNION
+
+        select count(1),city,'20000-50000' from (
+        select sum(SALES_VOLUME) totalSalesVolume,
+        CITY,SHOP_NAME
+        from tb_sta_shop t
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by CITY,SHOP_NAME
+        )t
+        where t.totalSalesVolume<![CDATA[>=]]>20000 and t.totalSalesVolume<![CDATA[<]]>50000
+        GROUP BY t.city
+
+        UNION
+
+        select count(1),city,'50000-100000' from (
+        select sum(SALES_VOLUME) totalSalesVolume,
+        CITY,SHOP_NAME
+        from tb_sta_shop t
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by CITY,SHOP_NAME
+        )t
+        where t.totalSalesVolume<![CDATA[>=]]>50000 and t.totalSalesVolume<![CDATA[<]]>100000
+        GROUP BY t.city
+
+        UNION
+
+        select count(1),city,'100000-1000000' from (
+        select sum(SALES_VOLUME) totalSalesVolume,
+        CITY,SHOP_NAME
+        from tb_sta_shop t
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by CITY,SHOP_NAME
+        )t
+        where t.totalSalesVolume<![CDATA[>=]]>100000 and t.totalSalesVolume<![CDATA[<]]>1000000
+        GROUP BY t.city
+
+        UNION
+
+        select count(1),city,'1000000+' from (
+        select sum(SALES_VOLUME) totalSalesVolume,
+        CITY,SHOP_NAME
+        from tb_sta_shop t
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by CITY,SHOP_NAME
+        )t
+        where t.totalSalesVolume<![CDATA[>=]]>1000000
+        GROUP BY t.city
+    </select>
+
+    <select id="selectAreaShopWithPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaShop">
+        select count(1) from (
+        select 1 from tb_sta_shop t
+        where city is not null
+         group by PROVINCE,CITY,date
+        ) t
+    </select>
+
+    <sql id="dynamicWhere">
+        <if test="platform!=null">
+            AND PLATFORM = #{platform,jdbcType=VARCHAR}
+        </if>
+        <if test="dateBegin!=null and dateEnd!=null">
+            AND date between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
+        </if>
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_sta_shop
+        where ID = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from tb_sta_shop
     where ID = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.example.entity.StaShop" >
+    <insert id="insert" parameterType="com.example.entity.StaShop">
     insert into tb_sta_shop (ID, DATE, YEAR, 
       MONTH, COUNTRY, PROVINCE, 
       CITY, DISRICT, PLATFORM, 
@@ -91,224 +202,224 @@
       #{updateUser,jdbcType=CHAR}, #{status,jdbcType=BIGINT}, #{remark1,jdbcType=CHAR}, 
       #{remark2,jdbcType=CHAR}, #{ramark3,jdbcType=CHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.example.entity.StaShop" >
-    insert into tb_sta_shop
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        ID,
-      </if>
-      <if test="date != null" >
-        DATE,
-      </if>
-      <if test="year != null" >
-        YEAR,
-      </if>
-      <if test="month != null" >
-        MONTH,
-      </if>
-      <if test="country != null" >
-        COUNTRY,
-      </if>
-      <if test="province != null" >
-        PROVINCE,
-      </if>
-      <if test="city != null" >
-        CITY,
-      </if>
-      <if test="disrict != null" >
-        DISRICT,
-      </if>
-      <if test="platform != null" >
-        PLATFORM,
-      </if>
-      <if test="shopId != null" >
-        SHOP_ID,
-      </if>
-      <if test="shopName != null" >
-        SHOP_NAME,
-      </if>
-      <if test="pCount != null" >
-        P_COUNT,
-      </if>
-      <if test="salesCount != null" >
-        SALES_COUNT,
-      </if>
-      <if test="salesVolume != null" >
-        SALES_VOLUME,
-      </if>
-      <if test="salesVolumeLevel != null" >
-        sales_volume_LEVEL,
-      </if>
-      <if test="unitType != null" >
-        UNIT_TYPE,
-      </if>
-      <if test="insertTime != null" >
-        INSERT_TIME,
-      </if>
-      <if test="updateTime != null" >
-        UPDATE_TIME,
-      </if>
-      <if test="updateUser != null" >
-        UPDATE_USER,
-      </if>
-      <if test="status != null" >
-        STATUS,
-      </if>
-      <if test="remark1 != null" >
-        REMARK1,
-      </if>
-      <if test="remark2 != null" >
-        REMARK2,
-      </if>
-      <if test="ramark3 != null" >
-        RAMARK3,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="date != null" >
-        #{date,jdbcType=DATE},
-      </if>
-      <if test="year != null" >
-        #{year,jdbcType=VARCHAR},
-      </if>
-      <if test="month != null" >
-        #{month,jdbcType=VARCHAR},
-      </if>
-      <if test="country != null" >
-        #{country,jdbcType=VARCHAR},
-      </if>
-      <if test="province != null" >
-        #{province,jdbcType=VARCHAR},
-      </if>
-      <if test="city != null" >
-        #{city,jdbcType=VARCHAR},
-      </if>
-      <if test="disrict != null" >
-        #{disrict,jdbcType=CHAR},
-      </if>
-      <if test="platform != null" >
-        #{platform,jdbcType=VARCHAR},
-      </if>
-      <if test="shopId != null" >
-        #{shopId,jdbcType=VARCHAR},
-      </if>
-      <if test="shopName != null" >
-        #{shopName,jdbcType=VARCHAR},
-      </if>
-      <if test="pCount != null" >
-        #{pCount,jdbcType=BIGINT},
-      </if>
-      <if test="salesCount != null" >
-        #{salesCount,jdbcType=DOUBLE},
-      </if>
-      <if test="salesVolume != null" >
-        #{salesVolume,jdbcType=DOUBLE},
-      </if>
-      <if test="salesVolumeLevel != null" >
-        #{salesVolumeLevel,jdbcType=CHAR},
-      </if>
-      <if test="unitType != null" >
-        #{unitType,jdbcType=VARCHAR},
-      </if>
-      <if test="insertTime != null" >
-        #{insertTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateUser != null" >
-        #{updateUser,jdbcType=CHAR},
-      </if>
-      <if test="status != null" >
-        #{status,jdbcType=BIGINT},
-      </if>
-      <if test="remark1 != null" >
-        #{remark1,jdbcType=CHAR},
-      </if>
-      <if test="remark2 != null" >
-        #{remark2,jdbcType=CHAR},
-      </if>
-      <if test="ramark3 != null" >
-        #{ramark3,jdbcType=CHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.StaShop" >
-    update tb_sta_shop
-    <set >
-      <if test="date != null" >
-        DATE = #{date,jdbcType=DATE},
-      </if>
-      <if test="year != null" >
-        YEAR = #{year,jdbcType=VARCHAR},
-      </if>
-      <if test="month != null" >
-        MONTH = #{month,jdbcType=VARCHAR},
-      </if>
-      <if test="country != null" >
-        COUNTRY = #{country,jdbcType=VARCHAR},
-      </if>
-      <if test="province != null" >
-        PROVINCE = #{province,jdbcType=VARCHAR},
-      </if>
-      <if test="city != null" >
-        CITY = #{city,jdbcType=VARCHAR},
-      </if>
-      <if test="disrict != null" >
-        DISRICT = #{disrict,jdbcType=CHAR},
-      </if>
-      <if test="platform != null" >
-        PLATFORM = #{platform,jdbcType=VARCHAR},
-      </if>
-      <if test="shopId != null" >
-        SHOP_ID = #{shopId,jdbcType=VARCHAR},
-      </if>
-      <if test="shopName != null" >
-        SHOP_NAME = #{shopName,jdbcType=VARCHAR},
-      </if>
-      <if test="pCount != null" >
-        P_COUNT = #{pCount,jdbcType=BIGINT},
-      </if>
-      <if test="salesCount != null" >
-        SALES_COUNT = #{salesCount,jdbcType=DOUBLE},
-      </if>
-      <if test="salesVolume != null" >
-        SALES_VOLUME = #{salesVolume,jdbcType=DOUBLE},
-      </if>
-      <if test="salesVolumeLevel != null" >
-        sales_volume_LEVEL = #{salesVolumeLevel,jdbcType=CHAR},
-      </if>
-      <if test="unitType != null" >
-        UNIT_TYPE = #{unitType,jdbcType=VARCHAR},
-      </if>
-      <if test="insertTime != null" >
-        INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateUser != null" >
-        UPDATE_USER = #{updateUser,jdbcType=CHAR},
-      </if>
-      <if test="status != null" >
-        STATUS = #{status,jdbcType=BIGINT},
-      </if>
-      <if test="remark1 != null" >
-        REMARK1 = #{remark1,jdbcType=CHAR},
-      </if>
-      <if test="remark2 != null" >
-        REMARK2 = #{remark2,jdbcType=CHAR},
-      </if>
-      <if test="ramark3 != null" >
-        RAMARK3 = #{ramark3,jdbcType=CHAR},
-      </if>
-    </set>
-    where ID = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.example.entity.StaShop" >
+    <insert id="insertSelective" parameterType="com.example.entity.StaShop">
+        insert into tb_sta_shop
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="date != null">
+                DATE,
+            </if>
+            <if test="year != null">
+                YEAR,
+            </if>
+            <if test="month != null">
+                MONTH,
+            </if>
+            <if test="country != null">
+                COUNTRY,
+            </if>
+            <if test="province != null">
+                PROVINCE,
+            </if>
+            <if test="city != null">
+                CITY,
+            </if>
+            <if test="disrict != null">
+                DISRICT,
+            </if>
+            <if test="platform != null">
+                PLATFORM,
+            </if>
+            <if test="shopId != null">
+                SHOP_ID,
+            </if>
+            <if test="shopName != null">
+                SHOP_NAME,
+            </if>
+            <if test="pCount != null">
+                P_COUNT,
+            </if>
+            <if test="salesCount != null">
+                SALES_COUNT,
+            </if>
+            <if test="salesVolume != null">
+                SALES_VOLUME,
+            </if>
+            <if test="salesVolumeLevel != null">
+                sales_volume_LEVEL,
+            </if>
+            <if test="unitType != null">
+                UNIT_TYPE,
+            </if>
+            <if test="insertTime != null">
+                INSERT_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+            <if test="updateUser != null">
+                UPDATE_USER,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+            <if test="remark1 != null">
+                REMARK1,
+            </if>
+            <if test="remark2 != null">
+                REMARK2,
+            </if>
+            <if test="ramark3 != null">
+                RAMARK3,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="date != null">
+                #{date,jdbcType=DATE},
+            </if>
+            <if test="year != null">
+                #{year,jdbcType=VARCHAR},
+            </if>
+            <if test="month != null">
+                #{month,jdbcType=VARCHAR},
+            </if>
+            <if test="country != null">
+                #{country,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="disrict != null">
+                #{disrict,jdbcType=CHAR},
+            </if>
+            <if test="platform != null">
+                #{platform,jdbcType=VARCHAR},
+            </if>
+            <if test="shopId != null">
+                #{shopId,jdbcType=VARCHAR},
+            </if>
+            <if test="shopName != null">
+                #{shopName,jdbcType=VARCHAR},
+            </if>
+            <if test="pCount != null">
+                #{pCount,jdbcType=BIGINT},
+            </if>
+            <if test="salesCount != null">
+                #{salesCount,jdbcType=DOUBLE},
+            </if>
+            <if test="salesVolume != null">
+                #{salesVolume,jdbcType=DOUBLE},
+            </if>
+            <if test="salesVolumeLevel != null">
+                #{salesVolumeLevel,jdbcType=CHAR},
+            </if>
+            <if test="unitType != null">
+                #{unitType,jdbcType=VARCHAR},
+            </if>
+            <if test="insertTime != null">
+                #{insertTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=CHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=BIGINT},
+            </if>
+            <if test="remark1 != null">
+                #{remark1,jdbcType=CHAR},
+            </if>
+            <if test="remark2 != null">
+                #{remark2,jdbcType=CHAR},
+            </if>
+            <if test="ramark3 != null">
+                #{ramark3,jdbcType=CHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.entity.StaShop">
+        update tb_sta_shop
+        <set>
+            <if test="date != null">
+                DATE = #{date,jdbcType=DATE},
+            </if>
+            <if test="year != null">
+                YEAR = #{year,jdbcType=VARCHAR},
+            </if>
+            <if test="month != null">
+                MONTH = #{month,jdbcType=VARCHAR},
+            </if>
+            <if test="country != null">
+                COUNTRY = #{country,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                PROVINCE = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                CITY = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="disrict != null">
+                DISRICT = #{disrict,jdbcType=CHAR},
+            </if>
+            <if test="platform != null">
+                PLATFORM = #{platform,jdbcType=VARCHAR},
+            </if>
+            <if test="shopId != null">
+                SHOP_ID = #{shopId,jdbcType=VARCHAR},
+            </if>
+            <if test="shopName != null">
+                SHOP_NAME = #{shopName,jdbcType=VARCHAR},
+            </if>
+            <if test="pCount != null">
+                P_COUNT = #{pCount,jdbcType=BIGINT},
+            </if>
+            <if test="salesCount != null">
+                SALES_COUNT = #{salesCount,jdbcType=DOUBLE},
+            </if>
+            <if test="salesVolume != null">
+                SALES_VOLUME = #{salesVolume,jdbcType=DOUBLE},
+            </if>
+            <if test="salesVolumeLevel != null">
+                sales_volume_LEVEL = #{salesVolumeLevel,jdbcType=CHAR},
+            </if>
+            <if test="unitType != null">
+                UNIT_TYPE = #{unitType,jdbcType=VARCHAR},
+            </if>
+            <if test="insertTime != null">
+                INSERT_TIME = #{insertTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                UPDATE_USER = #{updateUser,jdbcType=CHAR},
+            </if>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=BIGINT},
+            </if>
+            <if test="remark1 != null">
+                REMARK1 = #{remark1,jdbcType=CHAR},
+            </if>
+            <if test="remark2 != null">
+                REMARK2 = #{remark2,jdbcType=CHAR},
+            </if>
+            <if test="ramark3 != null">
+                RAMARK3 = #{ramark3,jdbcType=CHAR},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.entity.StaShop">
     update tb_sta_shop
     set DATE = #{date,jdbcType=DATE},
       YEAR = #{year,jdbcType=VARCHAR},

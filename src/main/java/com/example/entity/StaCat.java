@@ -57,6 +57,8 @@ public class StaCat extends SortFilter implements Serializable {
 
     private String date;
 
+    private String dateStr;
+
     private String dateBegin;
 
     private String dateEnd;
@@ -71,9 +73,37 @@ public class StaCat extends SortFilter implements Serializable {
 
     private String name;
 
+    private Float totalCount;
+
+    private Float totalVolume;
+
     private List<StaCat> children;
 
     private static final long serialVersionUID = 1L;
+
+    public String getDateStr() {
+        return dateStr;
+    }
+
+    public void setDateStr(String dateStr) {
+        this.dateStr = dateStr;
+    }
+
+    public Float getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(Float totalCount) {
+        this.totalCount = totalCount;
+    }
+
+    public Float getTotalVolume() {
+        return totalVolume;
+    }
+
+    public void setTotalVolume(Float totalVolume) {
+        this.totalVolume = totalVolume;
+    }
 
     public String getName() {
         return name;

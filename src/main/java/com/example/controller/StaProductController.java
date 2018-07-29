@@ -71,4 +71,38 @@ public class StaProductController {
         }
         return result;
     }
+
+    @RequestMapping(value = "/pie", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaProduct>> pie(@RequestBody StaProduct staProduct) {
+        logger.info("/product/pie");
+        Result<List<StaProduct>> result = new Result<>();
+        try {
+            List<StaProduct> productList = this.staProductService.selectPie(staProduct);
+            result.setData(productList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/product/pie,查询异常");
+            logger.error("/product/pie,查询异常");
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/line", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaProduct>> line(@RequestBody StaProduct staProduct) {
+        logger.info("/product/line");
+        Result<List<StaProduct>> result = new Result<>();
+        try {
+            List<StaProduct> productList = this.staProductService.selectLine(staProduct);
+            result.setData(productList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/product/line,查询异常");
+            logger.error("/product/line,查询异常");
+        }
+        return result;
+    }
 }

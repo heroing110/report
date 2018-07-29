@@ -24,7 +24,42 @@ public class StaTotalServiceImpl implements StaTotalService {
     }
 
     @Override
+    public List<StaTotal> selectAreaWithPage(StaTotal record) {
+        return staTotalMapper.selectAreaWithPage(record);
+    }
+
+    @Override
     public int selectPageCount(StaTotal staTotal) {
         return staTotalMapper.selectPageCount(staTotal);
+    }
+
+    @Override
+    public int selectAreaPageCount(StaTotal staTotal) {
+        return staTotalMapper.selectAreaPageCount(staTotal);
+    }
+
+    @Override
+    public List<StaTotal> selectAreaContrastLine(StaTotal record) {
+        return staTotalMapper.selectAreaContrastLine(record);
+    }
+
+    @Override
+    public List<StaTotal> selectAreaQysWithPage(StaTotal record) {
+        return staTotalMapper.selectAreaQysWithPage(record);
+    }
+
+    @Override
+    public int selectAreaQysWithPageCount(StaTotal staTotal) {
+        return staTotalMapper.selectAreaQysWithPageCount(staTotal);
+    }
+
+    @Override
+    public List<StaTotal> selectAreaQysLine(StaTotal record) {
+        return staTotalMapper.selectAreaQysLine(record);
+    }
+
+    @Override
+    public List<StaTotal> selectLine(StaTotal record) {
+        return staTotalMapper.selectLine(record);
     }
 }

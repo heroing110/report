@@ -24,7 +24,7 @@ public class StaProduct extends SortFilter  implements Serializable {
 
     private String productName;
 
-    private String salesCount;
+    private Double salesCount;
 
     private Double salesVolume;
 
@@ -58,7 +58,87 @@ public class StaProduct extends SortFilter  implements Serializable {
 
     private Integer pageSize;
 
+    private String salesPercent;
+
+    private String countPercent;
+
+    private String dateBegin;
+
+    private String dateEnd;
+
+    private Double totalVolume;
+
+    private String type;
+
+    private Double totalSalesCount;
+
+    private Double totalSalesVolume;
+
     private static final long serialVersionUID = 1L;
+
+    public Double getTotalSalesCount() {
+        return totalSalesCount;
+    }
+
+    public void setTotalSalesCount(Double totalSalesCount) {
+        this.totalSalesCount = totalSalesCount;
+    }
+
+    public Double getTotalSalesVolume() {
+        return totalSalesVolume;
+    }
+
+    public void setTotalSalesVolume(Double totalSalesVolume) {
+        this.totalSalesVolume = totalSalesVolume;
+    }
+
+    public Double getTotalVolume() {
+        return totalVolume;
+    }
+
+    public void setTotalVolume(Double totalVolume) {
+        this.totalVolume = totalVolume;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getSalesPercent() {
+        return salesPercent;
+    }
+
+    public void setSalesPercent(String salesPercent) {
+        this.salesPercent = salesPercent;
+    }
+
+    public String getCountPercent() {
+        return countPercent;
+    }
+
+    public void setCountPercent(String countPercent) {
+        this.countPercent = countPercent;
+    }
+
+    public String getDateBegin() {
+        return dateBegin;
+    }
+
+    public void setDateBegin(String dateBegin) {
+        this.dateBegin = dateBegin;
+    }
+
+    public String getDateEnd() {
+        return dateEnd;
+    }
+
+    public void setDateEnd(String dateEnd) {
+        this.dateEnd = dateEnd;
+    }
 
     public Integer getPageNo() {
         return pageNo;
@@ -156,11 +236,11 @@ public class StaProduct extends SortFilter  implements Serializable {
         this.productName = productName;
     }
 
-    public String getSalesCount() {
+    public Double getSalesCount() {
         return salesCount;
     }
 
-    public void setSalesCount(String salesCount) {
+    public void setSalesCount(Double salesCount) {
         this.salesCount = salesCount;
     }
 

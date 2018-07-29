@@ -11,4 +11,8 @@ public interface StaProductService {
     List<StaProduct> selectList(StaProduct staCat);
 
     int selectPageCount(StaProduct record);
+
+    List<StaProduct> selectPie(StaProduct record);
+
+    List<StaProduct> selectLine(StaProduct record);
 }

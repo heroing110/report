@@ -12,4 +12,10 @@ public interface StaShopService {
     List<StaShop> selectList(StaShop staShop);
 
     int selectPageCount(StaShop staShop);
+
+    List<StaShop> selectAreaShopWithPage(StaShop record);
+
+    int selectAreaShopWithPageCount(StaShop staShop);
+
+    List<StaShop> selectAreaShopLine(StaShop record);
 }

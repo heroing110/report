@@ -32,6 +32,8 @@ public class StaShop extends SortFilter  implements Serializable {
 
     private Double salesVolume;
 
+    private Double totalSalesVolume;
+
     private String salesVolumeLevel;
 
     private String unitType;
@@ -54,7 +56,55 @@ public class StaShop extends SortFilter  implements Serializable {
 
     private Integer pageSize;
 
+    private String salesPercent;
+
+    private String countPercent;
+
+    private String dateBegin;
+
+    private String dateEnd;
+
     private static final long serialVersionUID = 1L;
+
+    public Double getTotalSalesVolume() {
+        return totalSalesVolume;
+    }
+
+    public void setTotalSalesVolume(Double totalSalesVolume) {
+        this.totalSalesVolume = totalSalesVolume;
+    }
+
+    public String getDateBegin() {
+        return dateBegin;
+    }
+
+    public void setDateBegin(String dateBegin) {
+        this.dateBegin = dateBegin;
+    }
+
+    public String getDateEnd() {
+        return dateEnd;
+    }
+
+    public void setDateEnd(String dateEnd) {
+        this.dateEnd = dateEnd;
+    }
+
+    public String getSalesPercent() {
+        return salesPercent;
+    }
+
+    public void setSalesPercent(String salesPercent) {
+        this.salesPercent = salesPercent;
+    }
+
+    public String getCountPercent() {
+        return countPercent;
+    }
+
+    public void setCountPercent(String countPercent) {
+        this.countPercent = countPercent;
+    }
 
     public Integer getPageNo() {
         return pageNo;

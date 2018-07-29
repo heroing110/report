@@ -27,4 +27,14 @@ public class StaProductServiceImpl implements StaProductService {
     public int selectPageCount(StaProduct record) {
         return staProductMapper.selectPageCount(record);
     }
+
+    @Override
+    public List<StaProduct> selectPie(StaProduct record) {
+        return staProductMapper.selectPie(record);
+    }
+
+    @Override
+    public List<StaProduct> selectLine(StaProduct record) {
+        return staProductMapper.selectLine(record);
+    }
 }

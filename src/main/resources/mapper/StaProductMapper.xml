@@ -26,6 +26,8 @@
         <result column="RAMARK1" property="ramark1" jdbcType="CHAR"/>
         <result column="RAMARK2" property="ramark2" jdbcType="CHAR"/>
         <result column="RAMARK3" property="ramark3" jdbcType="CHAR"/>
+        <result column="salesPercent" property="salesPercent" jdbcType="VARCHAR"/>
+        <result column="countPercent" property="countPercent" jdbcType="VARCHAR"/>
     </resultMap>
     <resultMap id="ResultMapWithBLOBs" type="com.example.entity.StaProduct" extends="BaseResultMap">
         <result column="DATA" property="data" jdbcType="LONGVARCHAR"/>
@@ -39,6 +41,32 @@
     DATA
   </sql>
 
+    <select id="selectPie" resultType="com.example.entity.StaProduct" parameterType="com.example.entity.StaProduct">
+        select sum(SALES_VOLUME) totalVolume,${type} type
+        from tb_sta_product
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by ${type}
+    </select>
+
+    <select id="selectLine" resultType="com.example.entity.StaProduct" parameterType="com.example.entity.StaProduct">
+        select sum(SALES_VOLUME) totalVolume,data
+        from tb_sta_product
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by data
+        ORDER BY data asc
+    </select>
+
+    <!--首页-网络零售热销品类TOP30-->
+    <select id="selectHomeTop30" resultType="com.example.entity.StaProduct" parameterType="com.example.entity.StaProduct">
+        select * from (
+        SELECT PRODUCT_NAME productName,sum(SALES_COUNT) totalSalesCount,sum(SALES_VOLUME) totalSalesVolume from tb_sta_product GROUP BY PRODUCT_NAME ) t
+        ORDER BY totalSalesCount desc,totalSalesVolume DESC limit 0,30
+    </select>
+
     <select id="selectList" resultMap="ResultMapWithBLOBs" parameterType="com.example.entity.StaProduct">
         select
         <include refid="Base_Column_List"/>
@@ -51,13 +79,20 @@
     </select>
 
     <select id="selectAllWithPage" resultMap="ResultMapWithBLOBs" parameterType="com.example.entity.StaProduct">
+        select * from (
         select
-        <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
-        from tb_sta_product
+        <include refid="Base_Column_List"/>,
+        sales_volume*100/(select sum(sales_volume) from tb_sta_product  t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM ) salesPercent,
+        sales_COUNT*100/(select sum(sales_COUNT) from tb_sta_product  t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM) countPercent
+        from tb_sta_product t
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        <if test="orderBy!=null">
+            ORDER BY ${orderBy} desc
+        </if>
+        ) t2
         where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
-        <include refid="dynamicWhere"/>
     </select>
 
     <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaProduct">
@@ -70,8 +105,14 @@
     </select>
 
     <sql id="dynamicWhere">
-        <if test="year!=null">
-            AND YEAR = #{year,jdbcType=VARCHAR}
+        <if test="platform!=null">
+            AND PLATFORM = #{platform,jdbcType=VARCHAR}
+        </if>
+        <if test="dateBegin!=null and dateEnd!=null">
+            AND DATA between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
+        </if>
+        <if test="productName!=null">
+            AND PRODUCT_NAME = #{productName,jdbcType=VARCHAR}
         </if>
     </sql>
     <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">

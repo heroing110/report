@@ -46,7 +46,6 @@
         select
         <include refid="Base_Column_List"/>
         ,
-        <include refid="Blob_Column_List"/>,
         m_sales_volume*100/(select sum(m_sales_volume) from tb_sta_cat  t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM and t1.S_CAT1_NAME = t.S_CAT1_NAME) salesPercent,
         M_SLAES_COUNT*100/(select sum(M_SLAES_COUNT) from tb_sta_cat  t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM and t1.S_CAT1_NAME = t.S_CAT1_NAME) countPercent
         from tb_sta_cat t
@@ -58,6 +57,40 @@
         </if>
         ) t2
         where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
+    </select>
+
+    <!--区域-品类分析,分页-->
+    <select id="selectAreaCatWithPage" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+        select * from (
+        select sum(M_SALES_VOLUME)*100/(select sum(m_sales_volume) from tb_sta_cat  t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and t1.PROVINCE = t.PROVINCE and t1.CITY = t.CITY) salesPercent,
+        sum(M_SLAES_COUNT)*100/(select sum(M_SLAES_COUNT) from tb_sta_cat  t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and t1.PROVINCE = t.PROVINCE and t1.CITY = t.CITY) countPercent,
+        date dateStr,PROVINCE,CITY,S_CAT1_NAME sCat1Name
+        from tb_sta_cat t
+        where S_CAT1_NAME is not null
+         group by date,PROVINCE,CITY,S_CAT1_NAME
+        ORDER BY salesPercent,countPercent desc
+        ) t
+        limit (#{pageNo}-1)*#{pageSize},{pageSize}
+    </select>
+
+    <select id="selectAreaCatWithPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaCat">
+        select count(1) from (
+        select 1 from tb_sta_cat t
+        where S_CAT1_NAME is not null
+         group by date,PROVINCE,CITY,S_CAT1_NAME
+        ) t
+    </select>
+
+    <!--区域-品类分析,柱形图-->
+    <select id="selectAreaCatLine" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+        select sum(M_SALES_VOLUME)*100/(select sum(m_sales_volume) from tb_sta_cat <trim prefix="where" prefixOverrides="and | or"><include refid="dynamicWhere"/></trim>) salesPercent,
+        sum(M_SLAES_COUNT)*100/(select sum(M_SLAES_COUNT) from tb_sta_cat <trim prefix="where" prefixOverrides="and | or"><include refid="dynamicWhere"/></trim>) countPercent,
+        PROVINCE,CITY,S_CAT1_NAME sCat1Name
+        from tb_sta_cat t
+        where S_CAT1_NAME is not null
+        <include refid="dynamicWhere"/>
+         group by PROVINCE,CITY,S_CAT1_NAME
+        ORDER BY salesPercent,countPercent desc
     </select>
 
     <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaCat">
@@ -81,8 +114,8 @@
 
     <select id="selectWholeList" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
         select t.S_CAT1_NAME sCat1Name,
-        sum(M_SLAES_COUNT)*100/(select sum(t1.M_SLAES_COUNT) from tb_sta_cat t1 group by PROVINCE = #{province,jdbcType=VARCHAR}) countPercent,
-        sum(M_SALES_VOLUME)*100/(select sum(t2.M_SALES_VOLUME) from tb_sta_cat t2 GROUP BY PROVINCE = #{province,jdbcType=VARCHAR}) salesPercent
+        sum(M_SLAES_COUNT) totalCount,
+        sum(M_SALES_VOLUME) totalVolume
         from tb_sta_cat t
         <trim prefix="where" prefixOverrides="and | or">
             <include refid="dynamicWhere"/>
@@ -109,6 +142,7 @@
     </select>
 
     <sql id="dynamicWhere">
+        and (S_CAT1_NAME is not null and CAT1_NAME is not null and  CAT2_NAME is not null  and CAT3_NAME is not null)
         <if test="platform!=null">
             AND PLATFORM = #{platform,jdbcType=VARCHAR}
         </if>
@@ -126,6 +160,9 @@
         </if>
         <if test="province!=null">
             AND PROVINCE = #{province,jdbcType=VARCHAR}
+        </if>
+        <if test="city!=null">
+            AND CITY = #{city,jdbcType=VARCHAR}
         </if>
     </sql>
 

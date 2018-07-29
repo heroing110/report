@@ -22,4 +22,10 @@ public interface StaShopMapper {
     List<StaShop> selectAllWithPage(StaShop record);
 
     int selectPageCount(StaShop staShop);
+
+    List<StaShop> selectAreaShopWithPage(StaShop record);
+
+    List<StaShop> selectAreaShopLine(StaShop record);
+
+    int selectAreaShopWithPageCount(StaShop staShop);
 }

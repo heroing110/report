@@ -8,6 +8,8 @@ public class StaTotal extends SortFilter implements Serializable {
 
     private Date date;
 
+    private String dateStr;
+
     private String dateBegin;
 
     private String dateEnd;
@@ -27,6 +29,10 @@ public class StaTotal extends SortFilter implements Serializable {
     private String district;
 
     private String indexType;
+
+    private String indexType1;
+
+    private String indexType2;
 
     private Float indexValue;
 
@@ -60,7 +66,91 @@ public class StaTotal extends SortFilter implements Serializable {
 
     private Integer pageSize;
 
+    private Double totalVolume;
+
+    private Double totalCount;
+
+    private Double totalMum;
+
+    private Double totalCountMum;
+
+    private Double qys;
+
+    private Double cysr;
+
     private static final long serialVersionUID = 1L;
+
+    public Double getQys() {
+        return qys;
+    }
+
+    public void setQys(Double qys) {
+        this.qys = qys;
+    }
+
+    public Double getCysr() {
+        return cysr;
+    }
+
+    public void setCysr(Double cysr) {
+        this.cysr = cysr;
+    }
+
+    public Double getTotalCountMum() {
+        return totalCountMum;
+    }
+
+    public void setTotalCountMum(Double totalCountMum) {
+        this.totalCountMum = totalCountMum;
+    }
+
+    public String getIndexType1() {
+        return indexType1;
+    }
+
+    public Double getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(Double totalCount) {
+        this.totalCount = totalCount;
+    }
+
+    public void setIndexType1(String indexType1) {
+        this.indexType1 = indexType1;
+    }
+
+    public String getIndexType2() {
+        return indexType2;
+    }
+
+    public void setIndexType2(String indexType2) {
+        this.indexType2 = indexType2;
+    }
+
+    public String getDateStr() {
+        return dateStr;
+    }
+
+    public void setDateStr(String dateStr) {
+        this.dateStr = dateStr;
+    }
+
+    public Double getTotalMum() {
+        return totalMum;
+    }
+
+    public void setTotalMum(Double totalMum) {
+        this.totalMum = totalMum;
+    }
+
+    public Double getTotalVolume() {
+        return totalVolume;
+    }
+
+    public void setTotalVolume(Double totalVolume) {
+        this.totalVolume = totalVolume;
+    }
 
     public Integer getPageNo() {
         return pageNo;

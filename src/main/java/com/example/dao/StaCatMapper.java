@@ -29,6 +29,12 @@ public interface StaCatMapper {
 
     List<StaCat> selectCatNameListGroupByCat(StaCat record);
 
+    List<StaCat> selectAreaCatLine(StaCat record);
+
+    List<StaCat> selectAreaCatWithPage(StaCat record);
+
+    int selectAreaCatWithPageCount(StaCat record);
+
     int selectPageCount(StaCat record);
 
     StaCat selectSalesAndCountByProvince(StaCat record);
