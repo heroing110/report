@@ -59,6 +59,11 @@ public class StaToalController {
         return result;
     }
 
+    /**
+     * 地域分析-各地速览,分页
+     * @param staTotal
+     * @return
+     */
     @RequestMapping(value = "/area_listview", method = RequestMethod.POST)
     @ResponseBody
     public Result<PagingResult> area_listview(@RequestBody StaTotal staTotal) {
@@ -137,6 +142,11 @@ public class StaToalController {
         return result;
     }
 
+    /**
+     * 网络零售交易走势,各地核心电商指标速览
+     * @param staTotal
+     * @return
+     */
     @RequestMapping(value = "/line", method = RequestMethod.POST)
     @ResponseBody
     public Result<List<StaTotal>> line(@RequestBody StaTotal staTotal) {
@@ -154,6 +164,11 @@ public class StaToalController {
         return result;
     }
 
+    /**
+     * 区域电商企业数、从业人数统计
+     * @param staTotal
+     * @return
+     */
     @RequestMapping(value = "/area_qys_line", method = RequestMethod.POST)
     @ResponseBody
     public Result<List<StaTotal>> area_qys_line(@RequestBody StaTotal staTotal) {
@@ -171,6 +186,11 @@ public class StaToalController {
         return result;
     }
 
+    /**
+     * 各地核心指标对比排名
+     * @param staTotal
+     * @return
+     */
     @RequestMapping(value = "/area_contrast_line", method = RequestMethod.POST)
     @ResponseBody
     public Result<List<StaTotal>> area_contrast_line(@RequestBody StaTotal staTotal) {
