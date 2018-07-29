@@ -23,4 +23,6 @@ public interface StaCatService {
     int selectAreaCatWithPageCount(StaCat record);
 
     List<StaCat> selectAreaCatLine(StaCat record);
+
+    List<StaCat> selectHomeTop30(StaCat record);
 }

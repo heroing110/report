@@ -127,6 +127,28 @@ public class StaCatController {
         return result;
     }
 
+    /**
+     * 首页-网络零售热销品类TOP30
+     * @param staCat
+     * @return
+     */
+    @RequestMapping(value = "/home_top30", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaCat>> home_top30(@RequestBody StaCat staCat) {
+        logger.info("/cat/home_top30");
+        Result<List<StaCat>> result = new Result<>();
+        try {
+            List<StaCat> list = this.staCatService.selectHomeTop30(staCat);
+            result.setData(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/cat/home_top30,查询异常");
+            logger.error("/cat/home_top30,查询异常");
+        }
+        return result;
+    }
+
     @RequestMapping(value = "/whole_list", method = RequestMethod.POST)
     @ResponseBody
     public Result<List<StaCat>> whole_list(@RequestBody StaCat staCat) {

@@ -59,6 +59,21 @@ public class StaTotalServiceImpl implements StaTotalService {
     }
 
     @Override
+    public List<StaTotal> selectHomeIndex(StaTotal record) {
+        return staTotalMapper.selectHomeIndex(record);
+    }
+
+    @Override
+    public List<StaTotal> selectHomeCountryRank(StaTotal record) {
+        return staTotalMapper.selectHomeCountryRank(record);
+    }
+
+    @Override
+    public List<StaTotal> selectHomeProvinceRank(StaTotal record) {
+        return staTotalMapper.selectHomeProvinceRank(record);
+    }
+
+    @Override
     public List<StaTotal> selectLine(StaTotal record) {
         return staTotalMapper.selectLine(record);
     }

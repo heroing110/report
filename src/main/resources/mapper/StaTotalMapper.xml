@@ -38,6 +38,24 @@
         select index_type,sum(INDEX_VALUE) totalVolume from tb_sta_total GROUP BY index_type
     </select>
 
+    <!--首页全国排名-->
+    <select id="selectHomeCountryRank" resultType="com.example.entity.StaTotal"
+            parameterType="com.example.entity.StaTotal">
+        select * from (
+          select PROVINCE,sum(INDEX_VALUE) total, (@i:=@i+1) as row from tb_sta_total,(select @i:=0) as it where INDEX_TYPE='电商整体交易额'
+            <include refid="dynamicWhere"/>
+            GROUP BY PROVINCE)t
+        ORDER BY total desc
+    </select>
+
+    <!--首页全省排名-->
+    <select id="selectHomeProvinceRank" resultType="com.example.entity.StaTotal"
+            parameterType="com.example.entity.StaTotal">
+        select * from (
+        select CITY,sum(INDEX_VALUE) total, (@i:=@i+1) as row from tb_sta_total,(select @i:=0) as it where INDEX_TYPE='电商整体交易额' <include refid="dynamicWhere"/> GROUP BY CITY)t
+        ORDER BY total desc
+    </select>
+
     <select id="selectLine" resultType="com.example.entity.StaTotal" parameterType="com.example.entity.StaTotal">
         select * from
         (select sum(INDEX_VALUE) totalVolume,date dateStr
@@ -150,11 +168,13 @@
     <select id="selectAreaQysLine" resultType="com.example.entity.StaTotal"
             parameterType="com.example.entity.StaTotal">
         select t1.PROVINCE,t1.city,t1.qys,t2.cyrs from
-        (SELECT PROVINCE,city,sum(index_value) qys from tb_sta_total where index_type = '企业数' <include refid="dynamicWhere"/>
+        (SELECT PROVINCE,city,sum(index_value) qys from tb_sta_total where index_type = '企业数'
+        <include refid="dynamicWhere"/>
         GROUP BY PROVINCE,city) t1
         left JOIN
         (
-        SELECT PROVINCE,city,sum(index_value) cyrs from tb_sta_total where index_type = '从业人数' <include refid="dynamicWhere"/>
+        SELECT PROVINCE,city,sum(index_value) cyrs from tb_sta_total where index_type = '从业人数'
+        <include refid="dynamicWhere"/>
         GROUP BY PROVINCE,city) t2
         on t1.city = t2.city and t1.PROVINCE=t2.PROVINCE
     </select>

@@ -23,6 +23,8 @@ public interface StaCatMapper {
 
     List<StaCat> selectList(StaCat record);
 
+    List<StaCat> selectHomeTop30(StaCat record);
+
     List<StaCat> selectWholeList(StaCat record);
 
     List<StaCat> selectListByParam(StaCat record);

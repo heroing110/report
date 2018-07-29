@@ -93,6 +93,13 @@
         ORDER BY salesPercent,countPercent desc
     </select>
 
+    <!--首页-网络零售热销品类TOP30-->
+    <select id="selectHomeTop30" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+        select * from (
+        SELECT CAT2_NAME cat2Name,sum(M_SLAES_COUNT) totalCount,sum(M_SALES_VOLUME), (@i:=@i+1) as row totalVolume from tb_sta_cat,(select @i:=0) as it where CAT2_NAME is not null GROUP BY CAT2_NAME ) t
+        ORDER BY totalCount desc,totalVolume DESC limit 0,30
+    </select>
+
     <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaCat">
         select count(1)
         from tb_sta_cat

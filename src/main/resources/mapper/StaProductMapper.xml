@@ -60,13 +60,6 @@
         ORDER BY data asc
     </select>
 
-    <!--首页-网络零售热销品类TOP30-->
-    <select id="selectHomeTop30" resultType="com.example.entity.StaProduct" parameterType="com.example.entity.StaProduct">
-        select * from (
-        SELECT PRODUCT_NAME productName,sum(SALES_COUNT) totalSalesCount,sum(SALES_VOLUME) totalSalesVolume from tb_sta_product GROUP BY PRODUCT_NAME ) t
-        ORDER BY totalSalesCount desc,totalSalesVolume DESC limit 0,30
-    </select>
-
     <select id="selectList" resultMap="ResultMapWithBLOBs" parameterType="com.example.entity.StaProduct">
         select
         <include refid="Base_Column_List"/>

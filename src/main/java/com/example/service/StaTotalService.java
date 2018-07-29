@@ -27,4 +27,8 @@ public interface StaTotalService {
     List<StaTotal> selectAreaQysLine(StaTotal record);
 
     List<StaTotal> selectHomeIndex(StaTotal record);
+
+    List<StaTotal> selectHomeCountryRank(StaTotal record);
+
+    List<StaTotal> selectHomeProvinceRank(StaTotal record);
 }

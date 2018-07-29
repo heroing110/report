@@ -59,4 +59,9 @@ public class StaCatServiceImpl implements StaCatService {
         return staCatMapper.selectAreaCatLine(record);
     }
 
+    @Override
+    public List<StaCat> selectHomeTop30(StaCat record) {
+        return staCatMapper.selectHomeTop30(record);
+    }
+
 }

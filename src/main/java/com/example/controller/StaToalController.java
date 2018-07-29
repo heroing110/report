@@ -182,8 +182,74 @@ public class StaToalController {
         } catch (Exception e) {
             e.printStackTrace();
             result.setCode(Constants.RESULT_TYPE_FAILURE);
-            result.setMsg("/area_contrast_line/line,查询异常");
-            logger.error("/area_contrast_line/line,查询异常");
+            result.setMsg("/total/area_contrast_line,查询异常");
+            logger.error("/total/area_contrast_line,查询异常");
+        }
+        return result;
+    }
+
+    /**
+     * 首页排名
+     * @param staTotal
+     * @return
+     */
+    @RequestMapping(value = "/home_index", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaTotal>> selectHomeIndex(@RequestBody StaTotal staTotal) {
+        logger.info("/total/home_index");
+        Result<List<StaTotal>> result = new Result<>();
+        try {
+            List<StaTotal> staTotalList = this.staTotalService.selectHomeIndex(staTotal);
+            result.setData(staTotalList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/total/home_index,查询异常");
+            logger.error("/total/home_index,查询异常");
+        }
+        return result;
+    }
+
+    /**
+     * 首页-全国排名
+     * @param staTotal
+     * @return
+     */
+    @RequestMapping(value = "/home_country_rank", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaTotal>> selectHomeCountryRank(@RequestBody StaTotal staTotal) {
+        logger.info("/total/home_country_rank");
+        Result<List<StaTotal>> result = new Result<>();
+        try {
+            List<StaTotal> staTotalList = this.staTotalService.selectHomeCountryRank(staTotal);
+            result.setData(staTotalList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/total/home_country_rank,查询异常");
+            logger.error("/total/home_country_rank,查询异常");
+        }
+        return result;
+    }
+
+    /**
+     * 首页-全省排名
+     * @param staTotal
+     * @return
+     */
+    @RequestMapping(value = "/home_province_rank", method = RequestMethod.POST)
+    @ResponseBody
+    public Result<List<StaTotal>> selectHomeProvinceRank(@RequestBody StaTotal staTotal) {
+        logger.info("/total/home_province_rank");
+        Result<List<StaTotal>> result = new Result<>();
+        try {
+            List<StaTotal> staTotalList = this.staTotalService.selectHomeProvinceRank(staTotal);
+            result.setData(staTotalList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setCode(Constants.RESULT_TYPE_FAILURE);
+            result.setMsg("/total/home_province_rank,查询异常");
+            logger.error("/total/home_province_rank,查询异常");
         }
         return result;
     }

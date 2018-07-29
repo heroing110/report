@@ -7,6 +7,8 @@ import java.util.List;
 public class StaCat extends SortFilter implements Serializable {
     private Integer id;
 
+    private Integer row;
+
     private String year;
 
     private String month;
@@ -80,6 +82,14 @@ public class StaCat extends SortFilter implements Serializable {
     private List<StaCat> children;
 
     private static final long serialVersionUID = 1L;
+
+    public Integer getRow() {
+        return row;
+    }
+
+    public void setRow(Integer row) {
+        this.row = row;
+    }
 
     public String getDateStr() {
         return dateStr;

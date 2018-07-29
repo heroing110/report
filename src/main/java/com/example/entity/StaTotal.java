@@ -6,6 +6,8 @@ import java.util.Date;
 public class StaTotal extends SortFilter implements Serializable {
     private Integer id;
 
+    private Integer row;
+
     private Date date;
 
     private String dateStr;
@@ -78,7 +80,25 @@ public class StaTotal extends SortFilter implements Serializable {
 
     private Double cysr;
 
+    private Double total;
+
     private static final long serialVersionUID = 1L;
+
+    public Integer getRow() {
+        return row;
+    }
+
+    public void setRow(Integer row) {
+        this.row = row;
+    }
+
+    public Double getTotal() {
+        return total;
+    }
+
+    public void setTotal(Double total) {
+        this.total = total;
+    }
 
     public Double getQys() {
         return qys;
