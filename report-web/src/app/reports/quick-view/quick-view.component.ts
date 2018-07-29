@@ -44,7 +44,7 @@ export class QuickViewComponent implements OnInit, AfterViewInit {
   tableConfigs: ColumnItem[];
   getTableDataFn: GetTableDataFn;
 
-  // 统计前六项
+  // 统计前五项
   staListBefore: StaTotal[] = [];
 
   // 后所有项
@@ -92,8 +92,8 @@ export class QuickViewComponent implements OnInit, AfterViewInit {
       ...date
     }).then((result) => {
       const list = result.data || [];
-      this.staListBefore = list.slice(0, 6);
-      this.staListAfter = list.slice(6);
+      this.staListBefore = list.slice(0, 5);
+      this.staListAfter = list.slice(5);
     });
   }
 
@@ -246,9 +246,9 @@ export class QuickViewComponent implements OnInit, AfterViewInit {
     const configs: ColumnItem[] = [
       {
         column: 'row', title: '排名',
-        formatter: (row, value, index) => {
-          console.log(index, this.dataTable.pageSize);
-          return index;
+        formatter: (data, value, index) => {
+          const startIndex = (this.dataTable.pageIndex - 1) * this.dataTable.pageSize;
+          return startIndex + index + 1;
         }
       },
       {column: 'cat2Name', title: '品类'},

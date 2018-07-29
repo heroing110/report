@@ -26,8 +26,8 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let row of table.data">
-    <td *ngFor="let col of columns;let i=index;">
+  <tr *ngFor="let row of table.data; let i=index">
+    <td *ngFor="let col of columns">
       {{getColumnData(row,col,i)}}
     </td>
   </tr>

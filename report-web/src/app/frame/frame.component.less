@@ -1,4 +1,18 @@
 .menu-container {
   background-color: #001529;
-  overflow: hidden;
+  width: 200px;
+  &.isCollapsed {
+    width: 80px;
+    overflow-x: hidden;
+  }
+}
+
+.user-bar {
+  padding: 1.5em 2em;
+  > .anticon {
+    margin-right: 1em;
+  }
+  .anticon {
+    cursor: pointer;
+  }
 }

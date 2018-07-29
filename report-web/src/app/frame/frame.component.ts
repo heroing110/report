@@ -32,7 +32,7 @@ export class FrameComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.initMenuMouseWheel();
+    // this.initMenuMouseWheel();
   }
 
   // 默认激活选中当前的菜单

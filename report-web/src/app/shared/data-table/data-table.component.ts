@@ -77,7 +77,12 @@ export class DataTableComponent implements OnInit {
   // 获取数据
   getColumnData(row: any, col: ColumnItem, index: number) {
     if (isFunction(col.formatter)) {
-      return col.formatter(row, row[col.column], index);
+      // 此处加入缓存用来优化动态计算性能
+      const key = col.column + '@@' + index;
+      if (row[key] !== void 0) {
+        return row[key];
+      }
+      return row[key] = col.formatter(row, row[col.column], index);
     }
     return row[col.column];
   }

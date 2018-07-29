@@ -1,7 +1,9 @@
-<div layout="row" layout-fill>
+<div layout="row">
 
   <!-- 左侧导航 -->
-  <div class="menu-container" #menuContainer>
+  <div class="menu-container"
+       #menuContainer
+       [class.isCollapsed]="isCollapsed">
     <ul nz-menu nzMode="inline" nzTheme='dark' [nzInlineCollapsed]="isCollapsed">
       <ng-container *ngFor="let menu of menuList">
 
@@ -37,25 +39,30 @@
   <div flex layout="column">
 
     <!-- 主体部分导航 -->
-    <div layout="row">
-      <button nz-button [nzType]="'primary'" (click)="toggleCollapsed()">
-        <i class="anticon"
-           [class.anticon-menu-unfold]="isCollapsed"
-           [class.anticon-menu-fold]="!isCollapsed">
-        </i>
-      </button>
-      <div>balabalabala</div>
+    <div layout="row" layout-align="start center" class="user-bar">
+      <i class="anticon"
+         (click)="toggleCollapsed()"
+         [class.anticon-menu-unfold]="isCollapsed"
+         [class.anticon-menu-fold]="!isCollapsed">
+      </i>
+
+      <div flex></div>
+
+      <i class="anticon anticon-bulb"></i>
+
+      <div class="user-info">
+        <i class="anticon anticon-smile-o"></i>
+        用户名
+      </div>
     </div>
 
     <!-- 内容展示部分 -->
-    <div flex layout="column" style="overflow:auto;">
-      <div flex layout-padding>
-        <router-outlet></router-outlet>
-      </div>
-
-      <nz-footer style="text-align: center;">
-        copyright ©2018 DataSalt荣誉出品
-      </nz-footer>
+    <div layout-padding flex>
+      <router-outlet></router-outlet>
     </div>
+
+    <nz-footer style="text-align: center;">
+      copyright ©2018 DataSalt荣誉出品
+    </nz-footer>
   </div>
 </div>

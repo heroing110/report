@@ -9,8 +9,8 @@
                     "></app-range-month>
 </div>
 
-<div layout="row" class="dataBox">
-  <div flex *ngFor="let sta of staListBefore">
+<div layout="row" class="dataBox" layout-align="space-around start">
+  <div flex="15" *ngFor="let sta of staListBefore">
     <div class="box-label">{{sta.indexType}}</div>
     <span style="font-size: 2em">{{sta.totalVolume | number}}</span>
   </div>
@@ -39,7 +39,8 @@
     </ul>
   </div>
 </div>
-<div layout="row" class="dataBox" *ngIf="staListAfter && staListAfter.length">
+<div layout="row" class="dataBox" layout-align="start start"
+     *ngIf="staListAfter && staListAfter.length">
   <div flex="15" *ngFor="let sta of staListAfter">
     <div class="box-label">{{sta.indexType}}</div>
     <span style="font-size: 2em">{{sta.totalVolume | number}}</span>
