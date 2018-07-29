@@ -56,7 +56,7 @@ public class StaCatController {
     }
 
     /**
-     * 区域分析-品类分析，分页
+     * 各地品类数据分析，分页
      * @param staCat
      * @return
      */
@@ -89,7 +89,7 @@ public class StaCatController {
     }
 
     /**
-     * 区域分析-品类分析，柱形图
+     * 各地品类数据分析，柱形图
      * @param staCat
      * @return
      */
