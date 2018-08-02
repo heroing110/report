@@ -10,7 +10,7 @@
                       [nzDisabled]="loading"
                       [(ngModel)]="platform"
                       (ngModelChange)="chagneFn(platformChange,platform)">
-        <label nz-radio-button nzValue="">全部</label>
+        <label nz-radio-button nzValue="" *ngIf="!hidePlatformAll">全部</label>
         <label nz-radio-button
                *ngFor="let platform of platformList"
                [nzValue]="platform.value">
@@ -24,7 +24,7 @@
                  [nzDisabled]="loading"
                  [(ngModel)]="category"
                  (ngModelChange)="chagneFn(categoryChange,category)">
-        <nz-option nzValue="" nzLabel="全部"></nz-option>
+        <nz-option nzValue="" nzLabel="全部" *ngIf="!hideCategoryAll"></nz-option>
         <nz-option *ngFor="let category of categoryList"
                    [nzLabel]="category.label"
                    [nzValue]="category.value"></nz-option>

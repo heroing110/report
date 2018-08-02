@@ -1,6 +1,6 @@
 <div layout="row" layout-align="end center" style="margin-bottom: 2em;">
   <app-range-month [(dates)]="dateRange"
-                   (datesChange)="setChartOption()"></app-range-month>
+                   (datesChange)="setChartOption();table.searchData(true)"></app-range-month>
 </div>
 
 <app-common-operation title="细分品类探查"
@@ -13,5 +13,6 @@
 
 
 <app-common-operation [noPlatform]="true" [noCategory]="true"></app-common-operation>
-<app-data-table [columns]="salesVolumeConfigs"
+<app-data-table #table
+                [columns]="salesVolumeConfigs"
                 [queryDataService]="getSalesVolumeTableDataFn"></app-data-table>

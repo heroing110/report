@@ -1,20 +1,25 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {CategoryAndShopDataItem, CategoryService} from '../../../shared/category.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {CategoryAndShopDataItem} from '../../../shared/category.service';
 import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
-import {ColumnItem} from '../../../shared/data-table/data-table.component';
+import {ColumnItem, DataTableComponent} from '../../../shared/data-table/data-table.component';
+import {HomeService} from '../../../shared/home.service';
 import * as moment from 'moment';
+import {map} from 'lodash';
 
 @Component({
   selector: 'app-contrast',
   templateUrl: './contrast.component.html',
   styleUrls: ['./contrast.component.less']
 })
-export class ContrastComponent implements OnInit, AfterViewInit {
+export class ContrastComponent implements OnInit {
   salesVolumeConfigs: ColumnItem[];
   getSalesVolumeTableDataFn: GetTableDataFn; // 查询 区域速览 表格数据的服务
 
   @ViewChild('dataChart')
   dataChart: DataChartComponent;
+
+  @ViewChild('dataTable')
+  dataTable: DataTableComponent;
 
   dateRange: Date[] = [];
 
@@ -22,7 +27,7 @@ export class ContrastComponent implements OnInit, AfterViewInit {
   loading = false;
   categoryList: OptionItem[];
 
-  constructor(private categoryService: CategoryService) {
+  constructor(private homeService: HomeService) {
   }
 
   async ngOnInit() {
@@ -30,46 +35,41 @@ export class ContrastComponent implements OnInit, AfterViewInit {
     this.salesVolumeConfigs = this.createColumnVolumeConfigs();
 
     this.getSalesVolumeTableDataFn = (pageIndex, pageSize) => {
-      return this.categoryService.pagingCatView({
+      const date = this.getDateRangeParam();
+      return this.homeService.pagingAreaListview({
+        ...date,
+        orderBy: 'INDEX_VALUE',
         pageNo: pageIndex,
         pageSize: pageSize
       });
     };
-  }
-
-  async ngAfterViewInit() {
     this.categoryList = [
       {label: 'B2B', value: 'B2B'},
       {label: '网络零售', value: '网络零售'},
     ];
-    this.setChartOption();
   }
 
   async setChartOption() {
-    if (!this.categoryList || !this.categoryList.length) {
-      return;
-    }
+    const data = (await this.getChartData()).data;
+
+    const citys = map(data, 'city');
+    const totals = map(data, 'totalVolume');
 
     const option = {
       xAxis: {
         type: 'category',
-        data: [
-          '沈阳市',
-          '大连市',
-          '葫芦岛市',
-          '鞍山市',
-          '锦州市',
-          '营口市',
-          '铁岭市',
-          '抚顺市',
-          '本溪市'
-        ]
+        data: citys
       },
       tooltip: {trigger: 'axis'},
       yAxis: [{type: 'value'}],
+      dataZoom: [{
+        startValue: citys[0]
+      }, {
+        type: 'inside'
+      }],
       series: [{
         name: '销售额',
-        data: [1, 2, 3, 4, 5, 1, 2, 3, 4],
+        data: totals,
         type: 'bar'
       }]
     };
@@ -79,11 +79,10 @@ export class ContrastComponent implements OnInit, AfterViewInit {
   }
 
   getChartData(): Promise<AjaxResult<any>> {
-    const [s, e] = this.dateRange;
-    return this.categoryService.catView({
-      platform: this.platform || void 0,
-      dateBegin: `${moment(s).format('YYYY-MM')}-01`,
-      dateEnd: `${moment(e).format('YYYY-MM')}-02`
+    const date = this.getDateRangeParam();
+    return this.homeService.areaLine({
+      ...date,
+      platform: this.platform || void 0
     });
   }
 
@@ -96,18 +95,32 @@ export class ContrastComponent implements OnInit, AfterViewInit {
         }
       },
       {column: 'province', title: '省'},
-      {column: 'platform', title: '平台'},
-      {column: 'sCat1Name', title: '一级品类'},
-      {column: 'city', title: '城市'},
+      {column: 'city', title: '市'},
+      {column: 'ramark1', title: '指标类型'},
+      {column: 'mom', title: '指标值'},
       {
-        column: 'salesPercent', title: '销售额占比',
-        formatter: (row, value) => {
-          return `${value || 0}%`;
+        column: 'sortBy', title: '排名',
+        formatter: (row, value, index) => {
+          const startIndex = (this.dataTable.pageIndex - 1) * this.dataTable.pageSize;
+          return startIndex + index + 1;
         }
       },
     ];
 
     return configs;
+  }
+
+  private getDateRangeParam() {
+    const param = {
+      dateBegin: void 0,
+      dateEnd: void 0,
+    };
+    if (this.dateRange && this.dateRange.length === 2) {
+      const [s, e] = this.dateRange;
+      param.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
+      param.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+    }
+    return param;
   }
 
 }

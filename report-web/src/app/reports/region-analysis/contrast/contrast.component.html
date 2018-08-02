@@ -7,13 +7,13 @@
 <app-common-operation title="各地核心电商指标速览"
                       [loading]="loading"
                       [noExportData]="true"
-                      [(platform)]="platform"
-                      (platformChange)="setChartOption()"
+                      [noPlatform]="true"
                       [categoryList]="categoryList"></app-common-operation>
 
 <app-data-chart #dataChart [height]="450"></app-data-chart>
 
 
 <app-common-operation [noPlatform]="true" [noCategory]="true"></app-common-operation>
-<app-data-table [columns]="salesVolumeConfigs"
+<app-data-table #dataTable
+                [columns]="salesVolumeConfigs"
                 [queryDataService]="getSalesVolumeTableDataFn"></app-data-table>

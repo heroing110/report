@@ -21,5 +21,12 @@ export class WindowResizeService {
 
   emit() {
     this.eventEmitters.forEach(e => e.emit());
+    this.dispatch();
+  }
+
+  dispatch() {
+    const event = document.createEvent('Event');
+    event.initEvent('resize', true, true);
+    window.dispatchEvent(event);
   }
 }

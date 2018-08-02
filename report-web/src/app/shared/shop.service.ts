@@ -14,4 +14,14 @@ export class ShopService {
   pagingShopView(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<PagingResult<CategoryAndShopDataItem[]>>> {
     return this.http.post<any>('shop/listview', params).toPromise();
   }
+
+  // 分页查询 【店铺销售额分步】 表格数据
+  pagingAreaShopListview(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<PagingResult<CategoryAndShopDataItem[]>>> {
+    return this.http.post<any>('shop/area_shop_listview', params).toPromise();
+  }
+
+  // 查询 【店铺销售额分步】 图表数据
+  areaShopLine(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
+    return this.http.post<any>('shop/area_shop_line', params).toPromise();
+  }
 }

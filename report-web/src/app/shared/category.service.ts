@@ -28,6 +28,16 @@ export class CategoryService {
   catWholeList(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     return this.http.post<any>('cat/whole_list', params).toPromise();
   }
+
+  // 分页查询 【区域分析-品类分析】 表格数据
+  areaCatListview(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<PagingResult<CategoryAndShopDataItem[]>>> {
+    return this.http.post<any>('cat/area_cat_listview', params).toPromise();
+  }
+
+  // 分页查询 【区域分析-品类分析】 柱状图数据
+  areaCatBar(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<CategoryAndShopDataItem>> {
+    return this.http.post<any>('cat/area_cat_line', params).toPromise();
+  }
 }
 
 export class CategoryAndShopDataItem {

@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angula
 import {SimpleChanges} from '@angular/core/src/metadata/lifecycle_hooks';
 import {SimpleChange} from '@angular/core/src/change_detection/change_detection_util';
 import * as moment from 'moment';
+import {WindowResizeService} from '../window-resize.service';
 
 @Component({
   selector: 'app-range-month',
@@ -21,6 +22,9 @@ export class RangeMonthComponent implements OnInit, OnChanges {
   endOpen = false;
 
   disabledEndDate: (endValue: Date) => boolean;
+
+  constructor(private windowResizeService: WindowResizeService) {
+  }
 
 
   ngOnInit() {
@@ -60,6 +64,9 @@ export class RangeMonthComponent implements OnInit, OnChanges {
   handleStartOpenChange(open: boolean): void {
     if (!open && this.startValue) {
       this.endOpen = true;
+      setTimeout(() => {
+        this.windowResizeService.dispatch();
+      });
     }
   }
 

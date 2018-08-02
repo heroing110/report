@@ -19,7 +19,9 @@ export class CommonOperationComponent implements OnInit {
   @Input()
   categoryList: OptionItem[];
   @Input()
-  noCategory: boolean;
+  noCategory = false;
+  @Input()
+  hideCategoryAll = false;
 
   // 平台筛选器
   @Input()
@@ -29,7 +31,9 @@ export class CommonOperationComponent implements OnInit {
   @Input()
   platformList: OptionItem[];
   @Input()
-  noPlatform: boolean;
+  noPlatform = false;
+  @Input()
+  hidePlatformAll = false;
 
   @Output()
   exportData = new EventEmitter<any>();
@@ -46,8 +50,6 @@ export class CommonOperationComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.platform = '';
-    this.category = '';
 
     if (!this.noPlatform && !this.platformList) {
       this.platformList = (await this.commonDataService.getPlatformList()).data;

@@ -1,16 +1,17 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ColumnItem} from '../../../shared/data-table/data-table.component';
 import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
-import {CategoryAndShopDataItem, CategoryService} from '../../../shared/category.service';
+import {CategoryAndShopDataItem} from '../../../shared/category.service';
 import * as moment from 'moment';
 import {groupBy, map} from 'lodash';
+import {HomeService} from '../../../shared/home.service';
 
 @Component({
   selector: 'app-region-quick-view',
   templateUrl: './region-quick-view.component.html',
   styleUrls: ['./region-quick-view.component.less']
 })
-export class RegionQuickViewComponent implements OnInit, AfterViewInit {
+export class RegionQuickViewComponent implements OnInit {
   salesVolumeConfigs: ColumnItem[];
   getSalesVolumeTableDataFn: GetTableDataFn; // 查询 区域速览 表格数据的服务
 
@@ -23,74 +24,66 @@ export class RegionQuickViewComponent implements OnInit, AfterViewInit {
   loading = false;
   categoryList: OptionItem[];
 
-  constructor(private categoryService: CategoryService) {
+  constructor(private homeService: HomeService) {
   }
 
-  async ngOnInit() {
+  ngOnInit() {
 
     this.salesVolumeConfigs = this.createColumnVolumeConfigs();
 
     this.getSalesVolumeTableDataFn = (pageIndex, pageSize) => {
-      return this.categoryService.pagingCatView({
+      const date = this.getDateRangeParam();
+      return this.homeService.pagingAreaListview({
+        ...date,
         pageNo: pageIndex,
         pageSize: pageSize
       });
     };
-  }
 
-  async ngAfterViewInit() {
     this.categoryList = [
       {label: 'B2B', value: 'B2B'},
       {label: '网络零售', value: '网络零售'},
     ];
-    this.setChartOption();
   }
 
   async setChartOption() {
-    if (!this.categoryList || !this.categoryList.length) {
-      return;
-    }
     this.loading = true;
 
     // 所有的数据
     const dataList = (await this.getChartData()).data;
 
-
     // 按照一级品类分组
-    const groupData = groupBy(dataList, 'sCat1Name');
+    const groupData = groupBy(dataList, 'city');
+
+    const citys = Object.keys(groupData);
 
     const options = [];
-    const seriesTypes = [
-      {name: '零销量', key: 'countPercent', yAxisIndex: 0, type: 'bar'},
-      {name: '零售额', key: 'salesPercent', yAxisIndex: 1, type: 'bar'},
-    ];
 
-    for (let i = 0; i < this.categoryList.length; i++) {
-      const category = this.categoryList[i];
-      const list = groupData[category.value] || [];
-
-      const series = [];
-
-      for (let j = 0; j < seriesTypes.length; j++) {
-        const item = seriesTypes[j];
-        series.push({
-          name: item.name,
-          yAxisIndex: item.yAxisIndex,
-          type: item.type,
-          data: map(list, item.key)
-        });
-      }
+    for (let i = 0; i < citys.length; i++) {
+      const list = groupData[citys[i]] || [];
+      const dates = map(list, 'dateStr');
 
       // 生产所有的配置
       options.push({
         xAxis: [
           {
             type: 'category',
-            data: map(list, 'city'),
+            data: dates,
             splitLine: {show: false}
           }
         ],
-        series: series
+        // dataZoom: [{
+        //   startValue: dates[0]
+        // }, {
+        //   type: 'inside'
+        // }],
+        series: [
+          {
+            name: '交易额',
+            type: 'line',
+            data: map(list, 'totalVolume')
+          }
+        ]
       });
     }
 
@@ -101,25 +94,16 @@ export class RegionQuickViewComponent implements OnInit, AfterViewInit {
             showPlayBtn: false,
             show: true
           },
-          data: map(this.categoryList, 'value'),
+          data: citys,
           axisType: 'category'
         },
-        legend: {
-          data: map(seriesTypes, 'name')
-        },
-        tooltip: {
-          trigger: 'axis',
-          formatter: '{a}:{c}% <br/> {a1}:{c1}%'
-        },
+        tooltip: {trigger: 'axis'},
         calculable: true,
         grid: {
           top: 80,
           bottom: 100
         },
-        yAxis: [
-          {type: 'value', name: '零售量%'},
-          {type: 'value', name: '零售额%'}
-        ]
+        yAxis: {type: 'value'}
       },
       options: options
     };
@@ -129,11 +113,9 @@ export class RegionQuickViewComponent implements OnInit, AfterViewInit {
   }
 
   getChartData(): Promise<AjaxResult<any>> {
-    const [s, e] = this.dateRange;
-    return this.categoryService.catView({
-      platform: this.platform || void 0,
-      dateBegin: `${moment(s).format('YYYY-MM')}-01`,
-      dateEnd: `${moment(e).format('YYYY-MM')}-02`
+    const date = this.getDateRangeParam();
+    return this.homeService.areaLine({
+      ...date
     });
   }
 
@@ -146,18 +128,24 @@ export class RegionQuickViewComponent implements OnInit, AfterViewInit {
         }
       },
       {column: 'province', title: '省'},
-      {column: 'platform', title: '平台'},
-      {column: 'sCat1Name', title: '一级品类'},
-      {column: 'city', title: '城市'},
-      {
-        column: 'salesPercent', title: '销售额占比',
-        formatter: (row, value) => {
-          return `${value || 0}%`;
-        }
-      },
+      {column: 'city', title: '市'},
+      {column: 'mom', title: '指标值'},
     ];
 
     return configs;
+  }
+
+  private getDateRangeParam() {
+    const param = {
+      dateBegin: void 0,
+      dateEnd: void 0,
+    };
+    if (this.dateRange && this.dateRange.length === 2) {
+      const [s, e] = this.dateRange;
+      param.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
+      param.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+    }
+    return param;
   }
 
 }

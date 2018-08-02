@@ -1,16 +1,16 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {CategoryAndShopDataItem, CategoryService} from '../../../shared/category.service';
-import {CommonDataService} from '../../../shared/common-data.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
 import {ColumnItem} from '../../../shared/data-table/data-table.component';
 import * as moment from 'moment';
+import {ShopService} from '../../../shared/shop.service';
+import {groupBy, map} from 'lodash';
 
 @Component({
   selector: 'app-store-sales-distribution',
   templateUrl: './store-sales-distribution.component.html',
   styleUrls: ['./store-sales-distribution.component.less']
 })
-export class StoreSalesDistributionComponent implements OnInit, AfterViewInit {
+export class StoreSalesDistributionComponent implements OnInit {
   salesVolumeConfigs: ColumnItem[];
   getSalesVolumeTableDataFn: GetTableDataFn; // 查询 区域速览 表格数据的服务
 
@@ -21,10 +21,8 @@ export class StoreSalesDistributionComponent implements OnInit, AfterViewInit {
 
   platform = '';
   loading = false;
-  categoryList: OptionItem[];
 
-  constructor(private categoryService: CategoryService,
-              private commonDataService: CommonDataService) {
+  constructor(private shopService: ShopService) {
   }
 
   async ngOnInit() {
@@ -32,24 +30,48 @@ export class StoreSalesDistributionComponent implements OnInit, AfterViewInit {
     this.salesVolumeConfigs = this.createColumnVolumeConfigs();
 
     this.getSalesVolumeTableDataFn = (pageIndex, pageSize) => {
-      return this.categoryService.pagingCatView({
+      const date = this.getDateRangeParam();
+      return this.shopService.pagingAreaShopListview({
+        ...date,
         pageNo: pageIndex,
         pageSize: pageSize
       });
     };
   }
 
-  async ngAfterViewInit() {
-    this.categoryList = (await this.commonDataService.getCategoryList()).data;
-    this.setChartOption();
-  }
-
   async setChartOption() {
-    if (!this.categoryList || !this.categoryList.length) {
-      return;
-    }
     this.loading = true;
 
+    const dataList = (await this.getChartData()).data;
+
+    const groupData = groupBy(dataList, 'range');
+
+    const ranges = Object.keys(groupData);
+
+    let citys = null;
+
+    const series = [];
+
+    for (let i = 0; i < ranges.length; i++) {
+      const range = ranges[i];
+      const list = groupData[range];
+      if (!citys) {
+        citys = map(list, 'city');
+      }
+
+      series.push({
+        name: range,
+        type: 'bar',
+        stack: '销售额',
+        label: {
+          normal: {
+            show: true,
+            position: 'insideRight'
+          }
+        },
+        data: map(list, 'shopCount')
+      });
+    }
 
     const option = {
       tooltip: {
@@ -59,7 +81,7 @@ export class StoreSalesDistributionComponent implements OnInit, AfterViewInit {
         }
       },
       legend: {
-        data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+        data: ranges
       },
       grid: {
         left: '3%',
@@ -69,12 +91,10 @@ export class StoreSalesDistributionComponent implements OnInit, AfterViewInit {
       },
       xAxis: {
         type: 'category',
-        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+        data: citys
       },
-      yAxis: {
-        type: 'value'
-      },
-      series: [
+      yAxis: {type: 'value'},
+      series: series || [
         {
           name: '直接访问',
           type: 'bar',
@@ -143,28 +163,25 @@ export class StoreSalesDistributionComponent implements OnInit, AfterViewInit {
   }
 
   getChartData(): Promise<AjaxResult<any>> {
-    const [s, e] = this.dateRange;
-    return this.categoryService.catView({
+    const date = this.getDateRangeParam();
+    return this.shopService.areaShopLine({
       platform: this.platform || void 0,
-      dateBegin: `${moment(s).format('YYYY-MM')}-01`,
-      dateEnd: `${moment(e).format('YYYY-MM')}-02`
+      ...date
     });
   }
 
   private createColumnVolumeConfigs() {
     const configs: ColumnItem[] = [
+      {column: 'dateStr', title: '时间'},
+      {column: 'province', title: '省'},
+      {column: 'city', title: '市'},
       {
-        column: 'date', title: '时间',
-        formatter: (row: CategoryAndShopDataItem) => {
-          return `${row.year || ''}-${row.month || ''}`;
+        column: 'range', title: '销售额区间', formatter: (row) => {
+          return `${row['minSalesVolume']}-${row['maxSalesVolume']}万`;
         }
       },
-      {column: 'province', title: '省'},
-      {column: 'platform', title: '平台'},
-      {column: 'sCat1Name', title: '一级品类'},
-      {column: 'city', title: '城市'},
       {
-        column: 'salesPercent', title: '销售额占比',
+        column: 'salesPercent', title: '占比',
         formatter: (row, value) => {
           return `${value || 0}%`;
         }
@@ -172,6 +189,19 @@ export class StoreSalesDistributionComponent implements OnInit, AfterViewInit {
     ];
 
     return configs;
+  }
+
+  private getDateRangeParam() {
+    const param = {
+      dateBegin: void 0,
+      dateEnd: void 0,
+    };
+    if (this.dateRange && this.dateRange.length === 2) {
+      const [s, e] = this.dateRange;
+      param.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
+      param.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+    }
+    return param;
   }
 
 }

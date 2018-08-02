@@ -1,30 +1,32 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {DataChartComponent} from '../../shared/data-chart/data-chart.component';
 import {ColumnItem, DataTableComponent} from '../../shared/data-table/data-table.component';
 import {CategoryService} from '../../shared/category.service';
 import {HomeService, StaTotal} from '../../shared/home.service';
-import * as moment from 'moment';
 import {ChainMapService} from '../../shared/chain-map.service';
+import * as moment from 'moment';
+import {chain} from 'lodash';
 
 @Component({
   selector: 'app-quick-view',
   templateUrl: './quick-view.component.html',
   styleUrls: ['./quick-view.component.less']
 })
-export class QuickViewComponent implements OnInit, AfterViewInit {
+export class QuickViewComponent implements OnInit {
 
   dateRange: Date[];
 
-  sortType = 1; // 1全国排名, 2全省排名
+  // 1全国排名, 2全省排名
+  sortType = 1;
 
   // 电子商务市场结构
   electronPlatformList: OptionItem[] = [
-    {label: '交易类型', value: '交易类型'},
-    {label: '进口/出口', value: '进口/出口'},
-    {label: '服务/实物', value: '服务/实物'},
-    {label: '城市/农村', value: '城市/农村'},
+    {label: '交易类型', value: '1'},
+    {label: '进口/出口', value: '2'},
+    {label: '服务/实物', value: '3'},
+    {label: '城市/农村', value: '4'},
   ];
-  electronPlatform = '';
+  electronPlatform = '1';
 
   // 网络零售热销品类TOP30
   hotPlatform = '';
@@ -34,6 +36,7 @@ export class QuickViewComponent implements OnInit, AfterViewInit {
 
   @ViewChild('dataChart1')
   dataChart1: DataChartComponent; // 排名
+  sortDataList = [];// 排序列表
 
   @ViewChild('dataChart2')
   dataChart2: DataChartComponent; // 电子商务市场结构
@@ -56,12 +59,10 @@ export class QuickViewComponent implements OnInit, AfterViewInit {
 
   constructor(private categoryService: CategoryService,
               private homeService: HomeService,
-              private chainMap: ChainMapService) {
+              private chainMapService: ChainMapService) {
   }
 
   ngOnInit() {
-    // 注册中国地图数据
-    DataChartComponent.registerMap('chainMap', this.chainMap.getJSON());
 
     this.tableConfigs = this.createColumnConfigs();
 
@@ -80,12 +81,6 @@ export class QuickViewComponent implements OnInit, AfterViewInit {
     };
   }
 
-  ngAfterViewInit() {
-    this.setChartOption1();
-    this.setChartOption2();
-    this.setChartOption3();
-  }
-
   queryData() {
     const date = this.getDateRangeParam();
     this.homeService.homeIndex({
@@ -98,7 +93,52 @@ export class QuickViewComponent implements OnInit, AfterViewInit {
   }
 
   // 地图排序
-  setChartOption1() {
+  async setChartOption1(sortType?: number) {
+    if (sortType) {
+      this.sortType = sortType;
+    }
+    const dateRangeParam = this.getDateRangeParam();
+    let mapType = '';
+    const datas = [];
+    if (this.sortType === 1) {// 全国排序
+      mapType = 'china';
+      this.chainMapService.loadChinaMap();
+      const result = (await this.homeService.homeCountryRank({
+        ...dateRangeParam
+      })).data;
+      for (let i = 0; i < result.length; i++) {
+        const data: StaTotal = result[i];
+        if (data.province.endsWith('省')) {
+          // 如果最后一个字是省，则将它抹掉
+          data.province = data.province.slice(0, -1);
+        }
+
+        datas.push({
+          name: data.province,
+          value: data.total
+        });
+      }
+    } else {
+      mapType = '广东';
+      this.chainMapService.loadProvinceMap(mapType);
+      const result = (await this.homeService.homeProvinceRank({
+        ...dateRangeParam,
+        province: '广东省'
+      })).data;
+
+      for (let i = 0; i < result.length; i++) {
+        const data: StaTotal = result[i];
+        datas.push({
+          name: data.city,
+          value: data.total
+        });
+      }
+    }
+
+    // 排序，取前9个
+    this.sortDataList = chain(datas).sortBy('total').value().slice(0, 9);
+
+    const max = chain(datas).map('value').max().value();
     const option = {
       tooltip: {
         trigger: 'item'
@@ -106,8 +146,9 @@ export class QuickViewComponent implements OnInit, AfterViewInit {
       toolbox: {show: false},
       visualMap: {
         show: false,
-        min: 800,
-        max: 50000,
+        min: 0,
+        // 按照千位向上取整
+        max: Math.ceil(max / 1000) * 1000,
         text: ['High', 'Low'],
         realtime: false,
         calculable: true,
@@ -119,33 +160,12 @@ export class QuickViewComponent implements OnInit, AfterViewInit {
         {
           name: '地图排序',
           type: 'map',
-          mapType: 'chainMap',
+          mapType: mapType,
           itemStyle: {
             normal: {label: {show: true}},
             emphasis: {label: {show: true}}
           },
-          data: [
-            {name: '北京', value: Math.round(Math.random() * 2000)},
-            {name: '天津', value: Math.round(Math.random() * 2000)},
-            {name: '上海', value: Math.round(Math.random() * 2000)},
-            {name: '重庆', value: Math.round(Math.random() * 2000)},
-            {name: '河北', value: 0},
-            {name: '河南', value: Math.round(Math.random() * 2000)},
-            {name: '云南', value: 5},
-            {name: '辽宁', value: 305},
-            {name: '黑龙江', value: Math.round(Math.random() * 2000)},
-            {name: '湖南', value: 200},
-            {name: '安徽', value: Math.round(Math.random() * 2000)},
-            {name: '山东', value: Math.round(Math.random() * 2000)},
-            {name: '新疆', value: Math.round(Math.random() * 2000)},
-            {name: '江苏', value: Math.round(Math.random() * 2000)},
-            {name: '浙江', value: Math.round(Math.random() * 2000)},
-            {name: '江西', value: Math.round(Math.random() * 2000)},
-            {name: '湖北', value: Math.round(Math.random() * 2000)},
-            {name: '广西', value: Math.round(Math.random() * 2000)},
-            {name: '甘肃', value: Math.round(Math.random() * 2000)},
-            {name: '山西', value: Math.round(Math.random() * 2000)},
-          ],
+          data: datas,
         }
       ]
     };
@@ -153,18 +173,44 @@ export class QuickViewComponent implements OnInit, AfterViewInit {
     this.dataChart1.setOption(option);
   }
 
-  setChartOption2() {
+  async setChartOption2() {
     this.electronLoading = true;
+
+    const datePram = this.getDateRangeParam();
+    const data = (await this.homeService.homeBusinessPie({
+      ...datePram,
+      type: +this.electronPlatform
+    })).data;
+
+    const datas = [];
+    const legendData = [];
+    for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      legendData.push(item.type);
+      datas.push({
+        name: item.type,
+        value: item.total || 0
+      });
+    }
+
     const option = {
       tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b}: {c} ({d}%)'
       },
+      legend: {
+        orient: 'vertical',
+        x: 'right',
+        y: 'center',
+        align: 'left',
+        data: legendData
+      },
       toolbox: {show: false},
       series: [
         {
-          name: '访问来源',
+          name: '电子商务市场结构',
           type: 'pie',
+          center: ['40%', '50%'],
           radius: ['50%', '70%'],
           avoidLabelOverlap: false,
           label: {
@@ -185,13 +231,7 @@ export class QuickViewComponent implements OnInit, AfterViewInit {
               show: false
             }
           },
-          data: [
-            {value: 335, name: '直接访问'},
-            {value: 310, name: '邮件营销'},
-            {value: 234, name: '联盟广告'},
-            {value: 135, name: '视频广告'},
-            {value: 1548, name: '搜索引擎'}
-          ]
+          data: datas
         }
       ]
     };
@@ -202,8 +242,14 @@ export class QuickViewComponent implements OnInit, AfterViewInit {
   }
 
   // 主要电商平台交易额走势
-  setChartOption3() {
+  async setChartOption3() {
     this.mainElectronLoading = true;
+
+    const dateParam = this.getDateRangeParam();
+    const data = (await this.homeService.homeBusinessLine({...dateParam})).data;
+
+    const xAxisData = chain(data).map('dateStr').value();
+
     const option = {
       tooltip: {trigger: 'axis'},
       toolbox: {show: false},
@@ -212,7 +258,7 @@ export class QuickViewComponent implements OnInit, AfterViewInit {
         data: ['天猫', '京东']
       },
       xAxis: {
-        data: ['2017-01', '2017-02', '2017-03', '2017-04', '2017-05']
+        data: xAxisData
       },
       yAxis: {
         splitLine: {
@@ -220,7 +266,7 @@ export class QuickViewComponent implements OnInit, AfterViewInit {
         }
       },
       dataZoom: [{
-        startValue: '2014-06-01'
+        startValue: xAxisData[0]
       }, {
         type: 'inside'
       }],
@@ -228,12 +274,12 @@ export class QuickViewComponent implements OnInit, AfterViewInit {
         {
           name: '天猫',
           type: 'line',
-          data: [1, 3, 2, 4, 1]
+          data: chain(data).map('totalVolume').value()
         },
         {
           name: '京东',
           type: 'line',
-          data: [4, 6, 8, 2, 1]
+          data: chain(data).map('totalVolume1').value()
         }
       ]
     };

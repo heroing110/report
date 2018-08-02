@@ -1,16 +1,16 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {CategoryAndShopDataItem, CategoryService} from '../../../shared/category.service';
-import {CommonDataService} from '../../../shared/common-data.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
 import {ColumnItem} from '../../../shared/data-table/data-table.component';
 import * as moment from 'moment';
+import {HomeService} from '../../../shared/home.service';
+import {map} from 'lodash';
 
 @Component({
   selector: 'app-enterprises-and-employees',
   templateUrl: './enterprises-and-employees.component.html',
   styleUrls: ['./enterprises-and-employees.component.less']
 })
-export class EnterprisesAndEmployeesComponent implements OnInit, AfterViewInit {
+export class EnterprisesAndEmployeesComponent implements OnInit {
   salesVolumeConfigs: ColumnItem[];
   getSalesVolumeTableDataFn: GetTableDataFn; // 查询 区域速览 表格数据的服务
 
@@ -19,12 +19,9 @@ export class EnterprisesAndEmployeesComponent implements OnInit, AfterViewInit {
 
   dateRange: Date[] = [];
 
-  platform = '';
   loading = false;
-  categoryList: OptionItem[];
 
-  constructor(private categoryService: CategoryService,
-              private commonDataService: CommonDataService) {
+  constructor(private homeService: HomeService) {
   }
 
   async ngOnInit() {
@@ -32,53 +29,40 @@ export class EnterprisesAndEmployeesComponent implements OnInit, AfterViewInit {
     this.salesVolumeConfigs = this.createColumnVolumeConfigs();
 
     this.getSalesVolumeTableDataFn = (pageIndex, pageSize) => {
-      return this.categoryService.pagingCatView({
+      const date = this.getDateRangeParam();
+      return this.homeService.pagingAreaQysListview({
+        ...date,
         pageNo: pageIndex,
         pageSize: pageSize
       });
     };
   }
 
-  async ngAfterViewInit() {
-    this.categoryList = (await this.commonDataService.getCategoryList()).data;
-    this.setChartOption();
-  }
-
   async setChartOption() {
-    if (!this.categoryList || !this.categoryList.length) {
-      return;
-    }
     this.loading = true;
 
+    const dataList = (await this.getChartData()).data;
 
     const option = {
-      title: {
-        text: '未来一周气温变化',
-        subtext: '纯属虚构'
-      },
-      tooltip: {
-        trigger: 'axis'
-      },
+      tooltip: {trigger: 'axis'},
       legend: {
-        data: ['最高气温', '最低气温']
+        data: ['企业数', '从业人数']
       },
       xAxis: {
         type: 'category',
-        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+        data: map(dataList, 'city')
       },
-      yAxis: {
-        type: 'value'
-      },
+      yAxis: {type: 'value'},
       series: [
         {
-          name: '最高气温',
+          name: '企业数',
           type: 'line',
-          data: [11, 11, 15, 13, 12, 13, 10]
+          data: map(dataList, 'qys')
         },
         {
-          name: '最低气温',
+          name: '从业人数',
           type: 'line',
-          data: [1, -2, 2, 5, 3, 2, 0]
+          data: map(dataList, 'cyrs')
         }
       ]
     };
@@ -88,35 +72,35 @@ export class EnterprisesAndEmployeesComponent implements OnInit, AfterViewInit {
   }
 
   getChartData(): Promise<AjaxResult<any>> {
-    const [s, e] = this.dateRange;
-    return this.categoryService.catView({
-      platform: this.platform || void 0,
-      dateBegin: `${moment(s).format('YYYY-MM')}-01`,
-      dateEnd: `${moment(e).format('YYYY-MM')}-02`
+    const date = this.getDateRangeParam();
+    return this.homeService.areaQysLine({
+      ...date
     });
   }
 
   private createColumnVolumeConfigs() {
     const configs: ColumnItem[] = [
-      {
-        column: 'date', title: '时间',
-        formatter: (row: CategoryAndShopDataItem) => {
-          return `${row.year || ''}-${row.month || ''}`;
-        }
-      },
+      {column: 'dateStr', title: '时间'},
       {column: 'province', title: '省'},
-      {column: 'platform', title: '平台'},
-      {column: 'sCat1Name', title: '一级品类'},
-      {column: 'city', title: '城市'},
-      {
-        column: 'salesPercent', title: '销售额占比',
-        formatter: (row, value) => {
-          return `${value || 0}%`;
-        }
-      },
+      {column: 'city', title: '市'},
+      {column: 'qys', title: '企业数'},
+      {column: 'cyrs', title: '从业人数'}
     ];
 
     return configs;
+  }
+
+  private getDateRangeParam() {
+    const param = {
+      dateBegin: void 0,
+      dateEnd: void 0,
+    };
+    if (this.dateRange && this.dateRange.length === 2) {
+      const [s, e] = this.dateRange;
+      param.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
+      param.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+    }
+    return param;
   }
 
 }

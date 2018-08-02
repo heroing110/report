@@ -31,7 +31,9 @@ export class SubdivisionComponent implements OnInit {
     this.salesVolumeConfigs = this.createColumnVolumeConfigs();
 
     this.getSalesVolumeTableDataFn = (pageIndex, pageSize) => {
+      const date = this.getDateRangeParam();
       return this.categoryService.pagingCatView({
+        ...date,
         pageNo: pageIndex,
         pageSize: pageSize
       });
@@ -152,11 +154,10 @@ export class SubdivisionComponent implements OnInit {
   }
 
   getChartData(platform): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
-    const [s, e] = this.dateRange;
+    const date = this.getDateRangeParam();
     return this.categoryService.catSubdivisionTree({
       platform: platform || void 0,
-      dateBegin: `${moment(s).format('YYYY-MM')}-01`,
-      dateEnd: `${moment(e).format('YYYY-MM')}-02`
+      ...date
     });
   }
 
@@ -182,5 +183,18 @@ export class SubdivisionComponent implements OnInit {
     ];
 
     return configs;
+  }
+
+  private getDateRangeParam() {
+    const param = {
+      dateBegin: void 0,
+      dateEnd: void 0,
+    };
+    if (this.dateRange && this.dateRange.length === 2) {
+      const [s, e] = this.dateRange;
+      param.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
+      param.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+    }
+    return param;
   }
 }

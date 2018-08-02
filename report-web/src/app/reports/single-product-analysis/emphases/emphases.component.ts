@@ -40,7 +40,9 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
     this.slaesConfigs = this.createColumnConfigs();
 
     this.getSlaesTableDataFn = (pageIndex, pageSize) => {
+      const date = this.getDateRangeParam();
       return this.productService.pagingProductView({
+        ...date,
         pageNo: pageIndex,
         pageSize: pageSize,
       });
@@ -50,7 +52,6 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
   async ngAfterViewInit() {
     this.platformList = (await this.commonDataService.getPlatformList()).data;
     this.legendData = map(this.platformList, 'value');
-    this.setChartOption();
   }
 
   async setChartOption() {
@@ -165,6 +166,7 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
       },
       legend: {
         orient: 'vertical',
+        type: 'scroll',
         right: 30,
         top: 20,
         data: map(province_datas, 'name')
@@ -188,19 +190,17 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
   }
 
   getChartData(type): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
-    const [s, e] = this.dateRange;
+    const date = this.getDateRangeParam();
     return this.productService.getProductPie({
       type: type,
-      dateBegin: `${moment(s).format('YYYY-MM')}-01`,
-      dateEnd: `${moment(e).format('YYYY-MM')}-02`
+      ...date
     });
   }
 
   getLineChartData(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
-    const [s, e] = this.dateRange;
+    const date = this.getDateRangeParam();
     return this.productService.getProductLine({
-      dateBegin: `${moment(s).format('YYYY-MM')}-01`,
-      dateEnd: `${moment(e).format('YYYY-MM')}-02`
+      ...date
     });
   }
 
@@ -220,6 +220,19 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
     ];
 
     return configs;
+  }
+
+  private getDateRangeParam() {
+    const param = {
+      dateBegin: void 0,
+      dateEnd: void 0,
+    };
+    if (this.dateRange && this.dateRange.length === 2) {
+      const [s, e] = this.dateRange;
+      param.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
+      param.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+    }
+    return param;
   }
 
 }

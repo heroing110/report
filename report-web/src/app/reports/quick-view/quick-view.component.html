@@ -18,8 +18,8 @@
 
 
 <div layout="row" class="sortType">
-  <div class="tab" [class.active]="sortType == 1" (click)="sortType = 1">全国排名</div>
-  <div class="tab" [class.active]="sortType == 2" (click)="sortType = 2">全省排名</div>
+  <div class="tab" [class.active]="sortType == 1" (click)="setChartOption1(1)">全国排名</div>
+  <div class="tab" [class.active]="sortType == 2" (click)="setChartOption1(2)">全省排名</div>
 </div>
 <div layout="row">
   <div flex>
@@ -27,15 +27,9 @@
   </div>
   <div>
     <ul class="sortList">
-      <li>广东省 1</li>
-      <li>浙江省 2</li>
-      <li>江苏省 3</li>
-      <li>上海市 4</li>
-      <li>北京市 5</li>
-      <li>山东省 6</li>
-      <li>福建省 7</li>
-      <li>湖北省 8</li>
-      <li>四川省 9</li>
+      <li *ngFor="let data of sortDataList;let i = index">
+        {{data.name}} {{i + 1}}
+      </li>
     </ul>
   </div>
 </div>
@@ -53,7 +47,9 @@
     <app-common-operation [noCategory]="true"
                           [loading]="electronLoading"
                           [platformList]="electronPlatformList"
+                          [hidePlatformAll]="true"
                           [(platform)]="electronPlatform"
+                          (platformChange)="setChartOption2()"
                           [noExportData]="true"
                           title="电子商务市场结构"></app-common-operation>
 

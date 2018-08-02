@@ -1,17 +1,16 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {CategoryAndShopDataItem, CategoryService} from '../../../shared/category.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {CategoryService} from '../../../shared/category.service';
 import {ColumnItem} from '../../../shared/data-table/data-table.component';
 import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
 import * as moment from 'moment';
 import {groupBy, map} from 'lodash';
-import {CommonDataService} from '../../../shared/common-data.service';
 
 @Component({
   selector: 'app-category',
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.less']
 })
-export class CategoryComponent implements OnInit, AfterViewInit {
+export class CategoryComponent implements OnInit {
   salesVolumeConfigs: ColumnItem[];
   getSalesVolumeTableDataFn: GetTableDataFn; // 查询 区域速览 表格数据的服务
 
@@ -22,33 +21,25 @@ export class CategoryComponent implements OnInit, AfterViewInit {
 
   platform = '';
   loading = false;
-  categoryList: OptionItem[];
 
-  constructor(private categoryService: CategoryService,
-              private commonDataService: CommonDataService) {
+  constructor(private categoryService: CategoryService) {
   }
 
-  async ngOnInit() {
+  ngOnInit() {
 
     this.salesVolumeConfigs = this.createColumnVolumeConfigs();
 
     this.getSalesVolumeTableDataFn = (pageIndex, pageSize) => {
-      return this.categoryService.pagingCatView({
+      const date = this.getDateRangeParam();
+      return this.categoryService.areaCatListview({
+        ...date,
         pageNo: pageIndex,
         pageSize: pageSize
       });
     };
   }
 
-  async ngAfterViewInit() {
-    this.categoryList = (await this.commonDataService.getCategoryList()).data;
-    this.setChartOption();
-  }
-
   async setChartOption() {
-    if (!this.categoryList || !this.categoryList.length) {
-      return;
-    }
     this.loading = true;
 
     // 所有的数据
@@ -56,7 +47,8 @@ export class CategoryComponent implements OnInit, AfterViewInit {
 
 
     // 按照一级品类分组
-    const groupData = groupBy(dataList, 'sCat1Name');
+    const groupData = groupBy(dataList, 'city');
+    const citys = Object.keys(groupData);
 
     const options = [];
     const seriesTypes = [
@@ -64,9 +56,8 @@ export class CategoryComponent implements OnInit, AfterViewInit {
       {name: '零售额', key: 'salesPercent', yAxisIndex: 1, type: 'bar'},
     ];
 
-    for (let i = 0; i < this.categoryList.length; i++) {
-      const category = this.categoryList[i];
-      const list = groupData[category.value] || [];
+    for (let i = 0; i < citys.length; i++) {
+      const list = groupData[citys[i]] || [];
 
       const series = [];
 
@@ -85,11 +76,24 @@ export class CategoryComponent implements OnInit, AfterViewInit {
         xAxis: [
           {
             type: 'category',
-            data: map(list, 'city'),
+            data: map(list, 'sCat1Name'),
             splitLine: {show: false}
           }
         ],
         series: series
+      });
+    }
+
+    if (!options.length) {
+      options.push({
+        xAxis: [
+          {
+            type: 'category',
+            data: [],
+            splitLine: {show: false}
+          }
+        ],
+        series: []
       });
     }
 
@@ -100,7 +104,7 @@ export class CategoryComponent implements OnInit, AfterViewInit {
             showPlayBtn: false,
             show: true
           },
-          data: map(this.categoryList, 'value'),
+          data: citys,
           axisType: 'category'
         },
         legend: {
@@ -128,26 +132,25 @@ export class CategoryComponent implements OnInit, AfterViewInit {
   }
 
   getChartData(): Promise<AjaxResult<any>> {
-    const [s, e] = this.dateRange;
-    return this.categoryService.catView({
+    const date = this.getDateRangeParam();
+    return this.categoryService.areaCatBar({
       platform: this.platform || void 0,
-      dateBegin: `${moment(s).format('YYYY-MM')}-01`,
-      dateEnd: `${moment(e).format('YYYY-MM')}-02`
+      ...date
     });
   }
 
   private createColumnVolumeConfigs() {
     const configs: ColumnItem[] = [
+      {column: 'dateStr', title: '时间'},
+      {column: 'province', title: '省'},
+      {column: 'city', title: '市'},
+      {column: 'sCat1Name', title: '一级品类'},
       {
-        column: 'date', title: '时间',
-        formatter: (row: CategoryAndShopDataItem) => {
-          return `${row.year || ''}-${row.month || ''}`;
+        column: 'countPercent', title: '销售量占比',
+        formatter: (row, value) => {
+          return `${value || 0}%`;
         }
       },
-      {column: 'province', title: '省'},
-      {column: 'platform', title: '平台'},
-      {column: 'sCat1Name', title: '一级品类'},
-      {column: 'city', title: '城市'},
       {
         column: 'salesPercent', title: '销售额占比',
         formatter: (row, value) => {
@@ -157,6 +160,19 @@ export class CategoryComponent implements OnInit, AfterViewInit {
     ];
 
     return configs;
+  }
+
+  private getDateRangeParam() {
+    const param = {
+      dateBegin: void 0,
+      dateEnd: void 0,
+    };
+    if (this.dateRange && this.dateRange.length === 2) {
+      const [s, e] = this.dateRange;
+      param.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
+      param.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+    }
+    return param;
   }
 
 }

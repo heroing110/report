@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {CategoryAndShopDataItem} from '../../../shared/category.service';
 import {ColumnItem} from '../../../shared/data-table/data-table.component';
 import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
@@ -11,7 +11,7 @@ import * as moment from 'moment';
   templateUrl: './network-retailing.component.html',
   styleUrls: ['./network-retailing.component.less']
 })
-export class NetworkRetailingComponent implements OnInit, AfterViewInit {
+export class NetworkRetailingComponent implements OnInit {
 
   trendConfigs: ColumnItem[];
   getTrendTableDataFn: GetTableDataFn;
@@ -28,17 +28,15 @@ export class NetworkRetailingComponent implements OnInit, AfterViewInit {
     this.trendConfigs = this.createColumnConfigs();
 
     this.getTrendTableDataFn = (pageIndex, pageSize) => {
+      const date = this.getDateRangeParam();
       return this.trendService.pagingTrendListView({
+        ...date,
         indexType1: '交易额',
         indexType2: '交易量',
         pageNo: pageIndex,
         pageSize: pageSize,
       });
     };
-  }
-
-  async ngAfterViewInit() {
-    this.setChartOption();
   }
 
   async setChartOption() {
@@ -79,12 +77,11 @@ export class NetworkRetailingComponent implements OnInit, AfterViewInit {
   }
 
   getLineChartData(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
-    const [s, e] = this.dateRange;
+    const date = this.getDateRangeParam();
     return this.trendService.getTrendLineData({
       indexType1: '交易额',
       indexType2: '交易量',
-      dateBegin: `${moment(s).format('YYYY-MM')}-01`,
-      dateEnd: `${moment(e).format('YYYY-MM')}-02`
+      ...date
     });
   }
 
@@ -110,4 +107,16 @@ export class NetworkRetailingComponent implements OnInit, AfterViewInit {
     return configs;
   }
 
+  private getDateRangeParam() {
+    const param = {
+      dateBegin: void 0,
+      dateEnd: void 0,
+    };
+    if (this.dateRange && this.dateRange.length === 2) {
+      const [s, e] = this.dateRange;
+      param.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
+      param.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+    }
+    return param;
+  }
 }
