@@ -1,20 +1,20 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {RegionQuickViewComponent} from './region-quick-view.component';
+import {KindOnlineShoppingComponent} from './kind-online-shopping.component';
 
-describe('RegionQuickViewComponent', () => {
-  let component: RegionQuickViewComponent;
-  let fixture: ComponentFixture<RegionQuickViewComponent>;
+describe('KindOnlineShoppingComponent', () => {
+  let component: KindOnlineShoppingComponent;
+  let fixture: ComponentFixture<KindOnlineShoppingComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [RegionQuickViewComponent]
+      declarations: [KindOnlineShoppingComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RegionQuickViewComponent);
+    fixture = TestBed.createComponent(KindOnlineShoppingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -5,13 +5,14 @@ import {CategoryAndShopDataItem} from '../../../shared/category.service';
 import * as moment from 'moment';
 import {groupBy, map} from 'lodash';
 import {HomeService} from '../../../shared/home.service';
+import {TrendService} from '../../../shared/trend.service';
 
 @Component({
-  selector: 'app-region-quick-view',
-  templateUrl: './region-quick-view.component.html',
-  styleUrls: ['./region-quick-view.component.less']
+  selector: 'app-quick-view',
+  templateUrl: './quick-view.component.html',
+  styleUrls: ['./quick-view.component.less']
 })
-export class RegionQuickViewComponent implements OnInit {
+export class QuickViewComponent implements OnInit {
   salesVolumeConfigs: ColumnItem[];
   getSalesVolumeTableDataFn: GetTableDataFn; // 查询 区域速览 表格数据的服务
 
@@ -24,7 +25,8 @@ export class RegionQuickViewComponent implements OnInit {
   loading = false;
   categoryList: OptionItem[];
 
-  constructor(private homeService: HomeService) {
+  constructor(private homeService: HomeService,
+              private trendService: TrendService) {
   }
 
   ngOnInit() {
@@ -114,7 +116,7 @@ export class RegionQuickViewComponent implements OnInit {
 
   getChartData(): Promise<AjaxResult<any>> {
     const date = this.getDateRangeParam();
-    return this.homeService.areaLine({
+    return this.trendService.getTrendCityLineData({
       ...date
     });
   }

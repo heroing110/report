@@ -5,6 +5,7 @@ import {ColumnItem, DataTableComponent} from '../../../shared/data-table/data-ta
 import {HomeService} from '../../../shared/home.service';
 import * as moment from 'moment';
 import {map} from 'lodash';
+import {TrendService} from '../../../shared/trend.service';
 
 @Component({
   selector: 'app-contrast',
@@ -27,7 +28,8 @@ export class ContrastComponent implements OnInit {
   loading = false;
   categoryList: OptionItem[];
 
-  constructor(private homeService: HomeService) {
+  constructor(private homeService: HomeService,
+              private trendService: TrendService) {
   }
 
   async ngOnInit() {
@@ -80,7 +82,7 @@ export class ContrastComponent implements OnInit {
 
   getChartData(): Promise<AjaxResult<any>> {
     const date = this.getDateRangeParam();
-    return this.homeService.areaLine({
+    return this.trendService.getTrendCityLineData({
       ...date,
       platform: this.platform || void 0
     });

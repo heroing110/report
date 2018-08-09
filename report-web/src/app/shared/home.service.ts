@@ -45,11 +45,6 @@ export class HomeService {
     return this.http.post<any>('total/area_listview', params).toPromise();
   }
 
-  // 查询 【地域分析-各地速览】 线图数据
-  areaLine(params: PagingParam & StaTotal): Promise<AjaxResult<PagingResult<StaTotal[]>>> {
-    return this.http.post<any>('total/line', params).toPromise();
-  }
-
   // 分页查询 【区域分析-企业数、从业人数统计】 表格数据
   pagingAreaQysListview(params: PagingParam & StaTotal): Promise<AjaxResult<PagingResult<StaTotal[]>>> {
     return this.http.post<any>('total/area_qys_listview', params).toPromise();

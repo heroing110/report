@@ -1,20 +1,20 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {QuickViewComponent} from './quick-view.component';
+import {B2bComponent} from './b2b.component';
 
-describe('QuickViewComponent', () => {
-  let component: QuickViewComponent;
-  let fixture: ComponentFixture<QuickViewComponent>;
+describe('B2bComponent', () => {
+  let component: B2bComponent;
+  let fixture: ComponentFixture<B2bComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [QuickViewComponent]
+      declarations: [B2bComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(QuickViewComponent);
+    fixture = TestBed.createComponent(B2bComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

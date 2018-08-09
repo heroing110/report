@@ -99,12 +99,7 @@ export class PopularityComponent implements OnInit {
       {column: 'province', title: '省'},
       {column: 'platform', title: '平台'},
       {column: 'productName', title: '商品名称'},
-      {
-        column: 'salesPercent', title: '销售额占比',
-        formatter: (row, value) => {
-          return `${value || 0}%`;
-        }
-      },
+      {column: 'salesPercent', title: '销售额'},
     ];
 
     return configs;
@@ -121,12 +116,7 @@ export class PopularityComponent implements OnInit {
       {column: 'province', title: '省'},
       {column: 'platform', title: '平台'},
       {column: 'productName', title: '商品名称'},
-      {
-        column: 'countPercent', title: '销售量占比',
-        formatter: (row, value) => {
-          return `${value || 0}%`;
-        }
-      },
+      {column: 'countCount', title: '销售量'},
     ];
 
     return configs;

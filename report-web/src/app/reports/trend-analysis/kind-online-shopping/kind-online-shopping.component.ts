@@ -1,17 +1,17 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {CategoryAndShopDataItem} from '../../../shared/category.service';
-import {ColumnItem} from '../../../shared/data-table/data-table.component';
-import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
 import {TrendService} from '../../../shared/trend.service';
+import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
+import {ColumnItem} from '../../../shared/data-table/data-table.component';
+import {CategoryAndShopDataItem} from '../../../shared/category.service';
+import * as echarts from 'echarts';
 import * as moment from 'moment';
 
-
 @Component({
-  selector: 'app-network-retailing',
-  templateUrl: './network-retailing.component.html',
-  styleUrls: ['./network-retailing.component.less']
+  selector: 'app-kind-online-shopping',
+  templateUrl: './kind-online-shopping.component.html',
+  styleUrls: ['./kind-online-shopping.component.less']
 })
-export class NetworkRetailingComponent implements OnInit {
+export class KindOnlineShoppingComponent implements OnInit {
 
   trendConfigs: ColumnItem[];
   getTrendTableDataFn: GetTableDataFn;
@@ -31,8 +31,7 @@ export class NetworkRetailingComponent implements OnInit {
       const date = this.getDateRangeParam();
       return this.trendService.pagingTrendListView({
         ...date,
-        indexType1: '交易额',
-        indexType2: '交易量',
+        indexType1: '实物商品网购交易',
         pageNo: pageIndex,
         pageSize: pageSize,
       });
@@ -42,14 +41,11 @@ export class NetworkRetailingComponent implements OnInit {
   async setChartOption() {
     const lineSourceData = (await this.getLineChartData()).data;
 
-    const lineCategoryList = [],
-      lineVolumeList = [],
-      lineCountList = [];
+    const lineCategoryList = [], lineDataList = [];
     for (let i = 0; i < lineSourceData.length; i++) {
       const data = lineSourceData[i];
       lineCategoryList.push(data.dateStr);
-      lineVolumeList.push(data.totalVolume || 0);
-      lineCountList.push(data.totalCount || 0);
+      lineDataList.push(data.totalVolume);
     }
 
     const lineOption = {
@@ -60,20 +56,25 @@ export class NetworkRetailingComponent implements OnInit {
       tooltip: {
         trigger: 'axis'
       },
-      yAxis: [
-        {type: 'value'},
-        {type: 'value'},
-      ],
+      yAxis: {
+        type: 'value'
+      },
       series: [{
-        data: lineVolumeList,
-        yAxisIndex: 0,
+        data: lineDataList,
         type: 'line',
-        name: '交易额'
-      }, {
-        data: lineCountList,
-        yAxisIndex: 1,
-        type: 'line',
-        name: '交易量'
+        name: '交易额',
+        smooth: true,
+        areaStyle: {
+          normal: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0,
+              color: '#8ec6ad'
+            }, {
+              offset: 1,
+              color: '#ffe'
+            }])
+          }
+        },
       }]
     };
     this.dataChart.setOption(lineOption);
@@ -82,9 +83,8 @@ export class NetworkRetailingComponent implements OnInit {
   getLineChartData(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     const date = this.getDateRangeParam();
     return this.trendService.getTrendLineData({
-      indexType1: '交易额',
-      indexType2: '交易量',
-      ...date
+      indexType1: '实物商品网购交易',
+      ...date,
     });
   }
 
@@ -93,14 +93,7 @@ export class NetworkRetailingComponent implements OnInit {
       {column: 'dateStr', title: '时间'},
       {column: 'totalVolume', title: '交易额'},
       {
-        column: 'totalMum', title: '交易额环比',
-        formatter: (row, val) => {
-          return `${val || 0}%`;
-        }
-      },
-      {column: 'totalCount', title: '交易量'},
-      {
-        column: 'totalCountMum', title: '交易量环比',
+        column: 'totalMum', title: '环比',
         formatter: (row, val) => {
           return `${val || 0}%`;
         }
@@ -122,4 +115,5 @@ export class NetworkRetailingComponent implements OnInit {
     }
     return param;
   }
+
 }

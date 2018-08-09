@@ -11,9 +11,6 @@ const routes: Routes = [
   // 本地速览 quickView
   {path: 'quick-view', component: QuickViewComponent},
 
-  // 地域分析  regionAnalysis
-  {path: 'region-analysis', loadChildren: './region-analysis/region-analysis.module#RegionAnalysisModule'},
-
   // 区域分析  districtAnalysis
   {path: 'district-analysis', loadChildren: './district-analysis/district-analysis.module#DistrictAnalysisModule'},
 

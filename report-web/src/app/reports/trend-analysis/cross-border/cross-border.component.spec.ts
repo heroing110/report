@@ -1,20 +1,20 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {QuickViewComponent} from './quick-view.component';
+import {CrossBorderComponent} from './cross-border.component';
 
-describe('QuickViewComponent', () => {
-  let component: QuickViewComponent;
-  let fixture: ComponentFixture<QuickViewComponent>;
+describe('CrossBorderComponent', () => {
+  let component: CrossBorderComponent;
+  let fixture: ComponentFixture<CrossBorderComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [QuickViewComponent]
+      declarations: [CrossBorderComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(QuickViewComponent);
+    fixture = TestBed.createComponent(CrossBorderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -17,11 +17,11 @@ export class ProductService {
 
   // 查询 【售额占比】 数据
   getProductPie(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
-    return this.http.post<any>('/product/pie', params).toPromise();
+    return this.http.post<any>('product/pie', params).toPromise();
   }
 
   // 查询 【重点平泪监测】 数据
   getProductLine(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
-    return this.http.post<any>('/product/line', params).toPromise();
+    return this.http.post<any>('product/line', params).toPromise();
   }
 }

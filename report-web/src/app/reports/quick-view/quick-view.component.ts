@@ -162,7 +162,7 @@ export class QuickViewComponent implements OnInit {
           type: 'map',
           mapType: mapType,
           itemStyle: {
-            normal: {label: {show: true}},
+            normal: {label: {show: false}},
             emphasis: {label: {show: true}}
           },
           data: datas,

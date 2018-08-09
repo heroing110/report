@@ -20,18 +20,15 @@ export class MenuService {
       icon: 'anticon-line-chart',
       children: [
         {name: '电商总体交易走势', path: '/reports/trend-analysis/e-commerce-overall'},
+        {name: 'B2B交易走势', path: '/reports/trend-analysis/B2B'},
         {name: '网络零售交易走势', path: '/reports/trend-analysis/network-retailing'},
-      ]
-    },
-
-    // 地域分析
-    {
-      name: '地域分析',
-      path: '/reports/region-analysis',
-      icon: 'anticon-global',
-      children: [
-        {name: '各地速览', path: '/reports/region-analysis/quick-view'},
-        {name: '各地对比', path: '/reports/region-analysis/contrast'}
+        {name: '跨境电商交易走势', path: '/reports/trend-analysis/cross-border'},
+        {name: '农村电商交易走势', path: '/reports/trend-analysis/countryside'},
+        {name: '实物商品网购交易走势', path: '/reports/trend-analysis/kind-online-shopping'},
+        {name: '虚拟商品网购交易走势', path: '/reports/trend-analysis/virtual-online-shopping'},
+        {name: '跨境电商出口走势', path: '/reports/trend-analysis/cross-border-export'},
+        {name: '跨境电商进口走势', path: '/reports/trend-analysis/cross-border-import'},
+        {name: '电商企业数/就业人数变化趋势', path: '/reports/trend-analysis/enterprises-and-employment'},
       ]
     },
 
@@ -41,9 +38,11 @@ export class MenuService {
       path: '/reports/district-analysis',
       icon: 'anticon-global',
       children: [
-        {name: '品类分析', path: '/reports/district-analysis/category'},
-        {name: '店铺销售额分步', path: '/reports/district-analysis/store-sales-distribution'},
-        {name: '企业数、从业人数统计', path: '/reports/district-analysis/enterprises-and-employees'},
+        {name: '区域趋势速览', path: '/reports/district-analysis/quick-view'},
+        {name: '区域整体对比', path: '/reports/district-analysis/contrast'},
+        {name: '区域品类分析', path: '/reports/district-analysis/category'},
+        {name: '区域店铺交易额分布', path: '/reports/district-analysis/store-sales-distribution'},
+        {name: '区域电商企业数、从业人数统计', path: '/reports/district-analysis/enterprises-and-employees'},
       ]
     },
 
@@ -53,10 +52,10 @@ export class MenuService {
       path: '/reports/category-analysis',
       icon: 'anticon-schedule',
       children: [
-        {name: '整体分析', path: '/reports/category-analysis/whole'},
-        {name: '品类细分', path: '/reports/category-analysis/subdivision'},
-        {name: '品类区域分析', path: '/reports/category-analysis/category-area'},
-        {name: '各品类下头部店铺', path: '/reports/category-analysis/category-top-shop'},
+        {name: '一级品类整体占比', path: '/reports/category-analysis/whole'},
+        {name: '细分品类探查', path: '/reports/category-analysis/subdivision'},
+        {name: '品类分区域销售分析', path: '/reports/category-analysis/category-area'},
+        {name: '品类分店铺销售分析', path: '/reports/category-analysis/category-top-shop'},
       ]
     },
 
@@ -73,8 +72,8 @@ export class MenuService {
       path: '/reports/single-product-analysis',
       icon: 'anticon-rocket',
       children: [
-        {name: '人气单品', path: '/reports/single-product-analysis/popularity'},
-        {name: '重点品类', path: '/reports/single-product-analysis/emphases'},
+        {name: '品类分店铺销售分析', path: '/reports/single-product-analysis/popularity'},
+        {name: '特色产品监测', path: '/reports/single-product-analysis/emphases'},
       ]
     },
   ];

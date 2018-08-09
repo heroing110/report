@@ -5,13 +5,12 @@ import {DataChartComponent} from '../../../shared/data-chart/data-chart.componen
 import {TrendService} from '../../../shared/trend.service';
 import * as moment from 'moment';
 
-
 @Component({
-  selector: 'app-network-retailing',
-  templateUrl: './network-retailing.component.html',
-  styleUrls: ['./network-retailing.component.less']
+  selector: 'app-enterprises-and-employment',
+  templateUrl: './enterprises-and-employment.component.html',
+  styleUrls: ['./enterprises-and-employment.component.less']
 })
-export class NetworkRetailingComponent implements OnInit {
+export class EnterprisesAndEmploymentComponent implements OnInit {
 
   trendConfigs: ColumnItem[];
   getTrendTableDataFn: GetTableDataFn;
@@ -31,8 +30,8 @@ export class NetworkRetailingComponent implements OnInit {
       const date = this.getDateRangeParam();
       return this.trendService.pagingTrendListView({
         ...date,
-        indexType1: '交易额',
-        indexType2: '交易量',
+        indexType1: '电子商务企业数',
+        indexType2: '电子商务从业人数',
         pageNo: pageIndex,
         pageSize: pageSize,
       });
@@ -68,12 +67,12 @@ export class NetworkRetailingComponent implements OnInit {
         data: lineVolumeList,
         yAxisIndex: 0,
         type: 'line',
-        name: '交易额'
+        name: '电子商务企业数'
       }, {
         data: lineCountList,
         yAxisIndex: 1,
         type: 'line',
-        name: '交易量'
+        name: '电子商务从业人数'
       }]
     };
     this.dataChart.setOption(lineOption);
@@ -82,8 +81,8 @@ export class NetworkRetailingComponent implements OnInit {
   getLineChartData(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     const date = this.getDateRangeParam();
     return this.trendService.getTrendLineData({
-      indexType1: '交易额',
-      indexType2: '交易量',
+      indexType1: '电子商务企业数',
+      indexType2: '电子商务从业人数',
       ...date
     });
   }
@@ -122,4 +121,5 @@ export class NetworkRetailingComponent implements OnInit {
     }
     return param;
   }
+
 }
