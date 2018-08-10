@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {FrameComponent} from './frame/frame.component';
 import {NotFoundComponent} from './not-found/not-found.component';
 import {NoAuthorityComponent} from './no-authority/no-authority.component';
+import {AuthGuard} from './shared/auth.guard';
 
 const routes: Routes = [
   // 如果是空页面地址，则尝试跳转到报表主页面
@@ -10,6 +11,7 @@ const routes: Routes = [
 
   {
     path: 'reports',
+    canActivate: [AuthGuard],
     component: FrameComponent, // 框架页面
     loadChildren: './reports/reports.module#ReportsModule', // 报表主模块
   },

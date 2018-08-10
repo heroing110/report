@@ -14,6 +14,21 @@ export class CategoryService {
     return this.http.post<any>('cat/listview', params).toPromise();
   }
 
+  // 分页查询 【品类分析-一级品类整体占比】 表格数据
+  pagingCatWholeView(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<PagingResult<CategoryAndShopDataItem[]>>> {
+    return this.http.post<any>('cat/cat_whole_listview', params).toPromise();
+  }
+
+  // 分页查询 【品类分析-细分品类探查】 表格数据
+  pagingCatSubDetailView(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<PagingResult<CategoryAndShopDataItem[]>>> {
+    return this.http.post<any>('cat/cat_detail_listview', params).toPromise();
+  }
+
+  // 分页查询 【品类分析-品类分区域销售分析】 表格数据
+  pagingCatAreaView(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<PagingResult<CategoryAndShopDataItem[]>>> {
+    return this.http.post<any>('cat/cat_area_listview', params).toPromise();
+  }
+
   // 查询 【各品类区域销售占比分析】 图表数据
   catView(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     return this.http.post<any>('cat/list', params).toPromise();

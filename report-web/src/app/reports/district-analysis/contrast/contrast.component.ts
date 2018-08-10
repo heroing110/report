@@ -1,5 +1,4 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {CategoryAndShopDataItem} from '../../../shared/category.service';
 import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
 import {ColumnItem, DataTableComponent} from '../../../shared/data-table/data-table.component';
 import {HomeService} from '../../../shared/home.service';
@@ -27,6 +26,7 @@ export class ContrastComponent implements OnInit {
   platform = '';
   loading = false;
   categoryList: OptionItem[];
+  private dateAreaStr: string;
 
   constructor(private homeService: HomeService,
               private trendService: TrendService) {
@@ -92,8 +92,8 @@ export class ContrastComponent implements OnInit {
     const configs: ColumnItem[] = [
       {
         column: 'date', title: '时间',
-        formatter: (row: CategoryAndShopDataItem) => {
-          return `${row.year || ''}-${row.month || ''}`;
+        formatter: () => {
+          return this.dateAreaStr;
         }
       },
       {column: 'province', title: '省'},
@@ -118,9 +118,13 @@ export class ContrastComponent implements OnInit {
       dateEnd: void 0,
     };
     if (this.dateRange && this.dateRange.length === 2) {
-      const [s, e] = this.dateRange;
-      param.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
-      param.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+      const [s, e] = [
+        moment(this.dateRange[0]).format('YYYY-MM'),
+        moment(this.dateRange[1]).format('YYYY-MM')
+      ];
+      param.dateBegin = `${s}-01`;
+      param.dateEnd = `${e}-02`;
+      this.dateAreaStr = `${s}-${e}`;
     }
     return param;
   }

@@ -51,8 +51,18 @@
       <i class="anticon anticon-bulb"></i>
 
       <div class="user-info">
-        <i class="anticon anticon-smile-o"></i>
-        用户名
+        <nz-dropdown>
+          <a nz-dropdown>
+            <i class="anticon anticon-smile-o"></i>
+            {{user.userName}}
+            <i class="anticon anticon-down"></i>
+          </a>
+          <ul nz-menu nzSelectable>
+            <li nz-menu-item (click)="logout()">
+              <a>退出登陆</a>
+            </li>
+          </ul>
+        </nz-dropdown>
       </div>
     </div>
 

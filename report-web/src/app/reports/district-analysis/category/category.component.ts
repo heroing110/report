@@ -21,7 +21,7 @@ export class CategoryComponent implements OnInit {
 
   platform = '';
   loading = false;
-
+  private dateAreaStr: string;
   constructor(private categoryService: CategoryService) {
   }
 
@@ -141,7 +141,12 @@ export class CategoryComponent implements OnInit {
 
   private createColumnVolumeConfigs() {
     const configs: ColumnItem[] = [
-      {column: 'dateStr', title: '时间'},
+      {
+        column: 'date', title: '时间',
+        formatter: () => {
+          return this.dateAreaStr;
+        }
+      },
       {column: 'province', title: '省'},
       {column: 'city', title: '市'},
       {column: 'sCat1Name', title: '一级品类'},
@@ -168,9 +173,13 @@ export class CategoryComponent implements OnInit {
       dateEnd: void 0,
     };
     if (this.dateRange && this.dateRange.length === 2) {
-      const [s, e] = this.dateRange;
-      param.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
-      param.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+      const [s, e] = [
+        moment(this.dateRange[0]).format('YYYY-MM'),
+        moment(this.dateRange[1]).format('YYYY-MM')
+      ];
+      param.dateBegin = `${s}-01`;
+      param.dateEnd = `${e}-02`;
+      this.dateAreaStr = `${s}-${e}`;
     }
     return param;
   }

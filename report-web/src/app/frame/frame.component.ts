@@ -2,6 +2,7 @@ import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/
 import {MenuItem, MenuService} from '../shared/menu.service';
 import {Router} from '@angular/router';
 import {WindowResizeService} from '../shared/window-resize.service';
+import {AuthService, User} from '../shared/auth.service';
 
 @Component({
   selector: 'app-frame',
@@ -20,13 +21,17 @@ export class FrameComponent implements OnInit, AfterViewInit {
   // 菜单列表
   menuList: MenuItem[];
 
+  user: User;
+
   constructor(private menuService: MenuService,
               private router: Router,
-              private windowResize: WindowResizeService) {
+              private windowResize: WindowResizeService,
+              private authService: AuthService) {
   }
 
   ngOnInit() {
-    this.menuList = this.menuService.menus;
+    this.menuList = this.menuService.getMenus();
+    this.user = this.authService.userInfo;
 
     this.activeCurrentMenu();
   }
@@ -77,5 +82,13 @@ export class FrameComponent implements OnInit, AfterViewInit {
     }
   }
 
+  async logout() {
+    try {
+      await this.authService.logout();
+    } catch (e) {
+    }
+
+    this.router.navigate(['/login']);
+  }
 
 }

@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {ColumnItem} from '../../../shared/data-table/data-table.component';
-import {CategoryAndShopDataItem, CategoryService} from '../../../shared/category.service';
+import {CategoryService} from '../../../shared/category.service';
 import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
 import {CommonDataService} from '../../../shared/common-data.service';
 import * as moment from 'moment';
@@ -24,7 +24,7 @@ export class CategoryAreaComponent implements OnInit, AfterViewInit {
   platform = '';
   loading = false;
   categoryList: OptionItem[];
-
+  private dateAreaStr: string;
   constructor(private categoryService: CategoryService,
               private commonDataService: CommonDataService) {
   }
@@ -35,7 +35,7 @@ export class CategoryAreaComponent implements OnInit, AfterViewInit {
 
     this.getSalesVolumeTableDataFn = (pageIndex, pageSize) => {
       const date = this.getDateRangeParam();
-      return this.categoryService.pagingCatView({
+      return this.categoryService.pagingCatAreaView({
         ...date,
         pageNo: pageIndex,
         pageSize: pageSize
@@ -138,8 +138,8 @@ export class CategoryAreaComponent implements OnInit, AfterViewInit {
     const configs: ColumnItem[] = [
       {
         column: 'date', title: '时间',
-        formatter: (row: CategoryAndShopDataItem) => {
-          return `${row.year || ''}-${row.month || ''}`;
+        formatter: () => {
+          return this.dateAreaStr;
         }
       },
       {column: 'province', title: '省'},
@@ -163,9 +163,13 @@ export class CategoryAreaComponent implements OnInit, AfterViewInit {
       dateEnd: void 0,
     };
     if (this.dateRange && this.dateRange.length === 2) {
-      const [s, e] = this.dateRange;
-      param.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
-      param.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+      const [s, e] = [
+        moment(this.dateRange[0]).format('YYYY-MM'),
+        moment(this.dateRange[1]).format('YYYY-MM')
+      ];
+      param.dateBegin = `${s}-01`;
+      param.dateEnd = `${e}-02`;
+      this.dateAreaStr = `${s}-${e}`;
     }
     return param;
   }

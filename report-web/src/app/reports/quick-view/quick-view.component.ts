@@ -311,9 +311,12 @@ export class QuickViewComponent implements OnInit {
       dateEnd: void 0,
     };
     if (this.dateRange && this.dateRange.length === 2) {
-      const [s, e] = this.dateRange;
-      param.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
-      param.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+      const [s, e] = [
+        moment(this.dateRange[0]).format('YYYY-MM'),
+        moment(this.dateRange[1]).format('YYYY-MM')
+      ];
+      param.dateBegin = `${s}-01`;
+      param.dateEnd = `${e}-02`;
     }
     return param;
   }

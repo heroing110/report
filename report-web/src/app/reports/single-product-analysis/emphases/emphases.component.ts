@@ -1,12 +1,12 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {ColumnItem} from '../../../shared/data-table/data-table.component';
-import {ProductService} from '../../../shared/product.service';
 import {CategoryAndShopDataItem} from '../../../shared/category.service';
 import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
 import {CommonDataService} from '../../../shared/common-data.service';
 import {find, map} from 'lodash';
 import * as echarts from 'echarts';
 import * as moment from 'moment';
+import {LocalProductService} from '../../../shared/local-product.service';
 
 @Component({
   selector: 'app-emphases',
@@ -31,8 +31,9 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
 
   platformList: OptionItem[];
   legendData: string[];
+  private dateAreaStr: string;
 
-  constructor(private productService: ProductService,
+  constructor(private localProductService: LocalProductService,
               private commonDataService: CommonDataService) {
   }
 
@@ -41,7 +42,7 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
 
     this.getSlaesTableDataFn = (pageIndex, pageSize) => {
       const date = this.getDateRangeParam();
-      return this.productService.pagingProductView({
+      return this.localProductService.pagingListview({
         ...date,
         pageNo: pageIndex,
         pageSize: pageSize,
@@ -60,7 +61,7 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
     const lineCategoryList = [], lineDataList = [];
     for (let i = 0; i < lineSourceData.length; i++) {
       const data = lineSourceData[i];
-      lineCategoryList.push(data.data);
+      lineCategoryList.push(data.dateStr);
       lineDataList.push(data.totalVolume);
     }
 
@@ -93,14 +94,14 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
     this.salesDataChart1.setOption(lineOption);
 
 
-    const platformData = (await this.getChartData('PLATFORM')).data;
-    const provinceData = (await this.getChartData('PROVINCE')).data;
+    const platformData = (await this.getPlatformPieData()).data;
+    const provinceData = (await this.getProvincePie()).data;
 
     const datas = [];
     let totalVolume = 0;
     for (let i = 0; i < this.legendData.length; i++) {
       const name = this.legendData[i];
-      const data: CategoryAndShopDataItem = find(platformData, {type: name}) || {};
+      const data: CategoryAndShopDataItem = find(platformData, {platform: name}) || {};
       datas.push({
         value: data.totalVolume || 0,
         name: name
@@ -148,7 +149,7 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
       const data: CategoryAndShopDataItem = provinceData[i];
       province_datas.push({
         value: data.totalVolume || 0,
-        name: data.type
+        name: data.province
       });
       province_totalVolume += data.totalVolume || 0;
     }
@@ -189,17 +190,23 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
     this.salesDataChart3.setOption(provincePieOption);
   }
 
-  getChartData(type): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
+  getProvincePie(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     const date = this.getDateRangeParam();
-    return this.productService.getProductPie({
-      type: type,
+    return this.localProductService.queryProvincePie({
+      ...date
+    });
+  }
+
+  getPlatformPieData(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
+    const date = this.getDateRangeParam();
+    return this.localProductService.queryPlatformPie({
       ...date
     });
   }
 
   getLineChartData(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     const date = this.getDateRangeParam();
-    return this.productService.getProductLine({
+    return this.localProductService.queryLine({
       ...date
     });
   }
@@ -208,15 +215,15 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
     const configs: ColumnItem[] = [
       {
         column: 'date', title: '时间',
-        formatter: (row: CategoryAndShopDataItem) => {
-          return `${row.year || ''}-${row.month || ''}`;
+        formatter: () => {
+          return this.dateAreaStr;
         }
       },
       {column: 'province', title: '省'},
       {column: 'platform', title: '平台'},
-      {column: 'productName', title: '商品名称'},
-      {column: 'salesCount', title: '销售量'},
-      {column: 'salesVolume', title: '销售额'},
+      {column: 'catName', title: '商品名称'},
+      {column: 'totalCount', title: '销售量'},
+      {column: 'totalVolume', title: '销售额'},
     ];
 
     return configs;
@@ -228,9 +235,13 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
       dateEnd: void 0,
     };
     if (this.dateRange && this.dateRange.length === 2) {
-      const [s, e] = this.dateRange;
-      param.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
-      param.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+      const [s, e] = [
+        moment(this.dateRange[0]).format('YYYY-MM'),
+        moment(this.dateRange[1]).format('YYYY-MM')
+      ];
+      param.dateBegin = `${s}-01`;
+      param.dateEnd = `${e}-02`;
+      this.dateAreaStr = `${s}-${e}`;
     }
     return param;
   }

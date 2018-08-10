@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
+import {cloneDeep} from 'lodash';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MenuService {
 
-  menus: MenuItem[] = [
+  private menus: MenuItem[] = [
     // 本地速览
     {
       name: '本地速览',
@@ -42,7 +43,7 @@ export class MenuService {
         {name: '区域整体对比', path: '/reports/district-analysis/contrast'},
         {name: '区域品类分析', path: '/reports/district-analysis/category'},
         {name: '区域店铺交易额分布', path: '/reports/district-analysis/store-sales-distribution'},
-        {name: '区域电商企业数、从业人数统计', path: '/reports/district-analysis/enterprises-and-employees'},
+        // {name: '区域电商企业数、从业人数统计', path: '/reports/district-analysis/enterprises-and-employees'},
       ]
     },
 
@@ -79,6 +80,10 @@ export class MenuService {
   ];
 
   constructor() {
+  }
+
+  getMenus() {
+    return cloneDeep(this.menus);
   }
 }
 

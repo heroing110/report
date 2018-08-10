@@ -24,6 +24,8 @@ export class SubdivisionComponent implements OnInit {
 
   loading = false;
 
+  private dateAreaStr: string;
+
   constructor(private categoryService: CategoryService) {
   }
 
@@ -32,7 +34,8 @@ export class SubdivisionComponent implements OnInit {
 
     this.getSalesVolumeTableDataFn = (pageIndex, pageSize) => {
       const date = this.getDateRangeParam();
-      return this.categoryService.pagingCatView({
+
+      return this.categoryService.pagingCatSubDetailView({
         ...date,
         pageNo: pageIndex,
         pageSize: pageSize
@@ -165,8 +168,8 @@ export class SubdivisionComponent implements OnInit {
     const configs: ColumnItem[] = [
       {
         column: 'date', title: '时间',
-        formatter: (row: CategoryAndShopDataItem) => {
-          return `${row.year || ''}-${row.month || ''}`;
+        formatter: () => {
+          return this.dateAreaStr;
         }
       },
       {column: 'province', title: '省'},
@@ -191,9 +194,13 @@ export class SubdivisionComponent implements OnInit {
       dateEnd: void 0,
     };
     if (this.dateRange && this.dateRange.length === 2) {
-      const [s, e] = this.dateRange;
-      param.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
-      param.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+      const [s, e] = [
+        moment(this.dateRange[0]).format('YYYY-MM'),
+        moment(this.dateRange[1]).format('YYYY-MM')
+      ];
+      param.dateBegin = `${s}-01`;
+      param.dateEnd = `${e}-02`;
+      this.dateAreaStr = `${s}-${e}`;
     }
     return param;
   }
