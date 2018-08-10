@@ -33,6 +33,7 @@ export class AuthService {
    * @returns {Promise<AjaxResult<boolean>>}
    */
   logout(): Promise<AjaxResult<boolean>> {
+    this.userInfo = null;
     return this.http.get<any>('user/login_out').toPromise();
   }
 }

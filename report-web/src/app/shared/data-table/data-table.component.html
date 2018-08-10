@@ -19,7 +19,7 @@
           [(nzSort)]="sortMap[header.column]" (nzSortChange)="sort($event,header)"
 
           [nzShowFilter]="header.filter"
-          [nzFilters]="header.filterList"
+          [nzFilters]="header.filterList || []"
           (nzFilterChange)="updateFilter($event, header)">{{header.title}}
       </th>
     </ng-container>

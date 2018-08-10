@@ -74,11 +74,8 @@ export class QuickViewComponent implements OnInit {
             splitLine: {show: false}
           }
         ],
-        // dataZoom: [{
-        //   startValue: dates[0]
-        // }, {
-        //   type: 'inside'
-        // }],
+
+        yAxis: {type: 'value'},
         series: [
           {
             name: '交易额',
@@ -104,8 +101,7 @@ export class QuickViewComponent implements OnInit {
         grid: {
           top: 80,
           bottom: 100
-        },
-        yAxis: {type: 'value'}
+        }
       },
       options: options
     };

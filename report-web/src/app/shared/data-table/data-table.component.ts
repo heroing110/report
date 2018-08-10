@@ -94,5 +94,5 @@ export class ColumnItem {
   formatter?: (row, value, index) => string; // 格式化要显示的数据
   sort?: boolean; // 排序支持
   filter?: boolean; // 过滤支持，需要提供filterList 来过滤
-  filterList?: { text: string, value: string }[];
+  filterList?: { text: string, value: any }[];
 }
