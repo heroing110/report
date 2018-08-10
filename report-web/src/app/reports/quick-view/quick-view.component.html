@@ -27,7 +27,7 @@
   </div>
   <div>
     <ul class="sortList">
-      <li *ngFor="let data of sortDataList;let i = index">
+      <li *ngFor="let data of sortDataList;let i = index" [class.current]="checkCurrent(data.name)">
         {{data.name}} {{i + 1}}
       </li>
     </ul>

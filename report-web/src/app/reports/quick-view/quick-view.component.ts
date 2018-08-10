@@ -6,6 +6,7 @@ import {HomeService, StaTotal} from '../../shared/home.service';
 import {ChainMapService} from '../../shared/chain-map.service';
 import * as moment from 'moment';
 import {chain} from 'lodash';
+import {AuthService, User} from '../../shared/auth.service';
 
 @Component({
   selector: 'app-quick-view',
@@ -56,13 +57,18 @@ export class QuickViewComponent implements OnInit {
   electronLoading = false;
   top30Loading = false;
   mainElectronLoading = false;
+  private user: User;
+  localSmallName: string;
 
   constructor(private categoryService: CategoryService,
               private homeService: HomeService,
-              private chainMapService: ChainMapService) {
+              private chainMapService: ChainMapService,
+              private authService: AuthService) {
   }
 
   ngOnInit() {
+
+    this.user = this.authService.userInfo;
 
     this.tableConfigs = this.createColumnConfigs();
 
@@ -98,8 +104,11 @@ export class QuickViewComponent implements OnInit {
       this.sortType = sortType;
     }
     const dateRangeParam = this.getDateRangeParam();
-    let mapType = '';
+    this.localSmallName = getSmallName(this.user.province);
+
+    let mapType = this.localSmallName;
     const datas = [];
+
     if (this.sortType === 1) {// 全国排序
       mapType = 'china';
       this.chainMapService.loadChinaMap();
@@ -108,10 +117,8 @@ export class QuickViewComponent implements OnInit {
       })).data;
       for (let i = 0; i < result.length; i++) {
         const data: StaTotal = result[i];
-        if (data.province.endsWith('省')) {
-          // 如果最后一个字是省，则将它抹掉
-          data.province = data.province.slice(0, -1);
-        }
+
+        data.province = getSmallName(data.province);
 
         datas.push({
           name: data.province,
@@ -119,11 +126,10 @@ export class QuickViewComponent implements OnInit {
         });
       }
     } else {
-      mapType = '广东';
       this.chainMapService.loadProvinceMap(mapType);
       const result = (await this.homeService.homeProvinceRank({
         ...dateRangeParam,
-        province: '广东省'
+        province: this.user.province
       })).data;
 
       for (let i = 0; i < result.length; i++) {
@@ -133,6 +139,15 @@ export class QuickViewComponent implements OnInit {
           value: data.total
         });
       }
+    }
+
+    // 移除省/市的结尾
+    function getSmallName(province: string) {
+      if (province.endsWith('省') || province.endsWith('市')) {
+        // 如果最后一个字是省，则将它抹掉
+        province = province.slice(0, -1);
+      }
+      return province;
     }
 
     // 排序，取前9个
@@ -171,6 +186,10 @@ export class QuickViewComponent implements OnInit {
     };
 
     this.dataChart1.setOption(option);
+  }
+
+  checkCurrent(sortName: string = '') {
+    return sortName.startsWith(this.localSmallName);
   }
 
   async setChartOption2() {
