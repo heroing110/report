@@ -27,13 +27,15 @@
   </div>
   <div>
     <ul class="sortList">
-      <li *ngFor="let data of sortDataList;let i = index" [class.current]="checkCurrent(data.name)">
-        {{data.name}} {{i + 1}}
+      <li *ngFor="let data of sortDataList;let i = index" [class.current]="checkCurrent(data.name)"
+          layout="row">
+        <div flex>{{data.name}}</div>
+        <div>{{i + 1}}</div>
       </li>
     </ul>
   </div>
 </div>
-<div layout="row" class="dataBox" layout-align="start start"
+<div layout="row" layout-wrap class="dataBox" layout-align="start start"
      *ngIf="staListAfter && staListAfter.length">
   <div flex="15" *ngFor="let sta of staListAfter">
     <div class="box-label">{{sta.indexType}}</div>

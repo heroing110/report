@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import {groupBy, map} from 'lodash';
 import {HomeService} from '../../../shared/home.service';
 import {TrendService} from '../../../shared/trend.service';
+import {CommonDataService} from '../../../shared/common-data.service';
 
 @Component({
   selector: 'app-quick-view',
@@ -21,11 +22,12 @@ export class QuickViewComponent implements OnInit {
 
   dateRange: Date[] = [];
 
-  platform = '';
   loading = false;
   categoryList: OptionItem[];
+  category = '';
 
   constructor(private homeService: HomeService,
+              private commonDataService: CommonDataService,
               private trendService: TrendService) {
   }
 
@@ -42,10 +44,9 @@ export class QuickViewComponent implements OnInit {
       });
     };
 
-    this.categoryList = [
-      {label: 'B2B', value: 'B2B'},
-      {label: '网络零售', value: '网络零售'},
-    ];
+    this.commonDataService.getIndexTypeList().then(res => {
+      this.categoryList = res.data;
+    });
   }
 
   async setChartOption() {
@@ -113,6 +114,7 @@ export class QuickViewComponent implements OnInit {
   getChartData(): Promise<AjaxResult<any>> {
     const date = this.getDateRangeParam();
     return this.trendService.getTrendCityLineData({
+      indexType: this.category || void 0,
       ...date
     });
   }

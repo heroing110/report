@@ -5,7 +5,7 @@ import {CategoryService} from '../../shared/category.service';
 import {HomeService, StaTotal} from '../../shared/home.service';
 import {ChainMapService} from '../../shared/chain-map.service';
 import * as moment from 'moment';
-import {chain} from 'lodash';
+import {chain, groupBy} from 'lodash';
 import {AuthService, User} from '../../shared/auth.service';
 
 @Component({
@@ -48,7 +48,7 @@ export class QuickViewComponent implements OnInit {
   tableConfigs: ColumnItem[];
   getTableDataFn: GetTableDataFn;
 
-  // 统计前五项
+  // 统计前六项
   staListBefore: StaTotal[] = [];
 
   // 后所有项
@@ -93,8 +93,8 @@ export class QuickViewComponent implements OnInit {
       ...date
     }).then((result) => {
       const list = result.data || [];
-      this.staListBefore = list.slice(0, 5);
-      this.staListAfter = list.slice(5);
+      this.staListBefore = list.slice(0, 6);
+      this.staListAfter = list.slice(6);
     });
   }
 
@@ -267,43 +267,44 @@ export class QuickViewComponent implements OnInit {
     const dateParam = this.getDateRangeParam();
     const data = (await this.homeService.homeBusinessLine({...dateParam})).data;
 
-    const xAxisData = chain(data).map('dateStr').value();
+    console.log('data', data);
+    const groupData = groupBy(data, 'platform');
+
+    const platforms = Object.keys(groupData);
+
+    let xAxisData = [];
+    const series = [];
+    for (let i = 0; i < platforms.length; i++) {
+      const platform = platforms[i];
+      const list = groupData[platform];
+      const dates = chain(list).map('dateStr').compact().value();
+      if (!xAxisData.length || xAxisData.length < dates.length) {
+        xAxisData = dates;
+      }
+      series.push({
+        name: platform,
+        type: 'line',
+        data: chain(list).map('totalVolume').value()
+      });
+    }
 
     const option = {
       tooltip: {trigger: 'axis'},
       toolbox: {show: false},
       legend: {
         right: 0,
-        data: ['天猫', '京东']
+        data: platforms
       },
-      xAxis: {
-        data: xAxisData
-      },
+      xAxis: {data: xAxisData},
       yAxis: {
-        splitLine: {
-          show: false
-        }
+        splitLine: {show: false}
       },
-      dataZoom: [{
-        startValue: xAxisData[0]
-      }, {
-        type: 'inside'
-      }],
-      series: [
-        {
-          name: '天猫',
-          type: 'line',
-          data: chain(data).map('totalVolume').value()
-        },
-        {
-          name: '京东',
-          type: 'line',
-          data: chain(data).map('totalVolume1').value()
-        }
-      ]
+      dataZoom: [{startValue: xAxisData[0]}, {type: 'inside'}],
+      series: series
     };
 
     this.dataChart3.setOption(option);
+    console.log('option', option);
     this.mainElectronLoading = false;
   }
 

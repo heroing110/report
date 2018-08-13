@@ -5,6 +5,7 @@ import {HomeService} from '../../../shared/home.service';
 import * as moment from 'moment';
 import {map} from 'lodash';
 import {TrendService} from '../../../shared/trend.service';
+import {CommonDataService} from '../../../shared/common-data.service';
 
 @Component({
   selector: 'app-contrast',
@@ -23,13 +24,14 @@ export class ContrastComponent implements OnInit {
 
   dateRange: Date[] = [];
 
-  platform = '';
+  category = '';
   loading = false;
   categoryList: OptionItem[];
   private dateAreaStr: string;
 
   constructor(private homeService: HomeService,
-              private trendService: TrendService) {
+              private trendService: TrendService,
+              private commonDataService: CommonDataService) {
   }
 
   async ngOnInit() {
@@ -45,10 +47,9 @@ export class ContrastComponent implements OnInit {
         pageSize: pageSize
       });
     };
-    this.categoryList = [
-      {label: 'B2B', value: 'B2B'},
-      {label: '网络零售', value: '网络零售'},
-    ];
+    this.commonDataService.getIndexTypeList().then(res => {
+      this.categoryList = res.data;
+    });
   }
 
   async setChartOption() {
@@ -84,7 +85,7 @@ export class ContrastComponent implements OnInit {
     const date = this.getDateRangeParam();
     return this.trendService.getTrendCityLineData({
       ...date,
-      platform: this.platform || void 0
+      indexType: this.category || void 0
     });
   }
 

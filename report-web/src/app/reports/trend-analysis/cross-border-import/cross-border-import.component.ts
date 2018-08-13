@@ -20,6 +20,7 @@ export class CrossBorderImportComponent implements OnInit {
   dataChart: DataChartComponent; // 交易量图
 
   dateRange: Date[] = [];
+  param: { totalVolume, increaseVolume, increaseVolumePercent };
 
   constructor(private trendService: TrendService) {
   }
@@ -36,6 +37,15 @@ export class CrossBorderImportComponent implements OnInit {
         pageSize: pageSize,
       });
     };
+  }
+
+  getParam() {
+    const date = this.getDateRangeParam();
+    this.trendService.getTrendLineParam({
+      ...date
+    }).then(res => {
+      this.param = res.data;
+    });
   }
 
   async setChartOption() {

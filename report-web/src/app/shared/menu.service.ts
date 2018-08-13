@@ -73,7 +73,7 @@ export class MenuService {
       path: '/reports/single-product-analysis',
       icon: 'anticon-rocket',
       children: [
-        {name: '品类分店铺销售分析', path: '/reports/single-product-analysis/popularity'},
+        {name: '人气单品', path: '/reports/single-product-analysis/popularity'},
         {name: '特色产品监测', path: '/reports/single-product-analysis/emphases'},
       ]
     },

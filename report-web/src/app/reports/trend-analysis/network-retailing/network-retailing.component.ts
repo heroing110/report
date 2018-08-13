@@ -21,6 +21,11 @@ export class NetworkRetailingComponent implements OnInit {
 
   dateRange: Date[] = [];
 
+  param: {
+    totalVolume, increaseVolume, increaseVolumePercent,
+    totalCount, increaseCount, increaseCountPercent
+  };
+
   constructor(private trendService: TrendService) {
   }
 
@@ -37,6 +42,15 @@ export class NetworkRetailingComponent implements OnInit {
         pageSize: pageSize,
       });
     };
+  }
+
+  getParam() {
+    const date = this.getDateRangeParam();
+    this.trendService.getTrendLineParam({
+      ...date
+    }).then(res => {
+      this.param = res.data;
+    });
   }
 
   async setChartOption() {

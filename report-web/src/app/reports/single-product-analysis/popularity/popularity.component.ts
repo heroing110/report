@@ -115,7 +115,7 @@ export class PopularityComponent implements OnInit {
       },
       {column: 'province', title: '省'},
       {column: 'platform', title: '平台'},
-      {column: 'productName', title: '商品名称'},
+      {column: 'productName', title: '畅销单品'},
       {column: 'countCount', title: '销售量'},
     ];
 

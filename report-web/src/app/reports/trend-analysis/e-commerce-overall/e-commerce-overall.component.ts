@@ -20,6 +20,8 @@ export class ECommerceOverallComponent implements OnInit {
 
   dateRange: Date[] = [];
 
+  param: { totalVolume, increaseVolume, increaseVolumePercent };
+
   constructor(private trendService: TrendService) {
   }
 
@@ -35,6 +37,15 @@ export class ECommerceOverallComponent implements OnInit {
         pageSize: pageSize,
       });
     };
+  }
+
+  getParam() {
+    const date = this.getDateRangeParam();
+    this.trendService.getTrendLineParam({
+      ...date
+    }).then(res => {
+      this.param = res.data;
+    });
   }
 
   async setChartOption() {

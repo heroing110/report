@@ -40,4 +40,19 @@ export class CommonDataService {
 
     return Promise.resolve({data: categoryList});
   }
+
+  getIndexTypeList(): Promise<AjaxResult<OptionItem[]>> {
+    const categoryList: OptionItem[] = [
+      {label: '电商整体', value: '电商整体'},
+      {label: '企业数', value: '企业数'},
+      {label: '从业人数', value: '从业人数'},
+      {label: 'B2B', value: 'B2B'},
+      {label: '网络零售', value: '网络零售'},
+      {label: '跨境电商', value: '跨境电商'},
+      {label: '农村电商', value: '农村电商'},
+      {label: '跨境电商', value: '跨境电商'},
+      {label: '跨境电商', value: '跨境电商'},
+    ];
+    return Promise.resolve({data: categoryList});
+  }
 }
