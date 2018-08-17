@@ -48,6 +48,7 @@ export class SubdivisionComponent implements OnInit {
       return;
     }
     this.loading = true;
+    this.dataChart.showLoading();
     const dataList = (await this.getChartData(this.platform)).data;
 
     const treeList = [];
@@ -110,6 +111,7 @@ export class SubdivisionComponent implements OnInit {
     }
 
     const option = {
+      tooltip: {},
       series: [
         {
           type: 'treemap',

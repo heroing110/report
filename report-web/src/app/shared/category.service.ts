@@ -88,6 +88,7 @@ export class CategoryAndShopDataItem {
   dateStr?: string;
   data?: string;
   type?: string;
+  indexType?: string;
   indexType1?: string;
   indexType2?: string;
   dateBegin?: string;

@@ -1,7 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ColumnItem} from '../../../shared/data-table/data-table.component';
 import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
-import {CategoryAndShopDataItem} from '../../../shared/category.service';
 import * as moment from 'moment';
 import {groupBy, map} from 'lodash';
 import {HomeService} from '../../../shared/home.service';
@@ -21,6 +20,7 @@ export class QuickViewComponent implements OnInit {
   dataChart: DataChartComponent;
 
   dateRange: Date[] = [];
+  private dateAreaStr: string;
 
   loading = false;
   categoryList: OptionItem[];
@@ -123,13 +123,13 @@ export class QuickViewComponent implements OnInit {
     const configs: ColumnItem[] = [
       {
         column: 'date', title: '时间',
-        formatter: (row: CategoryAndShopDataItem) => {
-          return `${row.year || ''}-${row.month || ''}`;
-        }
+        formatter: () => this.dateAreaStr
       },
       {column: 'province', title: '省'},
       {column: 'city', title: '市'},
-      {column: 'mom', title: '指标值'},
+      {column: 'indexType', title: '指标类型'},
+      {column: 'indexValue', title: '指标值'},
+      {column: 'mom', title: '环比'},
     ];
 
     return configs;
@@ -141,9 +141,13 @@ export class QuickViewComponent implements OnInit {
       dateEnd: void 0,
     };
     if (this.dateRange && this.dateRange.length === 2) {
-      const [s, e] = this.dateRange;
-      param.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
-      param.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+      const [s, e] = [
+        moment(this.dateRange[0]).format('YYYY-MM'),
+        moment(this.dateRange[1]).format('YYYY-MM')
+      ];
+      param.dateBegin = `${s}-01`;
+      param.dateEnd = `${e}-02`;
+      this.dateAreaStr = `${s}-${e}`;
     }
     return param;
   }

@@ -73,6 +73,7 @@ export class CategoryComponent implements OnInit {
 
       // 生产所有的配置
       options.push({
+        tooltip: {trigger: 'axis',},
         xAxis: [
           {
             type: 'category',
@@ -86,6 +87,7 @@ export class CategoryComponent implements OnInit {
 
     if (!options.length) {
       options.push({
+        tooltip: {trigger: 'axis',},
         xAxis: [
           {
             type: 'category',
@@ -109,10 +111,6 @@ export class CategoryComponent implements OnInit {
         },
         legend: {
           data: map(seriesTypes, 'name')
-        },
-        tooltip: {
-          trigger: 'axis',
-          formatter: '{a}:{c}% <br/> {a1}:{c1}%'
         },
         calculable: true,
         grid: {
@@ -143,9 +141,7 @@ export class CategoryComponent implements OnInit {
     const configs: ColumnItem[] = [
       {
         column: 'date', title: '时间',
-        formatter: () => {
-          return this.dateAreaStr;
-        }
+        formatter: () => this.dateAreaStr
       },
       {column: 'province', title: '省'},
       {column: 'city', title: '市'},

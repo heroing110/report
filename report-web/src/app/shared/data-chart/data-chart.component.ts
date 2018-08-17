@@ -32,6 +32,7 @@ export class DataChartComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.chartObj = echarts.init(this.canvas.nativeElement);
 
+    this.showLoading();
     // 初始化窗口事件
     this.eventEmitter.subscribe(() => {
       this.chartObj.resize();
@@ -48,6 +49,19 @@ export class DataChartComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.chartObj) {
       optionMergeAsDefault(option);
       this.chartObj.setOption(option, noMerge);
+    }
+    this.hideLoading();
+  }
+
+  showLoading() {
+    if (this.chartObj) {
+      this.chartObj.showLoading();
+    }
+  }
+
+  hideLoading() {
+    if (this.chartObj) {
+      this.chartObj.hideLoading();
     }
   }
 

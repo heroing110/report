@@ -29,7 +29,7 @@ export class RangeMonthComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     if (!this.dates || !this.dates.length) {
-      this.setPrevMonth(); // 默认设置上一个月
+      this.setAllYear(); // 默认设置上一个月
     }
     this.disabledEndDate = (endValue: Date) => {
       if (!endValue || !this.startValue) {

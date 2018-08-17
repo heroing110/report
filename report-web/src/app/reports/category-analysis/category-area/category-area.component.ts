@@ -25,6 +25,7 @@ export class CategoryAreaComponent implements OnInit, AfterViewInit {
   loading = false;
   categoryList: OptionItem[];
   private dateAreaStr: string;
+
   constructor(private categoryService: CategoryService,
               private commonDataService: CommonDataService) {
   }
@@ -81,6 +82,7 @@ export class CategoryAreaComponent implements OnInit, AfterViewInit {
 
       // 生产所有的配置
       options.push({
+        tooltip: {trigger: 'axis'},
         xAxis: [
           {
             type: 'category',
@@ -104,10 +106,6 @@ export class CategoryAreaComponent implements OnInit, AfterViewInit {
         },
         legend: {
           data: map(seriesTypes, 'name')
-        },
-        tooltip: {
-          trigger: 'axis',
-          formatter: '{a}:{c}% <br/> {a1}:{c1}%'
         },
         calculable: true,
         grid: {

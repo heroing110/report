@@ -22,6 +22,7 @@ export class StoreSalesDistributionComponent implements OnInit {
   platform = '';
   loading = false;
   private dateAreaStr: string;
+
   constructor(private shopService: ShopService) {
   }
 
@@ -51,6 +52,17 @@ export class StoreSalesDistributionComponent implements OnInit {
     let citys = null;
 
     const series = [];
+    const count = [];
+    if (ranges.length) {// 计算所有数据总和
+      const size = groupData[ranges[0]].length;
+      for (let i = 0; i < size; i++) {
+        let valCount = 0;
+        ranges.forEach(range => {
+          valCount += groupData[range][i]['shopCount'] || 0;
+        });
+        count.push(valCount);
+      }
+    }
 
     for (let i = 0; i < ranges.length; i++) {
       const range = ranges[i];
@@ -69,7 +81,9 @@ export class StoreSalesDistributionComponent implements OnInit {
             position: 'insideRight'
           }
         },
-        data: map(list, 'shopCount')
+        data: map(list, 'shopCount').map((val, index) => {
+          return (val || 0) / count[index] * 100;
+        })
       });
     }
 
@@ -94,68 +108,7 @@ export class StoreSalesDistributionComponent implements OnInit {
         data: citys
       },
       yAxis: {type: 'value'},
-      series: series || [
-        {
-          name: '直接访问',
-          type: 'bar',
-          stack: '总量',
-          label: {
-            normal: {
-              show: true,
-              position: 'insideRight'
-            }
-          },
-          data: [320, 302, 301, 334, 390, 330, 320]
-        },
-        {
-          name: '邮件营销',
-          type: 'bar',
-          stack: '总量',
-          label: {
-            normal: {
-              show: true,
-              position: 'insideRight'
-            }
-          },
-          data: [120, 132, 101, 134, 90, 230, 210]
-        },
-        {
-          name: '联盟广告',
-          type: 'bar',
-          stack: '总量',
-          label: {
-            normal: {
-              show: true,
-              position: 'insideRight'
-            }
-          },
-          data: [220, 182, 191, 234, 290, 330, 310]
-        },
-        {
-          name: '视频广告',
-          type: 'bar',
-          stack: '总量',
-          label: {
-            normal: {
-              show: true,
-              position: 'insideRight'
-            }
-          },
-          data: [150, 212, 201, 154, 190, 330, 410]
-        },
-        {
-          name: '搜索引擎',
-          type: 'bar',
-          stack: '总量',
-          label: {
-            normal: {
-              show: true,
-              position: 'insideRight'
-            }
-          },
-          data: [820, 832, 901, 934, 1290, 1330, 1320]
-        }
-      ]
+      series: series
     };
 
     this.dataChart.setOption(option);
@@ -180,13 +133,10 @@ export class StoreSalesDistributionComponent implements OnInit {
       },
       {column: 'province', title: '省'},
       {column: 'city', title: '市'},
+      {column: 'platform', title: '平台'},
+      {column: 'type', title: '销售额区间'},
       {
-        column: 'range', title: '销售额区间', formatter: (row) => {
-          return `${row['minSalesVolume']}-${row['maxSalesVolume']}万`;
-        }
-      },
-      {
-        column: 'salesPercent', title: '占比',
+        column: 'percent', title: '占比',
         formatter: (row, value) => {
           return `${value || 0}%`;
         }
