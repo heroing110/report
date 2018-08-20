@@ -22,6 +22,8 @@ export class CrossBorderExportComponent implements OnInit {
   dateRange: Date[] = [];
   param: { totalVolume, increaseVolume, increaseVolumePercent };
 
+  private indexType = '跨境电商出口交易额';
+
   constructor(private trendService: TrendService) {
   }
 
@@ -32,7 +34,7 @@ export class CrossBorderExportComponent implements OnInit {
       const date = this.getDateRangeParam();
       return this.trendService.pagingTrendListView({
         ...date,
-        indexType1: '跨境电商出口',
+        indexType: this.indexType,
         pageNo: pageIndex,
         pageSize: pageSize,
       });
@@ -42,6 +44,7 @@ export class CrossBorderExportComponent implements OnInit {
   getParam() {
     const date = this.getDateRangeParam();
     this.trendService.getTrendLineParam({
+      volumeType: this.indexType,
       ...date
     }).then(res => {
       this.param = res.data;
@@ -93,7 +96,7 @@ export class CrossBorderExportComponent implements OnInit {
   getLineChartData(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     const date = this.getDateRangeParam();
     return this.trendService.getTrendLineData({
-      indexType1: '跨境电商出口',
+      indexType1: this.indexType,
       ...date,
     });
   }

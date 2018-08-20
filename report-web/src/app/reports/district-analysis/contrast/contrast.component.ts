@@ -24,7 +24,7 @@ export class ContrastComponent implements OnInit {
 
   dateRange: Date[] = [];
 
-  category = '';
+  category = '电商整体';
   loading = false;
   categoryList: OptionItem[];
   private dateAreaStr: string;

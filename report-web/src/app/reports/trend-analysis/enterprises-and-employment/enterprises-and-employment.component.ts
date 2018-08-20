@@ -25,6 +25,9 @@ export class EnterprisesAndEmploymentComponent implements OnInit {
     totalCount, increaseCount, increaseCountPercent
   };
 
+  private indexType1 = '电子商务企业数';
+  private indexType2 = '电子商务从业人数';
+
   constructor(private trendService: TrendService) {
   }
 
@@ -35,8 +38,8 @@ export class EnterprisesAndEmploymentComponent implements OnInit {
       const date = this.getDateRangeParam();
       return this.trendService.pagingTrendListView({
         ...date,
-        indexType1: '电子商务企业数',
-        indexType2: '电子商务从业人数',
+        indexType: this.indexType1,
+        indexType2: this.indexType2,
         pageNo: pageIndex,
         pageSize: pageSize,
       });
@@ -46,6 +49,7 @@ export class EnterprisesAndEmploymentComponent implements OnInit {
   getParam() {
     const date = this.getDateRangeParam();
     this.trendService.getTrendLineParam({
+      isDoubleParam: 'true',
       ...date
     }).then(res => {
       this.param = res.data;
@@ -95,8 +99,8 @@ export class EnterprisesAndEmploymentComponent implements OnInit {
   getLineChartData(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     const date = this.getDateRangeParam();
     return this.trendService.getTrendLineData({
-      indexType1: '电子商务企业数',
-      indexType2: '电子商务从业人数',
+      indexType1: this.indexType1,
+      indexType2: this.indexType2,
       ...date
     });
   }

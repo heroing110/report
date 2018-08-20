@@ -24,7 +24,7 @@ export class QuickViewComponent implements OnInit {
 
   loading = false;
   categoryList: OptionItem[];
-  category = '';
+  category = '电商整体';
 
   constructor(private homeService: HomeService,
               private commonDataService: CommonDataService,
@@ -113,7 +113,7 @@ export class QuickViewComponent implements OnInit {
 
   getChartData(): Promise<AjaxResult<any>> {
     const date = this.getDateRangeParam();
-    return this.trendService.getTrendCityLineData({
+    return this.trendService.getTrendCoreCityLineData({
       indexType: this.category || void 0,
       ...date
     });
@@ -121,10 +121,7 @@ export class QuickViewComponent implements OnInit {
 
   private createColumnVolumeConfigs() {
     const configs: ColumnItem[] = [
-      {
-        column: 'date', title: '时间',
-        formatter: () => this.dateAreaStr
-      },
+      {column: 'dateStr', title: '时间'},
       {column: 'province', title: '省'},
       {column: 'city', title: '市'},
       {column: 'indexType', title: '指标类型'},

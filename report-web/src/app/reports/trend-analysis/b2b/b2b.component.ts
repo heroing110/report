@@ -20,6 +20,7 @@ export class B2bComponent implements OnInit {
 
   dateRange: Date[] = [];
   param: { totalVolume, increaseVolume, increaseVolumePercent };
+  private indexType = 'B2B交易额';
 
   constructor(private trendService: TrendService) {
   }
@@ -31,7 +32,7 @@ export class B2bComponent implements OnInit {
       const date = this.getDateRangeParam();
       return this.trendService.pagingTrendListView({
         ...date,
-        indexType1: 'B2B交易',
+        indexType1: this.indexType,
         pageNo: pageIndex,
         pageSize: pageSize,
       });
@@ -41,6 +42,7 @@ export class B2bComponent implements OnInit {
   getParam() {
     const date = this.getDateRangeParam();
     this.trendService.getTrendLineParam({
+      volumeType: this.indexType,
       ...date
     }).then(res => {
       this.param = res.data;
@@ -92,7 +94,7 @@ export class B2bComponent implements OnInit {
   getLineChartData(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     const date = this.getDateRangeParam();
     return this.trendService.getTrendLineData({
-      indexType1: 'B2B交易',
+      indexType1: this.indexType,
       ...date,
     });
   }

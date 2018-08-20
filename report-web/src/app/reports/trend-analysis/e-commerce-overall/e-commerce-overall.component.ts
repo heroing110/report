@@ -21,6 +21,7 @@ export class ECommerceOverallComponent implements OnInit {
   dateRange: Date[] = [];
 
   param: { totalVolume, increaseVolume, increaseVolumePercent };
+  private indexType = '电商总体交易额';
 
   constructor(private trendService: TrendService) {
   }
@@ -32,7 +33,7 @@ export class ECommerceOverallComponent implements OnInit {
       const date = this.getDateRangeParam();
       return this.trendService.pagingTrendListView({
         ...date,
-        indexType1: '交易额',
+        indexType: this.indexType,
         pageNo: pageIndex,
         pageSize: pageSize,
       });
@@ -42,6 +43,7 @@ export class ECommerceOverallComponent implements OnInit {
   getParam() {
     const date = this.getDateRangeParam();
     this.trendService.getTrendLineParam({
+      volumeType: this.indexType,
       ...date
     }).then(res => {
       this.param = res.data;
@@ -93,7 +95,7 @@ export class ECommerceOverallComponent implements OnInit {
   getLineChartData(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     const date = this.getDateRangeParam();
     return this.trendService.getTrendLineData({
-      indexType1: '交易额',
+      indexType1: this.indexType,
       ...date,
     });
   }

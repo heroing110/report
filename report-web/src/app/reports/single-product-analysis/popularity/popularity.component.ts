@@ -17,7 +17,7 @@ export class PopularityComponent implements OnInit {
   volumeParam = {
     pageNo: 1,
     pageSize: 50,
-    orderBy: 'SALES_VOLUME',
+    orderBy: 'salesVolume',
     platform: null,
     sCat1Name: null,
   };
@@ -28,7 +28,7 @@ export class PopularityComponent implements OnInit {
   countParam = {
     pageNo: 1,
     pageSize: 50,
-    orderBy: 'SALES_COUNT',
+    orderBy: 'salesCount',
     platform: null,
     sCat1Name: null,
   };
@@ -36,6 +36,7 @@ export class PopularityComponent implements OnInit {
   loading = false;
   loading2 = false;
   dateRange: Date[] = [];
+  private dateAreaStr: string;
 
   constructor(private productService: ProductService) {
   }
@@ -76,6 +77,7 @@ export class PopularityComponent implements OnInit {
         const [s, e] = this.dateRange;
         newParam.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
         newParam.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+        this.dateAreaStr = `${newParam.dateBegin}-${newParam.dateEnd}`;
       } else {
         delete newParam.dateBegin;
         delete newParam.dateEnd;
@@ -92,14 +94,12 @@ export class PopularityComponent implements OnInit {
     const configs: ColumnItem[] = [
       {
         column: 'date', title: '时间',
-        formatter: (row: CategoryAndShopDataItem) => {
-          return `${row.year || ''}-${row.month || ''}`;
-        }
+        formatter: () => this.dateAreaStr
       },
       {column: 'province', title: '省'},
       {column: 'platform', title: '平台'},
       {column: 'productName', title: '商品名称'},
-      {column: 'salesPercent', title: '销售额'},
+      {column: 'salesVolume', title: '销售额'},
     ];
 
     return configs;
@@ -109,14 +109,12 @@ export class PopularityComponent implements OnInit {
     const configs: ColumnItem[] = [
       {
         column: 'date', title: '时间',
-        formatter: (row: CategoryAndShopDataItem) => {
-          return `${row.year || ''}-${row.month || ''}`;
-        }
+        formatter: () => this.dateAreaStr
       },
       {column: 'province', title: '省'},
       {column: 'platform', title: '平台'},
       {column: 'productName', title: '畅销单品'},
-      {column: 'countCount', title: '销售量'},
+      {column: 'salesCount', title: '销售量'},
     ];
 
     return configs;

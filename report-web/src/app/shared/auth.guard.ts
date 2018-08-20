@@ -19,7 +19,6 @@ export class AuthGuard implements CanActivate {
 
   async checkLogin(url: string) {
     const user: User = this.authService.userInfo || (await this.authService.getCurrentUser()).data;
-    console.log('currentUser', user);
     if (user) {
       this.authService.userInfo = user;
       return true;

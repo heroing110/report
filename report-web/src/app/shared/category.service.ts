@@ -88,6 +88,9 @@ export class CategoryAndShopDataItem {
   dateStr?: string;
   data?: string;
   type?: string;
+  isDoubleParam?: string;
+  volumeType?: string;
+  countType?: string;
   indexType?: string;
   indexType1?: string;
   indexType2?: string;

@@ -145,6 +145,7 @@ export class CategoryComponent implements OnInit {
       },
       {column: 'province', title: '省'},
       {column: 'city', title: '市'},
+      {column: 'platform', title: '平台'},
       {column: 'sCat1Name', title: '一级品类'},
       {
         column: 'countPercent', title: '销售量占比',

@@ -267,7 +267,6 @@ export class QuickViewComponent implements OnInit {
     const dateParam = this.getDateRangeParam();
     const data = (await this.homeService.homeBusinessLine({...dateParam})).data;
 
-    console.log('data', data);
     const groupData = groupBy(data, 'platform');
 
     const platforms = Object.keys(groupData);
@@ -293,6 +292,7 @@ export class QuickViewComponent implements OnInit {
       toolbox: {show: false},
       legend: {
         right: 0,
+        orient: 'vertical',
         data: platforms
       },
       xAxis: {data: xAxisData},
@@ -304,7 +304,6 @@ export class QuickViewComponent implements OnInit {
     };
 
     this.dataChart3.setOption(option);
-    console.log('option', option);
     this.mainElectronLoading = false;
   }
 

@@ -11,7 +11,12 @@ export class CatShopService {
   }
 
   // 分页查询 【品类店铺】 数据
-  pagingCatShopView(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<PagingResult<CategoryAndShopDataItem[]>>> {
-    return this.http.post<any>('catShop/listview', params).toPromise();
+  pagingCatShopVolumeView(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<PagingResult<CategoryAndShopDataItem[]>>> {
+    return this.http.post<any>('catShop/top_volume_listview', params).toPromise();
+  }
+
+  // 分页查询 【品类店铺】 数据
+  pagingCatShopCountView(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<PagingResult<CategoryAndShopDataItem[]>>> {
+    return this.http.post<any>('catShop/top_count_listview', params).toPromise();
   }
 }

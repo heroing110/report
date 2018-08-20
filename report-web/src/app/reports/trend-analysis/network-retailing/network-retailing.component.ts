@@ -26,6 +26,9 @@ export class NetworkRetailingComponent implements OnInit {
     totalCount, increaseCount, increaseCountPercent
   };
 
+  private indexType1 = '网络零售交易额';
+  private indexType2 = '网络零售交易量';
+
   constructor(private trendService: TrendService) {
   }
 
@@ -36,8 +39,8 @@ export class NetworkRetailingComponent implements OnInit {
       const date = this.getDateRangeParam();
       return this.trendService.pagingTrendListView({
         ...date,
-        indexType1: '交易额',
-        indexType2: '交易量',
+        indexType: this.indexType1,
+        indexType2: this.indexType2,
         pageNo: pageIndex,
         pageSize: pageSize,
       });
@@ -47,6 +50,8 @@ export class NetworkRetailingComponent implements OnInit {
   getParam() {
     const date = this.getDateRangeParam();
     this.trendService.getTrendLineParam({
+      volumeType: this.indexType1,
+      countType: this.indexType2,
       ...date
     }).then(res => {
       this.param = res.data;
@@ -96,8 +101,8 @@ export class NetworkRetailingComponent implements OnInit {
   getLineChartData(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     const date = this.getDateRangeParam();
     return this.trendService.getTrendLineData({
-      indexType1: '交易额',
-      indexType2: '交易量',
+      indexType1: this.indexType1,
+      indexType2: this.indexType2,
       ...date
     });
   }

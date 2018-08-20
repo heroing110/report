@@ -21,6 +21,7 @@ export class KindOnlineShoppingComponent implements OnInit {
 
   dateRange: Date[] = [];
   param: { totalVolume, increaseVolume, increaseVolumePercent };
+  private indexType = '实物商品网购交易额';
 
   constructor(private trendService: TrendService) {
   }
@@ -32,7 +33,7 @@ export class KindOnlineShoppingComponent implements OnInit {
       const date = this.getDateRangeParam();
       return this.trendService.pagingTrendListView({
         ...date,
-        indexType1: '实物商品网购交易',
+        indexType: this.indexType,
         pageNo: pageIndex,
         pageSize: pageSize,
       });
@@ -42,6 +43,7 @@ export class KindOnlineShoppingComponent implements OnInit {
   getParam() {
     const date = this.getDateRangeParam();
     this.trendService.getTrendLineParam({
+      volumeType: this.indexType,
       ...date
     }).then(res => {
       this.param = res.data;
@@ -93,7 +95,7 @@ export class KindOnlineShoppingComponent implements OnInit {
   getLineChartData(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     const date = this.getDateRangeParam();
     return this.trendService.getTrendLineData({
-      indexType1: '实物商品网购交易',
+      indexType1: this.indexType,
       ...date,
     });
   }

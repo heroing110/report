@@ -18,9 +18,8 @@ export class CategoryTopShopComponent implements OnInit {
   volumeParam = {
     pageNo: 1,
     pageSize: 10,
-    orderBy: 'M_SALES_VOLUME',
     platform: null,
-    sCat1Name: null,
+    sCat1Name: '',
   };
 
   // 销售量TOP10
@@ -29,14 +28,14 @@ export class CategoryTopShopComponent implements OnInit {
   countParam = {
     pageNo: 1,
     pageSize: 10,
-    orderBy: 'M_SLAES_COUNT',
     platform: null,
-    sCat1Name: null,
+    sCat1Name: '',
   };
 
   loading = false;
   loading2 = false;
   dateRange: Date[] = [];
+  private dateAreaStr: string;
 
   constructor(private catShopService: CatShopService) {
   }
@@ -48,7 +47,7 @@ export class CategoryTopShopComponent implements OnInit {
     // 月销额度排序TOP10
     this.getSalesVolumeTableDataFn = () => {
       this.loading = true;
-      return this.catShopService.pagingCatShopView(formatParam(this.volumeParam))
+      return this.catShopService.pagingCatShopVolumeView(formatParam(this.volumeParam))
         .then(res => {
           this.loading = false;
           res.data.total = Math.min(res.data.total, this.volumeParam.pageSize);
@@ -59,7 +58,7 @@ export class CategoryTopShopComponent implements OnInit {
     // 月销量排序TOP10
     this.getSlaesCountTableDataFn = () => {
       this.loading2 = true;
-      return this.catShopService.pagingCatShopView(formatParam(this.countParam))
+      return this.catShopService.pagingCatShopCountView(formatParam(this.countParam))
         .then(res => {
           this.loading2 = false;
           res.data.total = Math.min(res.data.total, this.countParam.pageSize);
@@ -80,6 +79,8 @@ export class CategoryTopShopComponent implements OnInit {
         const [s, e] = this.dateRange;
         newParam.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
         newParam.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+
+        this.dateAreaStr = `${newParam.dateBegin}-${newParam.dateEnd}`;
       } else {
         delete newParam.dateBegin;
         delete newParam.dateEnd;
@@ -96,20 +97,13 @@ export class CategoryTopShopComponent implements OnInit {
     const configs: ColumnItem[] = [
       {
         column: 'date', title: '时间',
-        formatter: (row: CategoryAndShopDataItem) => {
-          return `${row.year || ''}-${row.month || ''}`;
-        }
+        formatter: () => this.dateAreaStr
       },
       {column: 'province', title: '省'},
       {column: 'platform', title: '平台'},
       {column: 'sCat1Name', title: '一级品类'},
       {column: 'shopName', title: '店铺名称'},
-      {
-        column: 'salesPercent', title: '销售额占比',
-        formatter: (row, value) => {
-          return `${value || 0}%`;
-        }
-      },
+      {column: 'totalVolume', title: '销售额'},
     ];
 
     return configs;
@@ -119,20 +113,13 @@ export class CategoryTopShopComponent implements OnInit {
     const configs: ColumnItem[] = [
       {
         column: 'date', title: '时间',
-        formatter: (row: CategoryAndShopDataItem) => {
-          return `${row.year || ''}-${row.month || ''}`;
-        }
+        formatter: () => this.dateAreaStr
       },
       {column: 'province', title: '省'},
       {column: 'platform', title: '平台'},
       {column: 'sCat1Name', title: '一级品类'},
       {column: 'shopName', title: '店铺名称'},
-      {
-        column: 'countPercent', title: '销售量占比',
-        formatter: (row, value) => {
-          return `${value || 0}%`;
-        }
-      },
+      {column: 'totalCount', title: '销售量'},
     ];
 
     return configs;
