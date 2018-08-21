@@ -150,6 +150,12 @@ export class CategoryAreaComponent implements OnInit, AfterViewInit {
           return `${value || 0}%`;
         }
       },
+      {
+        column: 'countPercent', title: '销售量占比',
+        formatter: (row, value) => {
+          return `${value || 0}%`;
+        }
+      },
     ];
 
     return configs;

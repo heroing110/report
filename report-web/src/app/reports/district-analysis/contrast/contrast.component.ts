@@ -100,7 +100,7 @@ export class ContrastComponent implements OnInit {
       {column: 'province', title: '省'},
       {column: 'city', title: '市'},
       {column: 'indexType', title: '指标类型'},
-      {column: 'indexValue', title: '指标值'},
+      {column: 'total', title: '指标值'},
       {
         column: 'sortBy', title: '排名',
         formatter: (row, value, index) => {

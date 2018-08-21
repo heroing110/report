@@ -125,8 +125,8 @@ export class QuickViewComponent implements OnInit {
       {column: 'province', title: '省'},
       {column: 'city', title: '市'},
       {column: 'indexType', title: '指标类型'},
-      {column: 'indexValue', title: '指标值'},
-      {column: 'mom', title: '环比'},
+      {column: 'total', title: '指标值'},
+      {column: 'totalMom', title: '环比'},
     ];
 
     return configs;
