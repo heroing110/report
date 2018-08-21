@@ -101,13 +101,6 @@ export class ContrastComponent implements OnInit {
       {column: 'city', title: '市'},
       {column: 'indexType', title: '指标类型'},
       {column: 'total', title: '指标值'},
-      {
-        column: 'sortBy', title: '排名',
-        formatter: (row, value, index) => {
-          const startIndex = (this.dataTable.pageIndex - 1) * this.dataTable.pageSize;
-          return startIndex + index + 1;
-        }
-      },
     ];
 
     return configs;
