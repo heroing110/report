@@ -21,7 +21,7 @@ export class ECommerceOverallComponent implements OnInit {
   dateRange: Date[] = [];
 
   param: { totalVolume, increaseVolume, increaseVolumePercent };
-  private indexType = '电商总体交易额';
+  private indexType = '电商整体交易额';
 
   constructor(private trendService: TrendService) {
   }
