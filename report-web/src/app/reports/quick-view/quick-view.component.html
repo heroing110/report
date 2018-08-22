@@ -12,7 +12,7 @@
 <div layout="row" class="dataBox" layout-align="space-around start">
   <div flex="15" *ngFor="let sta of staListBefore">
     <div class="box-label">{{sta.indexType}}
-      <small>亿元</small>
+      <small>{{sta.unitType}}</small>
     </div>
     <span style="font-size: 2em">{{sta.totalVolume | number}}</span>
   </div>
@@ -41,7 +41,7 @@
      *ngIf="staListAfter && staListAfter.length">
   <div flex="15" *ngFor="let sta of staListAfter">
     <div class="box-label">{{sta.indexType}}
-      <small>亿元</small>
+      <small>{{sta.unitType}}</small>
     </div>
     <span style="font-size: 2em">{{sta.totalVolume | number}}</span>
   </div>

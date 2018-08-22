@@ -21,7 +21,7 @@ export class CrossBorderImportComponent implements OnInit {
 
   dateRange: Date[] = [];
   param: { totalVolume, increaseVolume, increaseVolumePercent };
-  private indexType = '跨境电商进口交易额';
+  private indexType = '跨境电商进口额';
 
   constructor(private trendService: TrendService) {
   }

@@ -22,7 +22,7 @@ export class CrossBorderExportComponent implements OnInit {
   dateRange: Date[] = [];
   param: { totalVolume, increaseVolume, increaseVolumePercent };
 
-  private indexType = '跨境电商出口交易额';
+  private indexType = '跨境电商出口额';
 
   constructor(private trendService: TrendService) {
   }
