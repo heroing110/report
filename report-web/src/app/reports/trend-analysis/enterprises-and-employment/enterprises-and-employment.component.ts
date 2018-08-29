@@ -36,10 +36,8 @@ export class EnterprisesAndEmploymentComponent implements OnInit {
 
     this.getTrendTableDataFn = (pageIndex, pageSize) => {
       const date = this.getDateRangeParam();
-      return this.trendService.pagingTrendListView({
+      return this.trendService.pagingTrendAreaQysListView({
         ...date,
-        indexType: this.indexType1,
-        indexType2: this.indexType2,
         pageNo: pageIndex,
         pageSize: pageSize,
       });
@@ -49,7 +47,7 @@ export class EnterprisesAndEmploymentComponent implements OnInit {
   getParam() {
     const date = this.getDateRangeParam();
     this.trendService.getTrendLineParam({
-      isDoubleParam: 'true',
+      doubleParam: true,
       ...date
     }).then(res => {
       this.param = res.data;
@@ -108,20 +106,12 @@ export class EnterprisesAndEmploymentComponent implements OnInit {
   private createColumnConfigs() {
     const configs: ColumnItem[] = [
       {column: 'dateStr', title: '时间'},
-      {column: 'totalVolume', title: '交易额'},
-      {
-        column: 'totalMum', title: '交易额环比',
-        formatter: (row, val) => {
-          return `${val || 0}%`;
-        }
-      },
-      {column: 'totalCount', title: '交易量'},
-      {
-        column: 'totalCountMum', title: '交易量环比',
-        formatter: (row, val) => {
-          return `${val || 0}%`;
-        }
-      },
+      {column: 'province', title: '省份'},
+      {column: 'city', title: '城市'},
+      {column: 'qys', title: '电商企业数'},
+      {column: 'qysmom', title: '电商企业数环比'},
+      {column: 'cyrs', title: '电商从业人数'},
+      {column: 'cyrsmom', title: '电商从业人数环比'}
     ];
 
     return configs;

@@ -69,6 +69,7 @@ export class CrossBorderImportComponent implements OnInit {
         trigger: 'axis'
       },
       yAxis: {
+        name: '亿元',
         type: 'value'
       },
       series: [{

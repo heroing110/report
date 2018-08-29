@@ -76,7 +76,7 @@ export class QuickViewComponent implements OnInit {
           }
         ],
 
-        yAxis: {type: 'value'},
+        yAxis: {name: '亿元', type: 'value'},
         series: [
           {
             name: '交易额',

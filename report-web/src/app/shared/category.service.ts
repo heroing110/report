@@ -88,7 +88,7 @@ export class CategoryAndShopDataItem {
   dateStr?: string;
   data?: string;
   type?: string;
-  isDoubleParam?: string;
+  doubleParam?: string | boolean;
   volumeType?: string;
   countType?: string;
   indexType?: string;

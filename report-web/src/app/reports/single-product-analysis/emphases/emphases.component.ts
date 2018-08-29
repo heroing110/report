@@ -72,6 +72,7 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
       },
       tooltip: {trigger: 'axis'},
       yAxis: {
+        name: '元',
         type: 'value'
       },
       series: [{

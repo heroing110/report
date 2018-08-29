@@ -22,7 +22,7 @@ export class VirtualOnlineShoppingComponent implements OnInit {
   dateRange: Date[] = [];
   param: { totalVolume, increaseVolume, increaseVolumePercent };
 
-  private indexType = '虚拟商品网购交易额';
+  private indexType = '服务网购交易走势';
 
   constructor(private trendService: TrendService) {
   }
@@ -70,6 +70,7 @@ export class VirtualOnlineShoppingComponent implements OnInit {
         trigger: 'axis'
       },
       yAxis: {
+        name: '亿元',
         type: 'value'
       },
       series: [{

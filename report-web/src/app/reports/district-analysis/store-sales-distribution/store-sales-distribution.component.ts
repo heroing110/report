@@ -45,24 +45,13 @@ export class StoreSalesDistributionComponent implements OnInit {
 
     const dataList = (await this.getChartData()).data;
 
-    const groupData = groupBy(dataList, 'range');
+    const groupData = groupBy(dataList, 'range');// 0-100
 
-    const ranges = Object.keys(groupData);
+    const ranges = Object.keys(groupData); // [0-200 , ]
 
     let citys = null;
 
     const series = [];
-    const count = [];
-    if (ranges.length) {// 计算所有数据总和
-      const size = groupData[ranges[0]].length;
-      for (let i = 0; i < size; i++) {
-        let valCount = 0;
-        ranges.forEach(range => {
-          valCount += groupData[range][i]['shopCount'] || 0;
-        });
-        count.push(valCount);
-      }
-    }
 
     for (let i = 0; i < ranges.length; i++) {
       const range = ranges[i];
@@ -76,14 +65,13 @@ export class StoreSalesDistributionComponent implements OnInit {
         type: 'bar',
         stack: '销售额',
         label: {
-          normal: {
+          normal: {show: false},
+          emphasis: {
             show: true,
             position: 'insideRight'
           }
         },
-        data: map(list, 'shopCount').map((val, index) => {
-          return (val || 0) / count[index] * 100;
-        })
+        data: map(list, 'shopCount')
       });
     }
 

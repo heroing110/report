@@ -80,7 +80,7 @@ export class NetworkRetailingComponent implements OnInit {
         trigger: 'axis'
       },
       yAxis: [
-        {type: 'value'},
+        {name: '亿元', type: 'value'},
         {type: 'value'},
       ],
       series: [{

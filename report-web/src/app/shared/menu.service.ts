@@ -26,7 +26,7 @@ export class MenuService {
         {name: '跨境电商交易走势', path: '/reports/trend-analysis/cross-border'},
         {name: '农村电商交易走势', path: '/reports/trend-analysis/countryside'},
         {name: '实物商品网购交易走势', path: '/reports/trend-analysis/kind-online-shopping'},
-        {name: '虚拟商品网购交易走势', path: '/reports/trend-analysis/virtual-online-shopping'},
+        {name: '服务网购交易走势', path: '/reports/trend-analysis/virtual-online-shopping'},
         {name: '跨境电商出口走势', path: '/reports/trend-analysis/cross-border-export'},
         {name: '跨境电商进口走势', path: '/reports/trend-analysis/cross-border-import'},
         {name: '电商企业数/就业人数变化趋势', path: '/reports/trend-analysis/enterprises-and-employment'},

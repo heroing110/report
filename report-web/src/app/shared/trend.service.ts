@@ -16,6 +16,11 @@ export class TrendService {
     return this.http.post<any>('total/listview', params).toPromise();
   }
 
+  // 分页查询 【电商整体交易额走势】 表格数据
+  pagingTrendAreaQysListView(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<PagingResult<CategoryAndShopDataItem[]>>> {
+    return this.http.post<any>('total/area_qys_listview', params).toPromise();
+  }
+
   // 查询 【电商整体交易额走势】 图表数据
   getTrendLineData(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     return this.http.post<any>('total/line', params).toPromise();

@@ -297,7 +297,8 @@ export class QuickViewComponent implements OnInit {
       },
       xAxis: {data: xAxisData},
       yAxis: {
-        splitLine: {show: false}
+        splitLine: {show: false},
+        name: '元'
       },
       dataZoom: [{startValue: xAxisData[0]}, {type: 'inside'}],
       series: series

@@ -37,6 +37,7 @@ export class WholeComponent implements OnInit, AfterViewInit {
   loading = false;
   loading2 = false;
   private dateAreaStr: string;
+
   constructor(private categoryService: CategoryService,
               private commonDataService: CommonDataService) {
   }
@@ -117,6 +118,7 @@ export class WholeComponent implements OnInit, AfterViewInit {
         data: this.legendData
       },
       tooltip: {
+        trigger: 'axis',
         formatter: '{a} <br> {b}:{c}%'
       },
       yAxis: [{
@@ -199,6 +201,7 @@ export class WholeComponent implements OnInit, AfterViewInit {
     const barOption = {
       xAxis: {type: 'category', data: this.legendData},
       tooltip: {
+        trigger: 'axis',
         formatter: '{a} <br> {b}:{c}%'
       },
       yAxis: {

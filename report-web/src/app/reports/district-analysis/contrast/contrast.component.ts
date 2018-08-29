@@ -64,7 +64,7 @@ export class ContrastComponent implements OnInit {
         data: citys
       },
       tooltip: {trigger: 'axis'},
-      yAxis: [{type: 'value'}],
+      yAxis: {name: '亿元', type: 'value'},
       dataZoom: [{
         startValue: citys[0]
       }, {
