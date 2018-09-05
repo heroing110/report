@@ -52,7 +52,7 @@ export class CategoryComponent implements OnInit {
 
     const options = [];
     const seriesTypes = [
-      {name: '零销量', key: 'countPercent', yAxisIndex: 0, type: 'bar'},
+      {name: '销量', key: 'countPercent', yAxisIndex: 0, type: 'bar'},
       {name: '零售额', key: 'salesPercent', yAxisIndex: 1, type: 'bar'},
     ];
 
@@ -118,7 +118,7 @@ export class CategoryComponent implements OnInit {
           bottom: 100
         },
         yAxis: [
-          {type: 'value', name: '零售量%'},
+          {type: 'value', name: '销量%'},
           {type: 'value', name: '零售额%'}
         ]
       },
