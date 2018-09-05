@@ -113,7 +113,7 @@ export class CategoryAreaComponent implements OnInit, AfterViewInit {
           bottom: 100
         },
         yAxis: [
-          {type: 'value', name: '售量%'},
+          {type: 'value', name: '销量%'},
           {type: 'value', name: '零售额%'}
         ]
       },
