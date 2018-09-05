@@ -3,7 +3,6 @@ import {TrendService} from '../../../shared/trend.service';
 import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
 import {ColumnItem} from '../../../shared/data-table/data-table.component';
 import {CategoryAndShopDataItem} from '../../../shared/category.service';
-import * as echarts from 'echarts';
 import * as moment from 'moment';
 
 @Component({
@@ -77,18 +76,6 @@ export class CountrysideComponent implements OnInit {
         data: lineDataList,
         type: 'line',
         name: '交易额',
-        smooth: true,
-        areaStyle: {
-          normal: {
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-              offset: 0,
-              color: '#8ec6ad'
-            }, {
-              offset: 1,
-              color: '#ffe'
-            }])
-          }
-        },
       }]
     };
     this.dataChart.setOption(lineOption);

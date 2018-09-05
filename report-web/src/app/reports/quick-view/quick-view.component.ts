@@ -107,7 +107,7 @@ export class QuickViewComponent implements OnInit {
     this.localSmallName = getSmallName(this.user.province);
 
     let mapType = this.localSmallName;
-    const datas = [];
+    let datas = [];
 
     if (this.sortType === 1) {// 全国排序
       mapType = 'china';
@@ -141,6 +141,18 @@ export class QuickViewComponent implements OnInit {
       }
     }
 
+    // 根据value 排序，从大到小
+    datas = chain(datas).sortBy('value').value().reverse();
+    datas.forEach((data, index) => {
+      data['sort'] = index + 1;
+      data['tooltip'] = {
+        show: true,
+        formatter: function (item) {
+          return `排名<br>${item.name}：${(item.data || {}).sort}`;
+        }
+      };
+    });
+
     // 移除省/市的结尾
     function getSmallName(province: string) {
       if (province.endsWith('省') || province.endsWith('市')) {
@@ -151,12 +163,13 @@ export class QuickViewComponent implements OnInit {
     }
 
     // 排序，取前9个
-    this.sortDataList = chain(datas).sortBy('total').value().slice(0, 9);
+    this.sortDataList = datas.slice(0, 9);
 
     const max = chain(datas).map('value').max().value();
     const option = {
       tooltip: {
-        trigger: 'item'
+        show: false,
+        trigger: 'item',
       },
       toolbox: {show: false},
       visualMap: {
@@ -173,7 +186,7 @@ export class QuickViewComponent implements OnInit {
       },
       series: [
         {
-          name: '地图排序',
+          name: '排名',
           type: 'map',
           mapType: mapType,
           itemStyle: {

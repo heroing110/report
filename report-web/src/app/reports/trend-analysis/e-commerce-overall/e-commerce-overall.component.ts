@@ -3,7 +3,6 @@ import {CategoryAndShopDataItem} from '../../../shared/category.service';
 import {ColumnItem} from '../../../shared/data-table/data-table.component';
 import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
 import {TrendService} from '../../../shared/trend.service';
-import * as echarts from 'echarts';
 import * as moment from 'moment';
 
 @Component({
@@ -75,19 +74,7 @@ export class ECommerceOverallComponent implements OnInit {
       series: [{
         data: lineDataList,
         type: 'line',
-        name: '交易额',
-        smooth: true,
-        areaStyle: {
-          normal: {
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-              offset: 0,
-              color: '#8ec6ad'
-            }, {
-              offset: 1,
-              color: '#ffe'
-            }])
-          }
-        },
+        name: '交易额'
       }]
     };
     this.dataChart.setOption(lineOption);

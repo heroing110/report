@@ -3,7 +3,7 @@ import {DataChartComponent} from '../../../shared/data-chart/data-chart.componen
 import {ColumnItem} from '../../../shared/data-table/data-table.component';
 import * as moment from 'moment';
 import {ShopService} from '../../../shared/shop.service';
-import {groupBy, map} from 'lodash';
+import {chain, find, groupBy} from 'lodash';
 
 @Component({
   selector: 'app-store-sales-distribution',
@@ -45,20 +45,23 @@ export class StoreSalesDistributionComponent implements OnInit {
 
     const dataList = (await this.getChartData()).data;
 
-    const groupData = groupBy(dataList, 'range');// 0-100
-
-    const ranges = Object.keys(groupData); // [0-200 , ]
-
-    let citys = null;
+    const groupData = groupBy(dataList, 'city');
+    const citys = Object.keys(groupData); // [city , city]
+    const ranges = chain(dataList).map('range').uniq().value();
 
     const series = [];
-
     for (let i = 0; i < ranges.length; i++) {
       const range = ranges[i];
-      const list = groupData[range];
-      if (!citys) {
-        citys = map(list, 'city');
-      }
+      const rangeList = [];
+
+      citys.forEach(city => {
+        const res = find(groupData[city], {range});
+        if (res) {
+          rangeList.push(res['shopCount']);
+        } else {
+          rangeList.push(null);
+        }
+      });
 
       series.push({
         name: range,
@@ -71,7 +74,7 @@ export class StoreSalesDistributionComponent implements OnInit {
             position: 'insideRight'
           }
         },
-        data: map(list, 'shopCount')
+        data: rangeList
       });
     }
 

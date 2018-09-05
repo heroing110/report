@@ -17,7 +17,7 @@ export class ShopAnalysisComponent implements OnInit {
   volumeParam = {
     pageNo: 1,
     pageSize: 30,
-    orderBy: 'SALES_VOLUME',
+    orderBy: 'salesVolume',
     platform: null,
     sCat1Name: null,
   };
@@ -28,7 +28,7 @@ export class ShopAnalysisComponent implements OnInit {
   countParam = {
     pageNo: 1,
     pageSize: 30,
-    orderBy: 'SALES_COUNT',
+    orderBy: 'salesCount',
     platform: null,
     sCat1Name: null,
   };
@@ -36,6 +36,7 @@ export class ShopAnalysisComponent implements OnInit {
   loading = false;
   loading2 = false;
   dateRange: Date[] = [];
+  private dateAreaStr: string;
 
   constructor(private shopService: ShopService) {
   }
@@ -73,9 +74,13 @@ export class ShopAnalysisComponent implements OnInit {
         delete newParam.platform;
       }
       if (this.dateRange && this.dateRange.length) {
-        const [s, e] = this.dateRange;
-        newParam.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
-        newParam.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
+        const [s, e] = [
+          moment(this.dateRange[0]).format('YYYY-MM'),
+          moment(this.dateRange[1]).format('YYYY-MM')
+        ];
+        newParam.dateBegin = `${s}-01`;
+        newParam.dateEnd = `${e}-02`;
+        this.dateAreaStr = `${s}-${e}`;
       } else {
         delete newParam.dateBegin;
         delete newParam.dateEnd;
@@ -92,14 +97,14 @@ export class ShopAnalysisComponent implements OnInit {
     const configs: ColumnItem[] = [
       {
         column: 'date', title: '时间',
-        formatter: (row: CategoryAndShopDataItem) => {
-          return `${row.year || ''}-${row.month || ''}`;
+        formatter: () => {
+          return this.dateAreaStr;
         }
       },
       {column: 'province', title: '省'},
       {column: 'platform', title: '平台'},
       {column: 'shopName', title: '店铺名称'},
-      {column: 'salesPercent', title: '销售额'},
+      {column: 'salesVolume', title: '销售额'},
     ];
 
     return configs;
@@ -109,14 +114,14 @@ export class ShopAnalysisComponent implements OnInit {
     const configs: ColumnItem[] = [
       {
         column: 'date', title: '时间',
-        formatter: (row: CategoryAndShopDataItem) => {
-          return `${row.year || ''}-${row.month || ''}`;
+        formatter: () => {
+          return this.dateAreaStr;
         }
       },
       {column: 'province', title: '省'},
       {column: 'platform', title: '平台'},
       {column: 'shopName', title: '店铺名称'},
-      {column: 'countPercent', title: '销售量'},
+      {column: 'salesCount', title: '销售量'},
     ];
 
     return configs;
