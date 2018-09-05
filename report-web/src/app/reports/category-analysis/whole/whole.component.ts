@@ -1,17 +1,16 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {CategoryAndShopDataItem, CategoryService} from '../../../shared/category.service';
 import {ColumnItem} from '../../../shared/data-table/data-table.component';
 import {DataChartComponent} from '../../../shared/data-chart/data-chart.component';
-import {CommonDataService} from '../../../shared/common-data.service';
 import * as moment from 'moment';
-import {find, map} from 'lodash';
+import {map} from 'lodash';
 
 @Component({
   selector: 'app-whole',
   templateUrl: './whole.component.html',
   styleUrls: ['./whole.component.less']
 })
-export class WholeComponent implements OnInit, AfterViewInit {
+export class WholeComponent implements OnInit {
 // 销售额
   salesVolumeConfigs: ColumnItem[];
   getSalesVolumeTableDataFn: GetTableDataFn; // 查询 销售额 表格数据的服务
@@ -23,11 +22,9 @@ export class WholeComponent implements OnInit, AfterViewInit {
 
   @ViewChild('countDataChart1')
   countDataChart1: DataChartComponent;
+
   @ViewChild('countDataChart2')
   countDataChart2: DataChartComponent;
-
-  categoryList: OptionItem[];
-  legendData: string[];
 
   dateRange: Date[] = [];
 
@@ -38,8 +35,7 @@ export class WholeComponent implements OnInit, AfterViewInit {
   loading2 = false;
   private dateAreaStr: string;
 
-  constructor(private categoryService: CategoryService,
-              private commonDataService: CommonDataService) {
+  constructor(private categoryService: CategoryService) {
   }
 
   ngOnInit() {
@@ -55,25 +51,20 @@ export class WholeComponent implements OnInit, AfterViewInit {
     };
   }
 
-  async ngAfterViewInit() {
-    this.categoryList = (await this.commonDataService.getCategoryList()).data;
-
-    this.legendData = map(this.categoryList, 'value');
-  }
-
   async setChartOption() {
 
     this.loading = true;
     const dataList = (await this.getChartData(this.salesPlatform)).data;
 
+    const legendData = map(dataList, 'sCat1Name');
+
     const datas = [];
     let totalVolume = 0;
-    for (let i = 0; i < this.legendData.length; i++) {
-      const name = this.legendData[i];
-      const data: CategoryAndShopDataItem = find(dataList, {sCat1Name: name}) || {};
+    for (let i = 0; i < dataList.length; i++) {
+      const data = dataList[i];
       datas.push({
         value: data.totalVolume || 0,
-        name: name
+        name: data.sCat1Name
       });
       totalVolume += data.totalVolume || 0;
     }
@@ -93,7 +84,7 @@ export class WholeComponent implements OnInit, AfterViewInit {
         orient: 'vertical',
         right: 30,
         top: 20,
-        data: this.legendData
+        data: legendData
       },
       series: [
         {
@@ -113,10 +104,7 @@ export class WholeComponent implements OnInit, AfterViewInit {
     this.salesDataChart1.setOption(pieOption);
 
     const barOption = {
-      xAxis: {
-        type: 'category',
-        data: this.legendData
-      },
+      xAxis: {type: 'category', data: legendData},
       tooltip: {
         trigger: 'axis',
         formatter: '{a} <br> {b}:{c}%'
@@ -136,9 +124,7 @@ export class WholeComponent implements OnInit, AfterViewInit {
         name: '销售额',
         data: (function () {
           // 将销售额根据总和转换为比例
-          return map(datas, 'value').map(function (value) {
-            return (value / totalVolume * 100);
-          });
+          return map(datas, 'value').map(value => value / totalVolume * 100);
         }()),
         type: 'bar'
       }]
@@ -151,15 +137,16 @@ export class WholeComponent implements OnInit, AfterViewInit {
 
     this.loading2 = true;
     const dataList = (await this.getChartData(this.countPlatform)).data;
+    const legendData = map(dataList, 'sCat1Name');
 
     const datas = [];
     let totalCount = 0;
-    for (let i = 0; i < this.legendData.length; i++) {
-      const name = this.legendData[i];
-      const data: CategoryAndShopDataItem = find(dataList, {sCat1Name: name}) || {};
+
+    for (let i = 0; i < dataList.length; i++) {
+      const data = dataList[i];
       datas.push({
         value: data.totalCount || 0,
-        name: name
+        name: data.sCat1Name
       });
       totalCount += data.totalCount || 0;
     }
@@ -179,7 +166,7 @@ export class WholeComponent implements OnInit, AfterViewInit {
         orient: 'vertical',
         right: 30,
         top: 20,
-        data: this.legendData
+        data: legendData
       },
       series: [
         {
@@ -199,7 +186,7 @@ export class WholeComponent implements OnInit, AfterViewInit {
     this.countDataChart1.setOption(pieOption);
 
     const barOption = {
-      xAxis: {type: 'category', data: this.legendData},
+      xAxis: {type: 'category', data: legendData},
       tooltip: {
         trigger: 'axis',
         formatter: '{a} <br> {b}:{c}%'
@@ -219,9 +206,7 @@ export class WholeComponent implements OnInit, AfterViewInit {
         name: '销售量',
         data: (function () {
           // 将销量根据销量总和转换为比例
-          return map(datas, 'value').map(function (value) {
-            return (value / totalCount * 100);
-          });
+          return map(datas, 'value').map(value => value / totalCount * 100);
         }()),
         type: 'bar'
       }]
