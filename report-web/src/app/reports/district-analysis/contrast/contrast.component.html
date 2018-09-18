@@ -1,6 +1,6 @@
 <div layout="row" layout-align="end center" style="margin-bottom: 2em;">
   <app-range-month [(dates)]="dateRange"
-                   (datesChange)="setChartOption()"></app-range-month>
+                   (datesChange)="setChartOption();dataTable.searchData(true)"></app-range-month>
 </div>
 
 

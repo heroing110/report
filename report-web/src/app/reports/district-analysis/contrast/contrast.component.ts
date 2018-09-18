@@ -34,7 +34,7 @@ export class ContrastComponent implements OnInit {
               private commonDataService: CommonDataService) {
   }
 
-  async ngOnInit() {
+  ngOnInit() {
 
     this.salesVolumeConfigs = this.createColumnVolumeConfigs();
 
