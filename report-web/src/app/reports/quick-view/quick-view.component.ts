@@ -5,7 +5,7 @@ import {CategoryService} from '../../shared/category.service';
 import {HomeService, StaTotal} from '../../shared/home.service';
 import {ChainMapService} from '../../shared/chain-map.service';
 import * as moment from 'moment';
-import {chain, groupBy} from 'lodash';
+import {chain} from 'lodash';
 import {AuthService, User} from '../../shared/auth.service';
 
 @Component({
@@ -42,8 +42,8 @@ export class QuickViewComponent implements OnInit {
   @ViewChild('dataChart2')
   dataChart2: DataChartComponent; // 电子商务市场结构
 
-  @ViewChild('dataChart3')
-  dataChart3: DataChartComponent; // 主要电商平台交易额走势
+  // @ViewChild('dataChart3')
+  // dataChart3: DataChartComponent; // 主要电商平台交易额走势
 
   tableConfigs: ColumnItem[];
   getTableDataFn: GetTableDataFn;
@@ -274,52 +274,52 @@ export class QuickViewComponent implements OnInit {
   }
 
   // 主要电商平台交易额走势
-  async setChartOption3() {
-    this.mainElectronLoading = true;
-
-    const dateParam = this.getDateRangeParam();
-    const data = (await this.homeService.homeBusinessLine({...dateParam})).data;
-
-    const groupData = groupBy(data, 'platform');
-
-    const platforms = Object.keys(groupData);
-
-    let xAxisData = [];
-    const series = [];
-    for (let i = 0; i < platforms.length; i++) {
-      const platform = platforms[i];
-      const list = groupData[platform];
-      const dates = chain(list).map('dateStr').compact().value();
-      if (!xAxisData.length || xAxisData.length < dates.length) {
-        xAxisData = dates;
-      }
-      series.push({
-        name: platform,
-        type: 'line',
-        data: chain(list).map('totalVolume').value()
-      });
-    }
-
-    const option = {
-      tooltip: {trigger: 'axis'},
-      toolbox: {show: false},
-      legend: {
-        right: 0,
-        orient: 'vertical',
-        data: platforms
-      },
-      xAxis: {data: xAxisData},
-      yAxis: {
-        splitLine: {show: false},
-        name: '元'
-      },
-      dataZoom: [{startValue: xAxisData[0]}, {type: 'inside'}],
-      series: series
-    };
-
-    this.dataChart3.setOption(option);
-    this.mainElectronLoading = false;
-  }
+  // async setChartOption3() {
+  //   this.mainElectronLoading = true;
+  //
+  //   const dateParam = this.getDateRangeParam();
+  //   const data = (await this.homeService.homeBusinessLine({...dateParam})).data;
+  //
+  //   const groupData = groupBy(data, 'platform');
+  //
+  //   const platforms = Object.keys(groupData);
+  //
+  //   let xAxisData = [];
+  //   const series = [];
+  //   for (let i = 0; i < platforms.length; i++) {
+  //     const platform = platforms[i];
+  //     const list = groupData[platform];
+  //     const dates = chain(list).map('dateStr').compact().value();
+  //     if (!xAxisData.length || xAxisData.length < dates.length) {
+  //       xAxisData = dates;
+  //     }
+  //     series.push({
+  //       name: platform,
+  //       type: 'line',
+  //       data: chain(list).map('totalVolume').value()
+  //     });
+  //   }
+  //
+  //   const option = {
+  //     tooltip: {trigger: 'axis'},
+  //     toolbox: {show: false},
+  //     legend: {
+  //       right: 0,
+  //       orient: 'vertical',
+  //       data: platforms
+  //     },
+  //     xAxis: {data: xAxisData},
+  //     yAxis: {
+  //       splitLine: {show: false},
+  //       name: '元'
+  //     },
+  //     dataZoom: [{startValue: xAxisData[0]}, {type: 'inside'}],
+  //     series: series
+  //   };
+  //
+  //   this.dataChart3.setOption(option);
+  //   this.mainElectronLoading = false;
+  // }
 
   private createColumnConfigs() {
     const configs: ColumnItem[] = [

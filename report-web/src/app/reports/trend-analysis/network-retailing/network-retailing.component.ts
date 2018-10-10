@@ -111,19 +111,19 @@ export class NetworkRetailingComponent implements OnInit {
     const configs: ColumnItem[] = [
       {column: 'dateStr', title: '时间'},
       {column: 'totalVolume', title: '交易额'},
-      {
-        column: 'totalMum', title: '交易额环比',
-        formatter: (row, val) => {
-          return `${val || 0}%`;
-        }
-      },
+      // {
+      //   column: 'totalMum', title: '交易额环比',
+      //   formatter: (row, val) => {
+      //     return `${val || 0}%`;
+      //   }
+      // },
       {column: 'totalCount', title: '交易量'},
-      {
-        column: 'totalCountMum', title: '交易量环比',
-        formatter: (row, val) => {
-          return `${val || 0}%`;
-        }
-      },
+      // {
+      //   column: 'totalCountMum', title: '交易量环比',
+      //   formatter: (row, val) => {
+      //     return `${val || 0}%`;
+      //   }
+      // },
     ];
 
     return configs;

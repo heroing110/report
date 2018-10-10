@@ -92,12 +92,12 @@ export class ECommerceOverallComponent implements OnInit {
     const configs: ColumnItem[] = [
       {column: 'dateStr', title: '时间'},
       {column: 'totalVolume', title: '交易额'},
-      {
-        column: 'totalMum', title: '环比',
-        formatter: (row, val) => {
-          return `${val || 0}%`;
-        }
-      },
+      // {
+      //   column: 'totalMum', title: '环比',
+      //   formatter: (row, val) => {
+      //     return `${val || 0}%`;
+      //   }
+      // },
     ];
 
     return configs;
