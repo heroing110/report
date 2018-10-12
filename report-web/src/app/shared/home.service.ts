@@ -40,9 +40,13 @@ export class HomeService {
   }
 
   // 分页查询 【地域分析-各地速览】 数据
-  // 分页查询 【地域分析-各地对比】 数据
   pagingAreaListview(params: PagingParam & StaTotal): Promise<AjaxResult<PagingResult<StaTotal[]>>> {
     return this.http.post<any>('total/area_listview', params).toPromise();
+  }
+
+  // 分页查询 【地域分析-各地对比】 数据
+  areaWholeListview(params: PagingParam & StaTotal): Promise<AjaxResult<PagingResult<StaTotal[]>>> {
+    return this.http.post<any>('total/area_whole_listview', params).toPromise();
   }
 
   // 分页查询 【区域分析-企业数、从业人数统计】 表格数据

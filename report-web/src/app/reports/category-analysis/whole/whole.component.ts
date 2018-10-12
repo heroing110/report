@@ -124,7 +124,7 @@ export class WholeComponent implements OnInit {
         name: '销售额',
         data: (function () {
           // 将销售额根据总和转换为比例
-          return map(datas, 'value').map(value => value / totalVolume * 100);
+          return map(datas, 'value').map(value => (value / totalVolume * 100).toFixed(2));
         }()),
         type: 'bar'
       }]
@@ -206,7 +206,7 @@ export class WholeComponent implements OnInit {
         name: '销售量',
         data: (function () {
           // 将销量根据销量总和转换为比例
-          return map(datas, 'value').map(value => value / totalCount * 100);
+          return map(datas, 'value').map(value => (value / totalCount * 100).toFixed(2));
         }()),
         type: 'bar'
       }]

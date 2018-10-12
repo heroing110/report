@@ -74,10 +74,13 @@ export class PopularityComponent implements OnInit {
         delete newParam.platform;
       }
       if (this.dateRange && this.dateRange.length) {
-        const [s, e] = this.dateRange;
-        newParam.dateBegin = `${moment(s).format('YYYY-MM')}-01`;
-        newParam.dateEnd = `${moment(e).format('YYYY-MM')}-02`;
-        this.dateAreaStr = `${newParam.dateBegin}-${newParam.dateEnd}`;
+        const [s, e] = [
+          moment(this.dateRange[0]).format('YYYY-MM'),
+          moment(this.dateRange[1]).format('YYYY-MM'),
+        ];
+        newParam.dateBegin = `${s}-01`;
+        newParam.dateEnd = `${e}-02`;
+        this.dateAreaStr = `${s}-${e}`;
       } else {
         delete newParam.dateBegin;
         delete newParam.dateEnd;

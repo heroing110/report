@@ -1,10 +1,12 @@
 import {Injectable} from '@angular/core';
-import {HTTP_INTERCEPTORS, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
+import {map} from 'rxjs/operators';
 
 @Injectable({providedIn: 'root'})
 export class HttpProxyInterceptorService implements HttpInterceptor {
+  private sessionTimeout = false;
 
   /**
    * 开发模式api代理转发设置
@@ -25,7 +27,19 @@ export class HttpProxyInterceptorService implements HttpInterceptor {
       setParams: {_time: Date.now().toString()}
     });
 
-    return next.handle(secureReq);
+    return next.handle(secureReq).pipe(
+      map(event => {
+        if (event instanceof HttpResponse && event.body) {
+          const data: AjaxResult<any> = event.body;
+          if (data && data.code === 2 && !this.sessionTimeout) {
+            this.sessionTimeout = true;
+            alert('用户登录信息已失效，请重新登录！');
+            location.reload();// 刷新页面，用以前往登录页
+          }
+        }
+        return event;
+      })
+    );
   }
 
 }

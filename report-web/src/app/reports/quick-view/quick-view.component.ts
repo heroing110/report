@@ -23,7 +23,7 @@ export class QuickViewComponent implements OnInit {
   // 电子商务市场结构
   electronPlatformList: OptionItem[] = [
     {label: '交易类型', value: '1'},
-    {label: '进口/出口', value: '2'},
+    // {label: '进口/出口', value: '2'},
     {label: '服务/实物', value: '3'},
     {label: '城市/农村', value: '4'},
   ];
@@ -153,6 +153,29 @@ export class QuickViewComponent implements OnInit {
       };
     });
 
+    // 排序，取前9个
+    this.sortDataList = datas.slice(0, 9);
+
+    // 需求前九个排序中，当前登录用户所在省/市必须出现
+    if (datas.length > 9) {
+      if (this.sortType === 1) {
+        sortCurrentArea2Top(this.sortDataList, 'province', this.user.province);
+      } else {
+        sortCurrentArea2Top(this.sortDataList, 'city', this.user.city);
+      }
+    }
+
+    // 强行将当期省/市设置到前九排序中(如果它未在排序中的话)
+    function sortCurrentArea2Top(list: any[], key, name) {
+      if (chain(list).find({name}).value()) {
+        const area = chain(datas).find({[key]: name}).value();
+        if (area) {
+          area['sort'] = 9;
+          list[8] = area;
+        }
+      }
+    }
+
     // 移除省/市的结尾
     function getSmallName(province: string) {
       if (province.endsWith('省') || province.endsWith('市')) {
@@ -161,9 +184,6 @@ export class QuickViewComponent implements OnInit {
       }
       return province;
     }
-
-    // 排序，取前9个
-    this.sortDataList = datas.slice(0, 9);
 
     const max = chain(datas).map('value').max().value();
     const option = {

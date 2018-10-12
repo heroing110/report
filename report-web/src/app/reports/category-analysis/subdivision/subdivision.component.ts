@@ -61,7 +61,7 @@ export class SubdivisionComponent implements OnInit {
       const cat1List: CategoryAndShopDataItem[] = chain(dataList).filter({sCat1Name: sCat1.sCat1Name}).uniqBy('cat1Name').value();
       for (let j = 0; j < cat1List.length; j++) {
         const cat1 = cat1List[j];
-        const cat1Tree = dumpData(cat1, sCat1Tree, 'cat2Name');
+        const cat1Tree = dumpData(cat1, sCat1Tree, 'cat1Name');
 
         const cat2List: CategoryAndShopDataItem[] = chain(dataList).filter({cat1Name: cat1.cat1Name}).uniqBy('cat2Name').value();
         for (let k = 0; k < cat2List.length; k++) {
@@ -71,7 +71,7 @@ export class SubdivisionComponent implements OnInit {
           const cat3List: CategoryAndShopDataItem[] = chain(dataList).filter({cat2Name: cat2.cat2Name}).value();
           for (let l = 0; l < cat3List.length; l++) {
             const cat3 = cat3List[l];
-            dumpData(cat3List[l], cat2Tree, 'cat3Name');
+            dumpData(cat3, cat2Tree, 'cat3Name');
           }
         }
       }

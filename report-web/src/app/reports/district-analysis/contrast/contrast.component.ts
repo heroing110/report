@@ -40,7 +40,7 @@ export class ContrastComponent implements OnInit {
 
     this.getSalesVolumeTableDataFn = (pageIndex, pageSize) => {
       const date = this.getDateRangeParam();
-      return this.homeService.pagingAreaListview({
+      return this.homeService.areaWholeListview({
         ...date,
         orderBy: 'INDEX_VALUE',
         pageNo: pageIndex,
@@ -91,12 +91,7 @@ export class ContrastComponent implements OnInit {
 
   private createColumnVolumeConfigs() {
     const configs: ColumnItem[] = [
-      {
-        column: 'date', title: '时间',
-        formatter: () => {
-          return this.dateAreaStr;
-        }
-      },
+      {column: 'dateStr', title: '时间'},
       {column: 'province', title: '省'},
       {column: 'city', title: '市'},
       {column: 'indexType', title: '指标类型'},
