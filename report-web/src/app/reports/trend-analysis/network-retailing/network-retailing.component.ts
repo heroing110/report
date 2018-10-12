@@ -81,7 +81,7 @@ export class NetworkRetailingComponent implements OnInit {
       },
       yAxis: [
         {name: '亿元', type: 'value'},
-        {type: 'value'},
+        {name: '亿元', type: 'value'},
       ],
       series: [{
         data: lineVolumeList,

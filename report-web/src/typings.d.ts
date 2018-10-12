@@ -21,7 +21,7 @@ interface PagingParam {
 }
 
 // 获取表格分页数据时，所需要提供的函数
-type GetTableDataFn = (pageIndex: number, pageSize: number, sortMap: any, filterMap: any) => Promise<AjaxResult<PagingResult<any[]>>>;
+type GetTableDataFn = (pageIndex: number, pageSize: number, sortMap: any, filterMap: any, currentSort?: any) => Promise<AjaxResult<PagingResult<any[]>>>;
 
 // 通用选项数据结构
 interface OptionItem {

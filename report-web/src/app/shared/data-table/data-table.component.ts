@@ -17,8 +17,7 @@ export class DataTableComponent implements OnInit {
   showSizeChanger = true;
 
   @Input()
-  queryDataService: (pageIndex: number, pageSize: number, sortMap: any, filterMap: any) =>
-    Promise<AjaxResult<PagingResult<any[]>>>; // 查询数据服务
+  queryDataService: GetTableDataFn; // 查询数据服务
 
   loading = false; // 是否遮罩层
   dataSource = []; // 数据列表
@@ -30,6 +29,8 @@ export class DataTableComponent implements OnInit {
 
   // 排序支持
   sortMap = {};
+
+  currentSort: any;
 
   // 过滤条件
   filterMap = {};
@@ -45,7 +46,20 @@ export class DataTableComponent implements OnInit {
   sort(sortable, col: ColumnItem) {
     if (!sortable) {
       delete this.sortMap[col.column];
+      this.currentSort = null;
+    } else {
+      this.currentSort = {
+        column: col.column,
+        type: sortable.slice(0, -3)
+      };
     }
+
+    // 保持单个排序
+    Object.keys(this.sortMap).forEach(key => {
+      if (key !== col.column) {
+        delete this.sortMap[key];
+      }
+    });
     this.searchData(true);
   }
 
@@ -66,7 +80,7 @@ export class DataTableComponent implements OnInit {
     }
     if (this.queryDataService) {
       this.loading = true;
-      this.queryDataService(this.pageIndex, this.pageSize, this.sortMap, this.filterMap).then(result => {
+      this.queryDataService(this.pageIndex, this.pageSize, this.sortMap, this.filterMap, this.currentSort).then(result => {
         this.loading = false;
         this.dataSource = result.data.rows;
         this.total = result.data.total;

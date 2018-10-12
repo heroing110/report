@@ -72,15 +72,23 @@ export class QuickViewComponent implements OnInit {
 
     this.tableConfigs = this.createColumnConfigs();
 
-    this.getTableDataFn = (pageIndex, pageSize) => {
+    this.getTableDataFn = (pageIndex, pageSize, sortMap, filterMap, currentSort) => {
       this.top30Loading = true;
       const date = this.getDateRangeParam();
-      return this.homeService.pagingHomeTop30({
+
+      const param = {
         ...date,
         platform: this.hotPlatform || void 0,
         pageNo: pageIndex,
         pageSize: pageSize
-      }).then(result => {
+      };
+
+      if (currentSort) {
+        param['sortColumn'] = currentSort['column'];
+        param['sortType'] = currentSort['type'];
+      }
+
+      return this.homeService.pagingHomeTop30(param).then(result => {
         this.top30Loading = false;
         return result;
       });
@@ -351,7 +359,7 @@ export class QuickViewComponent implements OnInit {
         }
       },
       {column: 'cat2Name', title: '品类'},
-      {column: 'totalCount', title: '销量'},
+      {column: 'totalCount', title: '销量', sort: true},
       {column: 'totalVolume', title: '销售额', sort: true}
     ];
 
