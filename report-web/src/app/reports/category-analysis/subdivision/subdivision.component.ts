@@ -57,18 +57,21 @@ export class SubdivisionComponent implements OnInit {
     for (let i = 0; i < sCat1List.length; i++) {
       const sCat1: CategoryAndShopDataItem = sCat1List[i];
       const sCat1Tree = dumpData(sCat1, treeList, 'sCat1Name');
+      const sCat1Name = sCat1.sCat1Name;
 
-      const cat1List: CategoryAndShopDataItem[] = chain(dataList).filter({sCat1Name: sCat1.sCat1Name}).uniqBy('cat1Name').value();
+      const cat1List: CategoryAndShopDataItem[] = chain(dataList).filter({sCat1Name}).uniqBy('cat1Name').value();
       for (let j = 0; j < cat1List.length; j++) {
         const cat1 = cat1List[j];
         const cat1Tree = dumpData(cat1, sCat1Tree, 'cat1Name');
+        const cat1Name = cat1.cat1Name;
 
-        const cat2List: CategoryAndShopDataItem[] = chain(dataList).filter({cat1Name: cat1.cat1Name}).uniqBy('cat2Name').value();
+        const cat2List: CategoryAndShopDataItem[] = chain(dataList).filter({sCat1Name, cat1Name}).uniqBy('cat2Name').value();
         for (let k = 0; k < cat2List.length; k++) {
           const cat2: CategoryAndShopDataItem = cat2List[k];
           const cat2Tree = dumpData(cat2, cat1Tree, 'cat2Name');
+          const cat2Name = cat2.cat2Name;
 
-          const cat3List: CategoryAndShopDataItem[] = chain(dataList).filter({cat2Name: cat2.cat2Name}).value();
+          const cat3List: CategoryAndShopDataItem[] = chain(dataList).filter({sCat1Name, cat1Name, cat2Name}).value();
           for (let l = 0; l < cat3List.length; l++) {
             const cat3 = cat3List[l];
             dumpData(cat3, cat2Tree, 'cat3Name');
