@@ -175,12 +175,11 @@ export class QuickViewComponent implements OnInit {
 
     // 强行将当期省/市设置到前九排序中(如果它未在排序中的话)
     function sortCurrentArea2Top(list: any[], key, name) {
-      if (chain(list).find({name}).value()) {
-        const area = chain(datas).find({[key]: name}).value();
-        if (area) {
-          area['sort'] = 9;
-          list[8] = area;
-        }
+      name = getSmallName(name);
+      const predicate = {name};
+      const find = chain(list).find(predicate).value();
+      if (!find) {
+        list[8] = chain(datas).find(predicate).value();
       }
     }
 
