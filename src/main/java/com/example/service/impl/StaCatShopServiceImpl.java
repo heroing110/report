@@ -27,4 +27,24 @@ public class StaCatShopServiceImpl implements StaCatShopService {
     public int selectPageCount(StaCatShop staCatShop) {
         return staCatShopMapper.selectPageCount(staCatShop);
     }
+
+    @Override
+    public List<StaCatShop> selectTop10VolumeWithPage(StaCatShop staCatShop) {
+        return staCatShopMapper.selectTop10VolumeWithPage(staCatShop);
+    }
+
+    @Override
+    public List<StaCatShop> selectTop10CountWithPage(StaCatShop staCatShop) {
+        return staCatShopMapper.selectTop10CountWithPage(staCatShop);
+    }
+
+    @Override
+    public int selectTop10VolumeWithPageCount(StaCatShop staCatShop) {
+        return staCatShopMapper.selectTop10VolumeWithPageCount(staCatShop);
+    }
+
+    @Override
+    public int selectTop10CountWithPageCount(StaCatShop staCatShop) {
+        return staCatShopMapper.selectTop10CountWithPageCount(staCatShop);
+    }
 }

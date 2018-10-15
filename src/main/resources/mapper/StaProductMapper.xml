@@ -71,30 +71,34 @@
         </trim>
     </select>
 
-    <select id="selectAllWithPage" resultMap="ResultMapWithBLOBs" parameterType="com.example.entity.StaProduct">
+    <select id="selectAllWithPage" resultType="com.example.entity.StaProduct" parameterType="com.example.entity.StaProduct">
         select * from (
         select
-        <include refid="Base_Column_List"/>,
-        sales_volume*100/(select sum(sales_volume) from tb_sta_product  t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM ) salesPercent,
-        sales_COUNT*100/(select sum(sales_COUNT) from tb_sta_product  t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM) countPercent
+        ABS(SUM(sales_volume)) salesVolume,
+        ABS(SUM(sales_COUNT)) salesCount,
+        PROVINCE,PLATFORM,PRODUCT_NAME productName
         from tb_sta_product t
         <trim prefix="where" prefixOverrides="and | or">
             <include refid="dynamicWhere"/>
         </trim>
-        <if test="orderBy!=null">
-            ORDER BY ${orderBy} desc
-        </if>
+        GROUP BY PROVINCE,PLATFORM,PRODUCT_NAME
         ) t2
-        where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
+        ORDER BY ${orderBy} desc
+        limit #{pageRow}, #{pageSize}
     </select>
 
     <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaProduct">
         select
         count(1)
-        from tb_sta_product
-        <trim prefix="where" prefixOverrides="and | or">
-          <include refid="dynamicWhere"/>
-        </trim>
+        from (
+            select
+            PROVINCE,PLATFORM,PRODUCT_NAME productName
+            from tb_sta_product t
+            <trim prefix="where" prefixOverrides="and | or">
+                <include refid="dynamicWhere"/>
+            </trim>
+            GROUP BY PROVINCE,PLATFORM,PRODUCT_NAME
+        )t
     </select>
 
     <sql id="dynamicWhere">
@@ -106,6 +110,12 @@
         </if>
         <if test="productName!=null">
             AND PRODUCT_NAME = #{productName,jdbcType=VARCHAR}
+        </if>
+        <if test="province!=null">
+            AND PROVINCE = #{province,jdbcType=VARCHAR}
+        </if>
+        <if test="city!=null">
+            AND CITY = #{city,jdbcType=VARCHAR}
         </if>
     </sql>
     <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">

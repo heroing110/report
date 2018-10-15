@@ -30,7 +30,12 @@ public class StaCatServiceImpl implements StaCatService {
 
     @Override
     public List<StaCat> selectCatTreeMap(StaCat record) {
-        List<StaCat> staCatsList = staCatMapper.selectListByParam(record);
+        List<StaCat> staCatsList = null;
+        if (record.getPlatform()==null) {
+            staCatsList = staCatMapper.selectListByParam(record);
+        }else{
+            staCatsList = staCatMapper.selectListGroupByPlatform(record);
+        }
         return staCatsList;
     }
 
@@ -67,6 +72,61 @@ public class StaCatServiceImpl implements StaCatService {
     @Override
     public List<StaCat> selectBusinessLine(StaCat record) {
         return staCatMapper.selectBusinessLine(record);
+    }
+
+    @Override
+    public List<StaCat> selectCatWholeWithPage(StaCat record) {
+        return staCatMapper.selectCatWholeWithPage(record);
+    }
+
+    @Override
+    public int selectCatWholeWithPageCount(StaCat record) {
+        return staCatMapper.selectCatWholeWithPageCount(record);
+    }
+
+    @Override
+    public List<StaCat> selectCatDetailWithPage(StaCat record) {
+        return staCatMapper.selectCatDetailWithPage(record);
+    }
+
+    @Override
+    public int selectCatDetailWithPageCount(StaCat record) {
+        return staCatMapper.selectCatDetailWithPageCount(record);
+    }
+
+    @Override
+    public List<StaCat> selectCatAreaWithPage(StaCat record) {
+        return staCatMapper.selectCatAreaWithPage(record);
+    }
+
+    @Override
+    public int selectCatAreaWithPageCount(StaCat record) {
+        return staCatMapper.selectCatAreaWithPageCount(record);
+    }
+
+    @Override
+    public List<StaCat> selectTotalVolumeByPlatformList(StaCat record) {
+        return staCatMapper.selectTotalVolumeByPlatformList(record);
+    }
+
+    @Override
+    public List<StaCat> selectTotalVolumeList(StaCat record) {
+        return staCatMapper.selectTotalVolumeList(record);
+    }
+
+    @Override
+    public List<StaCat> selectCatAreaTotal(StaCat record) {
+        return staCatMapper.selectCatAreaTotal(record);
+    }
+
+    @Override
+    public List<StaCat> selectCatVolumeTotal(StaCat record) {
+        return staCatMapper.selectCatVolumeTotal(record);
+    }
+
+    @Override
+    public List<StaCat> selectCatWholeTotal(StaCat record) {
+        return staCatMapper.selectCatWholeTotal(record);
     }
 
 }

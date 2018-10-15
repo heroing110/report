@@ -39,7 +39,31 @@ public interface StaCatMapper {
 
     int selectAreaCatWithPageCount(StaCat record);
 
+    List<StaCat> selectCatWholeWithPage(StaCat record);
+
+    int selectCatWholeWithPageCount(StaCat record);
+
+    List<StaCat> selectCatDetailWithPage(StaCat record);
+
+    int selectCatDetailWithPageCount(StaCat record);
+
+    List<StaCat> selectCatAreaWithPage(StaCat record);
+
+    List<StaCat> selectTotalVolumeByPlatformList(StaCat record);
+
+    List<StaCat> selectTotalVolumeList(StaCat record);
+
+    List<StaCat> selectCatAreaTotal(StaCat record);
+
+    List<StaCat> selectCatVolumeTotal(StaCat record);
+
+    List<StaCat> selectCatWholeTotal(StaCat record);
+
+    int selectCatAreaWithPageCount(StaCat record);
+
     int selectPageCount(StaCat record);
 
     StaCat selectSalesAndCountByProvince(StaCat record);
+
+    List<StaCat> selectListGroupByPlatform(StaCat record);
 }

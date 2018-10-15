@@ -1,14 +1,18 @@
 package com.example.entity;
 
+import com.alibaba.druid.sql.PagerUtils;
+
 import java.io.Serializable;
 import java.util.Date;
 
-public class StaShop extends SortFilter  implements Serializable {
+public class StaShop extends SortFilter  implements Serializable,IPager {
     private Integer id;
 
     private Date date;
 
     private String year;
+
+    private String dateStr;
 
     private String month;
 
@@ -17,6 +21,8 @@ public class StaShop extends SortFilter  implements Serializable {
     private String province;
 
     private String city;
+
+    private String range;
 
     private String disrict;
 
@@ -64,7 +70,84 @@ public class StaShop extends SortFilter  implements Serializable {
 
     private String dateEnd;
 
+    private Integer pageRow;
+
+    private Float  shopCount;
+
+    private Float minSalesVolume;
+
+    private Float maxSalesVolume;
+
+    private String type;
+
+    private String percent;
+
     private static final long serialVersionUID = 1L;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getPercent() {
+        return percent;
+    }
+
+    public void setPercent(String percent) {
+        this.percent = percent;
+    }
+
+    public Float getMinSalesVolume() {
+        return minSalesVolume;
+    }
+
+    public void setMinSalesVolume(Float minSalesVolume) {
+        this.minSalesVolume = minSalesVolume;
+    }
+
+    public Float getMaxSalesVolume() {
+        return maxSalesVolume;
+    }
+
+    public void setMaxSalesVolume(Float maxSalesVolume) {
+        this.maxSalesVolume = maxSalesVolume;
+    }
+
+    public String getDateStr() {
+        return dateStr;
+    }
+
+    public void setDateStr(String dateStr) {
+        this.dateStr = dateStr;
+    }
+
+    public String getRange() {
+        return range;
+    }
+
+    public void setRange(String range) {
+        this.range = range;
+    }
+
+    public Float getShopCount() {
+        return shopCount;
+    }
+
+    public void setShopCount(Float shopCount) {
+        this.shopCount = shopCount;
+    }
+
+    public Integer getPageRow() {
+        return pageRow;
+    }
+
+    @Override
+    public void setPageRow(Integer pageRow) {
+        this.pageRow = pageRow;
+    }
 
     public Double getTotalSalesVolume() {
         return totalSalesVolume;
@@ -106,18 +189,22 @@ public class StaShop extends SortFilter  implements Serializable {
         this.countPercent = countPercent;
     }
 
+    @Override
     public Integer getPageNo() {
         return pageNo;
     }
 
+    @Override
     public void setPageNo(Integer pageNo) {
         this.pageNo = pageNo;
     }
 
+    @Override
     public Integer getPageSize() {
         return pageSize;
     }
 
+    @Override
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
     }
@@ -162,18 +249,22 @@ public class StaShop extends SortFilter  implements Serializable {
         this.country = country;
     }
 
+    @Override
     public String getProvince() {
         return province;
     }
 
+    @Override
     public void setProvince(String province) {
         this.province = province;
     }
 
+    @Override
     public String getCity() {
         return city;
     }
 
+    @Override
     public void setCity(String city) {
         this.city = city;
     }
@@ -282,10 +373,12 @@ public class StaShop extends SortFilter  implements Serializable {
         this.status = status;
     }
 
+    @Override
     public String getRemark1() {
         return remark1;
     }
 
+    @Override
     public void setRemark1(String remark1) {
         this.remark1 = remark1;
     }

@@ -1,19 +1,51 @@
 package com.example.entity;
 
-/**
- * Created by heying on 2018/3/30.
- */
-public class User {
+import java.io.Serializable;
+import java.util.Date;
+
+public class User implements Serializable {
     private Integer id;
 
     private String userName;
 
-    private String password;
+    private String loginName;
 
-    private Integer age;
+    private String md5Password;
+
+    private Integer level;
+
+    private String province;
+
+    private String city;
+
+    private String catName;
+
+    private Date signDate;
+
+    private Integer validTime;
+
+    private Integer isValid;
+
+    private static final long serialVersionUID = 1L;
+
+    public String getCatName() {
+        return catName;
+    }
+
+    public void setCatName(String catName) {
+        this.catName = catName;
+    }
 
     public Integer getId() {
         return id;
+    }
+
+    public Integer getIsValid() {
+        return isValid;
+    }
+
+    public void setIsValid(Integer isValid) {
+        this.isValid = isValid;
     }
 
     public void setId(Integer id) {
@@ -25,22 +57,62 @@ public class User {
     }
 
     public void setUserName(String userName) {
-        this.userName = userName == null ? null : userName.trim();
+        this.userName = userName;
     }
 
-    public String getPassword() {
-        return password;
+    public String getLoginName() {
+        return loginName;
     }
 
-    public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
     }
 
-    public Integer getAge() {
-        return age;
+    public String getMd5Password() {
+        return md5Password;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setMd5Password(String md5Password) {
+        this.md5Password = md5Password;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public Date getSignDate() {
+        return signDate;
+    }
+
+    public void setSignDate(Date signDate) {
+        this.signDate = signDate;
+    }
+
+    public Integer getValidTime() {
+        return validTime;
+    }
+
+    public void setValidTime(Integer validTime) {
+        this.validTime = validTime;
     }
 }

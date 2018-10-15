@@ -2,7 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.dao.StaCatMapper">
     <resultMap id="BaseResultMap" type="com.example.entity.StaCat">
-        <id column="ID" property="id" jdbcType="INTEGER"/>
         <result column="YEAR" property="year" jdbcType="VARCHAR"/>
         <result column="MONTH" property="month" jdbcType="VARCHAR"/>
         <result column="COUNTRY" property="country" jdbcType="VARCHAR"/>
@@ -34,7 +33,7 @@
         <result column="countPercent" property="countPercent" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
-    ID, YEAR, MONTH, COUNTRY, PROVINCE, CITY, DISTRICT, PLATFORM, S_CAT1_NAME, CAT1_NAME, 
+    YEAR, MONTH, COUNTRY, PROVINCE, CITY, DISTRICT, PLATFORM, S_CAT1_NAME, CAT1_NAME,
     CAT2_NAME, CAT3_NAME, P_COUNT, M_SLAES_COUNT, M_SALES_VOLUME, UNIT_TYPE, TOTAL_SALES_VOLUME, 
     sales_volume, INSERT_TIME, UPDATE_TIME, UPDATE_USER, STATUS, REMARK1, REMARK2, REMARK3
   </sql>
@@ -46,8 +45,10 @@
         select
         <include refid="Base_Column_List"/>
         ,
-        m_sales_volume*100/(select sum(m_sales_volume) from tb_sta_cat  t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM and t1.S_CAT1_NAME = t.S_CAT1_NAME) salesPercent,
-        M_SLAES_COUNT*100/(select sum(M_SLAES_COUNT) from tb_sta_cat  t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM and t1.S_CAT1_NAME = t.S_CAT1_NAME) countPercent
+        m_sales_volume*100/(select sum(m_sales_volume) from tb_sta_cat t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH
+        and t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM and t1.S_CAT1_NAME = t.S_CAT1_NAME) salesPercent,
+        M_SLAES_COUNT*100/(select sum(M_SLAES_COUNT) from tb_sta_cat t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH
+        and t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM and t1.S_CAT1_NAME = t.S_CAT1_NAME) countPercent
         from tb_sta_cat t
         <trim prefix="where" prefixOverrides="and | or">
             <include refid="dynamicWhere"/>
@@ -56,48 +57,432 @@
             ORDER BY ${orderBy} desc
         </if>
         ) t2
-        where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
+        limit #{pageRow},#{pageSize}
     </select>
 
     <!--区域-品类分析,分页-->
     <select id="selectAreaCatWithPage" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
-        select * from (
-        select sum(M_SALES_VOLUME)*100/(select sum(m_sales_volume) from tb_sta_cat  t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and t1.PROVINCE = t.PROVINCE and t1.CITY = t.CITY) salesPercent,
-        sum(M_SLAES_COUNT)*100/(select sum(M_SLAES_COUNT) from tb_sta_cat  t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and t1.PROVINCE = t.PROVINCE and t1.CITY = t.CITY) countPercent,
-        date dateStr,PROVINCE,CITY,S_CAT1_NAME sCat1Name
+        <!--select * from (-->
+        <!--select-->
+        <!--sum(M_SALES_VOLUME) totalVolume,-->
+        <!--sum(M_SLAES_COUNT) totalCount,-->
+        <!--PROVINCE,CITY,'整体' PLATFORM,S_CAT1_NAME sCat1Name-->
+        <!--from tb_sta_cat t-->
+        <!--where S_CAT1_NAME is not null and city is not null-->
+        <!--<include refid="dynamicWhere"/>-->
+        <!--group by PROVINCE,CITY,S_CAT1_NAME-->
+        <!--ORDER BY totalVolume desc,totalCount desc-->
+        <!--) t1-->
+
+        <!--UNION-->
+
+        <!--select * from (-->
+        <!--select-->
+        <!--sum(M_SALES_VOLUME) totalVolume,-->
+        <!--sum(M_SLAES_COUNT) totalCount,-->
+        <!--PROVINCE,CITY,PLATFORM,S_CAT1_NAME sCat1Name-->
+        <!--from tb_sta_cat t-->
+        <!--where S_CAT1_NAME is not null and city is not null-->
+        <!--<include refid="dynamicWhere"/>-->
+        <!--group by PROVINCE,CITY,PLATFORM,S_CAT1_NAME-->
+        <!--ORDER BY totalVolume desc,totalCount desc-->
+        <!--) t2-->
+        <!--limit #{pageRow},#{pageSize}-->
+
+        SELECT
+        T1.PROVINCE,
+        T1.CITY,
+        T1.PLATFORM,
+        T1.S_CAT1_NAME sCat1Name,
+        FORMAT(T1.COUNT/T2.COUNT,2) countPercent,
+        FORMAT(T1.VOLUME/T2.VOLUME,2) salesPercent
+        FROM
+        (
+        SELECT
+        '全部' AS PLATFORM,
+        PROVINCE,
+        CITY,
+        S_CAT1_NAME,
+        SUM(M_SLAES_COUNT) AS COUNT,
+        SUM(M_SALES_VOLUME) AS VOLUME
+        FROM tb_sta_cat
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY
+        CITY,
+        S_CAT1_NAME
+        ) T1
+        LEFT JOIN
+        (
+        SELECT
+        '全部' AS PLATFORM,
+        PROVINCE,
+        CITY,
+        SUM(M_SLAES_COUNT) AS COUNT,
+        SUM(M_SALES_VOLUME) AS VOLUME
+        FROM tb_sta_cat
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY
+        CITY
+        ) T2 ON T1.CITY = T2.CITY
+        limit #{pageRow},#{pageSize}
+    </select>
+
+    <!--区域-品类分析，总销量-->
+    <select id="selectCatVolumeTotal" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+        select PROVINCE,city,PLATFORM,sum(M_SALES_VOLUME) totalVolume,
+        sum(M_SLAES_COUNT) totalCount from tb_sta_cat
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY PROVINCE,city,PLATFORM
+        UNION
+        select PROVINCE,city,'整体' PLATFORM,sum(M_SALES_VOLUME) totalVolume,
+        sum(M_SLAES_COUNT) totalCount from tb_sta_cat
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY PROVINCE,city
+    </select>
+
+    <!--品类分析-整体分析,总销量，总销售额-->
+    <select id="selectCatWholeTotal" resultType="com.example.entity.StaCat"
+            parameterType="com.example.entity.StaCat">
+        SELECT
+        sum(M_SALES_VOLUME) totalVolume,
+        sum(M_SLAES_COUNT) totalCount,
+        PROVINCE,PLATFORM
         from tb_sta_cat t
         where S_CAT1_NAME is not null
-         group by date,PROVINCE,CITY,S_CAT1_NAME
-        ORDER BY salesPercent,countPercent desc
-        ) t
-        limit (#{pageNo}-1)*#{pageSize},{pageSize}
+        <include refid="dynamicWhere"/>
+        group by PROVINCE,PLATFORM
+
+        UNION
+
+        SELECT
+        sum(M_SALES_VOLUME) totalVolume,
+        sum(M_SLAES_COUNT) totalCount,
+        PROVINCE,'全部' PLATFORM
+        from tb_sta_cat t
+        where S_CAT1_NAME is not null
+        <include refid="dynamicWhere"/>
+        group by PROVINCE
+    </select>
+
+
+    <!--品类分析-整体分析,分页-->
+    <select id="selectCatWholeWithPage" resultType="com.example.entity.StaCat"
+            parameterType="com.example.entity.StaCat">
+        SELECT
+		sum(M_SALES_VOLUME) totalVolume,
+        sum(M_SLAES_COUNT) totalCount,
+        PROVINCE,PLATFORM,S_CAT1_NAME sCat1Name
+        from tb_sta_cat t
+        where S_CAT1_NAME is not null
+        <include refid="dynamicWhere"/>
+        group by PROVINCE,PLATFORM,S_CAT1_NAME
+
+        UNION
+
+        SELECT
+		sum(M_SALES_VOLUME) totalVolume,
+        sum(M_SLAES_COUNT) totalCount,
+        PROVINCE,'全部' PLATFORM,S_CAT1_NAME sCat1Name
+        from tb_sta_cat t
+        where S_CAT1_NAME is not null
+        <include refid="dynamicWhere"/>
+        group by PROVINCE,S_CAT1_NAME
+        limit #{pageRow},#{pageSize}
+    </select>
+
+    <select id="selectCatWholeWithPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaCat">
+        select count(1) from (
+            SELECT
+            PROVINCE,PLATFORM,S_CAT1_NAME sCat1Name
+            from tb_sta_cat t
+            where S_CAT1_NAME is not null
+            <include refid="dynamicWhere"/>
+            group by PROVINCE,PLATFORM,S_CAT1_NAME
+
+            UNION
+
+            SELECT
+            PROVINCE,'全部' PLATFORM,S_CAT1_NAME sCat1Name
+            from tb_sta_cat t
+            where S_CAT1_NAME is not null
+            <include refid="dynamicWhere"/>
+            group by PROVINCE,S_CAT1_NAME
+        ) a
+    </select>
+
+    <!--品类分析-品类细分,分页-->
+    <select id="selectCatDetailWithPage" resultType="com.example.entity.StaCat"
+            parameterType="com.example.entity.StaCat">
+        SELECT * from (
+            select t.* from (
+            select
+            sum(M_SALES_VOLUME) totalVolume,
+            PROVINCE,'整体' PLATFORM,S_CAT1_NAME sCat1Name,CAT1_NAME cat1Name,CAT2_NAME cat2Name
+            from tb_sta_cat t
+            where S_CAT1_NAME is not null <include refid="dynamicWhere"/>
+            group by PROVINCE,S_CAT1_NAME,CAT1_NAME,CAT2_NAME )t
+            ORDER BY t.totalVolume desc
+        )t1
+        union
+        select * from (
+            select t.* from (
+            select
+            sum(M_SALES_VOLUME) totalVolume,
+            PROVINCE,PLATFORM,S_CAT1_NAME sCat1Name,CAT1_NAME cat1Name,CAT2_NAME cat2Name
+            from tb_sta_cat t
+            where S_CAT1_NAME is not null  <include refid="dynamicWhere"/>
+            group by PROVINCE,PLATFORM,S_CAT1_NAME,CAT1_NAME,CAT2_NAME )t
+            ORDER BY t.totalVolume desc
+        )t2
+        limit #{pageRow},#{pageSize}
+    </select>
+
+    <select id="selectCatDetailWithPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaCat">
+        select count(1) from (
+		select CAT2_NAME
+        from tb_sta_cat t
+        where S_CAT1_NAME is not null <include refid="dynamicWhere"/>
+        group by PROVINCE,PLATFORM,S_CAT1_NAME,CAT1_NAME,CAT2_NAME
+        UNION
+        select CAT2_NAME
+        from tb_sta_cat t
+        where S_CAT1_NAME is not null <include refid="dynamicWhere"/>
+        group by PROVINCE,S_CAT1_NAME,CAT1_NAME,CAT2_NAME
+        )t
+    </select>
+
+    <select id="selectTotalVolumeByPlatformList" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+        select
+        sum(M_SALES_VOLUME) totalVolume,
+        PLATFORM
+        from tb_sta_cat t
+        <trim prefix="where" prefixOverrides="and | or">
+          <include refid="dynamicWhere"/>
+        </trim>
+		GROUP BY PLATFORM
+    </select>
+
+    <select id="selectTotalVolumeList" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+        select
+        sum(M_SALES_VOLUME) totalVolume
+        from tb_sta_cat t
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+    </select>
+
+    <!--各品类区域销售占比分析,分页-->
+    <select id="selectCatAreaWithPage" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+        <!--select * from (-->
+        <!--select t.* from (-->
+                <!--select-->
+                <!--sum(M_SALES_VOLUME) totalVolume,sum(M_SLAES_COUNT) totalCount,-->
+                <!--PROVINCE,PLATFORM,S_CAT1_NAME sCat1Name,CITY-->
+                <!--from tb_sta_cat t-->
+                <!--where S_CAT1_NAME is not null-->
+                <!--<include refid="dynamicWhere"/>-->
+                <!--group by PROVINCE,PLATFORM,S_CAT1_NAME,CITY-->
+        <!--)t order by t.totalVolume desc,t.totalCount desc)t1-->
+        <!--UNION-->
+        <!--select * from (-->
+        <!--select t.* from (-->
+                <!--select-->
+                <!--sum(M_SALES_VOLUME) totalVolume,sum(M_SLAES_COUNT) totalCount,-->
+                <!--PROVINCE,'整体' PLATFORM,S_CAT1_NAME sCat1Name,CITY-->
+                <!--from tb_sta_cat t-->
+                <!--where S_CAT1_NAME is not null-->
+                <!--<include refid="dynamicWhere"/>-->
+                <!--group by PROVINCE,S_CAT1_NAME,CITY-->
+        <!--)t order by t.totalVolume desc,t.totalCount desc) t2-->
+
+        SELECT
+        T1.PLATFORM,
+        T1.PROVINCE,
+        T1.S_CAT1_NAME sCat1Name,
+        T1.CITY,
+        FORMAT(T1.COUNT/T2.COUNT*100,2) countPercent,
+        FORMAT(T1.VOLUME/T2.VOLUME*100,2) salesPercent
+        FROM
+        (
+        SELECT
+        '全部' AS PLATFORM,
+        PROVINCE,
+        S_CAT1_NAME,
+        CITY,
+        SUM(M_SLAES_COUNT) AS COUNT,
+        SUM(M_SALES_VOLUME) AS VOLUME
+        FROM tb_sta_cat
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY
+        S_CAT1_NAME,
+        CITY
+        ) T1
+        LEFT JOIN
+        (
+        SELECT
+        '全部' AS PLATFORM,
+        PROVINCE,
+        S_CAT1_NAME,
+        SUM(M_SLAES_COUNT) AS COUNT,
+        SUM(M_SALES_VOLUME) AS VOLUME
+        FROM tb_sta_cat
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY
+        S_CAT1_NAME
+        ) T2 ON T1.S_CAT1_NAME = T2.S_CAT1_NAME
+        limit #{pageRow},#{pageSize}
+    </select>
+
+    <select id="selectCatAreaWithPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaCat">
+        select count(1) from (
+          SELECT
+            T1.PLATFORM,
+            T1.PROVINCE,
+            T1.S_CAT1_NAME sCat1Name,
+            T1.CITY
+            FROM
+            (
+            SELECT
+            '全部' AS PLATFORM,
+            PROVINCE,
+            S_CAT1_NAME,
+            CITY
+            FROM tb_sta_cat
+            <trim prefix="where" prefixOverrides="and | or">
+                <include refid="dynamicWhere"/>
+            </trim>
+            GROUP BY
+            S_CAT1_NAME,
+            CITY
+            ) T1
+            LEFT JOIN
+            (
+            SELECT
+            '全部' AS PLATFORM,
+            PROVINCE,
+            S_CAT1_NAME
+            FROM tb_sta_cat
+            <trim prefix="where" prefixOverrides="and | or">
+                <include refid="dynamicWhere"/>
+            </trim>
+            GROUP BY
+            S_CAT1_NAME
+            ) T2 ON T1.S_CAT1_NAME = T2.S_CAT1_NAME
+        )t
+    </select>
+
+    <!--各品类区域销售占比分析,聚合销量-->
+    <select id="selectCatAreaTotal" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+        select
+        sum(M_SALES_VOLUME) totalVolume,
+        sum(M_SLAES_COUNT) totalCount,
+        PROVINCE,PLATFORM,S_CAT1_NAME sCat1Name
+        from tb_sta_cat t
+        where S_CAT1_NAME is not null
+        <include refid="dynamicWhere"/>
+        group by PROVINCE,PLATFORM,S_CAT1_NAME
+        UNION
+        select
+        sum(M_SALES_VOLUME) totalVolume,
+        sum(M_SLAES_COUNT) totalCount,
+        PROVINCE,'整体' PLATFORM,
+        S_CAT1_NAME sCat1Name
+        from tb_sta_cat t
+        where S_CAT1_NAME is not null
+        <include refid="dynamicWhere"/>
+        group by PROVINCE,S_CAT1_NAME
     </select>
 
     <select id="selectAreaCatWithPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaCat">
         select count(1) from (
         select 1 from tb_sta_cat t
         where S_CAT1_NAME is not null
-         group by date,PROVINCE,CITY,S_CAT1_NAME
+        <include refid="dynamicWhere"/>
+        group by PROVINCE,CITY,S_CAT1_NAME
         ) t
     </select>
 
     <!--区域-品类分析,柱形图-->
     <select id="selectAreaCatLine" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
-        select sum(M_SALES_VOLUME)*100/(select sum(m_sales_volume) from tb_sta_cat <trim prefix="where" prefixOverrides="and | or"><include refid="dynamicWhere"/></trim>) salesPercent,
-        sum(M_SLAES_COUNT)*100/(select sum(M_SLAES_COUNT) from tb_sta_cat <trim prefix="where" prefixOverrides="and | or"><include refid="dynamicWhere"/></trim>) countPercent,
-        PROVINCE,CITY,S_CAT1_NAME sCat1Name
-        from tb_sta_cat t
-        where S_CAT1_NAME is not null
-        <include refid="dynamicWhere"/>
-         group by PROVINCE,CITY,S_CAT1_NAME
-        ORDER BY salesPercent,countPercent desc
+        <!--select sum(M_SALES_VOLUME)*100/(select sum(m_sales_volume) from tb_sta_cat-->
+        <!--<trim prefix="where" prefixOverrides="and | or">-->
+            <!--<include refid="dynamicWhere"/>-->
+        <!--</trim>-->
+        <!--) salesPercent,-->
+        <!--sum(M_SLAES_COUNT)*100/(select sum(M_SLAES_COUNT) from tb_sta_cat-->
+        <!--<trim prefix="where" prefixOverrides="and | or">-->
+            <!--<include refid="dynamicWhere"/>-->
+        <!--</trim>-->
+        <!--) countPercent,-->
+        <!--CITY,S_CAT1_NAME sCat1Name-->
+        <!--from tb_sta_cat t-->
+        <!--where S_CAT1_NAME is not null-->
+        <!--<include refid="dynamicWhere"/>-->
+        <!--group by CITY,S_CAT1_NAME-->
+        <!--ORDER BY salesPercent,countPercent desc-->
+        SELECT
+        T1.CITY,
+        T1.S_CAT1_NAME sCat1Name,
+        FORMAT(T1.COUNT/T2.COUNT,2) countPercent,
+        FORMAT(T1.VOLUME/T2.VOLUME,2) salesPercent
+        FROM
+        (
+        SELECT
+        '全部' AS PLATFORM,
+        CITY,
+        S_CAT1_NAME,
+        SUM(M_SLAES_COUNT) AS COUNT,
+        SUM(M_SALES_VOLUME) AS VOLUME
+        FROM tb_sta_cat
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY
+        CITY,
+        S_CAT1_NAME
+        ) T1
+        LEFT JOIN
+        (
+        SELECT
+        '全部' AS PLATFORM,
+        CITY,
+        SUM(M_SLAES_COUNT) AS COUNT,
+        SUM(M_SALES_VOLUME) AS VOLUME
+        FROM tb_sta_cat
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY
+        CITY
+        ) T2 ON T1.CITY = T2.CITY
     </select>
 
     <!--首页-网络零售热销品类TOP30-->
     <select id="selectHomeTop30" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
         select * from (
-        SELECT CAT2_NAME cat2Name,sum(M_SLAES_COUNT) totalCount,sum(M_SALES_VOLUME) totalVolume from tb_sta_cat where CAT2_NAME is not null <include refid="dynamicWhere"/> GROUP BY CAT2_NAME ) t
-        ORDER BY totalCount desc,totalVolume DESC limit #{pageRow},#{pageSize}
+        SELECT CAT2_NAME cat2Name,sum(M_SLAES_COUNT) totalCount,sum(M_SALES_VOLUME) totalVolume from tb_sta_cat where
+        CAT1_NAME IS NOT NULL
+        <include refid="dynamicWhere"/>
+        GROUP BY CAT2_NAME ) t
+        <if test="sortColumn!=null">
+            ORDER BY ${sortColumn} ${sortType}
+        </if>
+        <if test="sortColumn==null">
+            ORDER BY totalVolume desc
+        </if>
+        limit #{pageRow},#{pageSize}
     </select>
 
     <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaCat">
@@ -109,21 +494,71 @@
     </select>
 
     <select id="selectList" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
-        select t.city,t.S_CAT1_NAME sCat1Name,
-        sum(M_SLAES_COUNT)*100/(select sum(t1.M_SLAES_COUNT) from tb_sta_cat t1 group by PROVINCE = #{province,jdbcType=VARCHAR}) countPercent,
-        sum(M_SALES_VOLUME)*100/(select sum(t2.M_SALES_VOLUME) from tb_sta_cat t2 GROUP BY PROVINCE = #{province,jdbcType=VARCHAR}) salesPercent
-        from tb_sta_cat t
+        <!--select t.city,t.S_CAT1_NAME sCat1Name,-->
+        <!--sum(M_SLAES_COUNT)*100/(select sum(t1.M_SLAES_COUNT) from tb_sta_cat t1-->
+        <!--<trim prefix="where" prefixOverrides="and | or">-->
+            <!--<include refid="dynamicWhere"/>-->
+        <!--</trim>-->
+        <!--) countPercent,-->
+        <!--sum(M_SALES_VOLUME)*100/(select sum(t2.M_SALES_VOLUME) from tb_sta_cat t2-->
+        <!--<trim prefix="where" prefixOverrides="and | or">-->
+            <!--<include refid="dynamicWhere"/>-->
+        <!--</trim>-->
+        <!--) salesPercent-->
+        <!--from tb_sta_cat t-->
+        <!--<trim prefix="where" prefixOverrides="and | or">-->
+            <!--<include refid="dynamicWhere"/>-->
+        <!--</trim>-->
+        <!--GROUP BY t.CITY,t.S_CAT1_NAME-->
+
+        SELECT
+        T1.CITY,
+        T1.S_CAT1_NAME sCat1Name,
+        FORMAT(T1.COUNT/T2.COUNT,2) countPercent,
+        FORMAT(T1.VOLUME/T2.VOLUME,2) salesPercent,
+        T1.PLATFORM,
+        T1.PROVINCE
+        FROM
+        (
+        SELECT
+        '全部' AS PLATFORM,
+        PROVINCE,
+        S_CAT1_NAME,
+        CITY,
+        SUM(M_SLAES_COUNT) AS COUNT,
+        SUM(M_SALES_VOLUME) AS VOLUME
+        FROM tb_sta_cat
         <trim prefix="where" prefixOverrides="and | or">
             <include refid="dynamicWhere"/>
         </trim>
-        GROUP BY t.CITY,t.S_CAT1_NAME
+        GROUP BY
+        S_CAT1_NAME,
+        CITY
+        ) T1
+        LEFT JOIN
+        (
+        SELECT
+        '全部' AS PLATFORM,
+        PROVINCE,
+        S_CAT1_NAME,
+        SUM(M_SLAES_COUNT) AS COUNT,
+        SUM(M_SALES_VOLUME) AS VOLUME
+        FROM tb_sta_cat
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY
+        S_CAT1_NAME
+        ) T2 ON T1.S_CAT1_NAME = T2.S_CAT1_NAME
     </select>
 
     <!--首页-主要电商平台交易额走势-->
     <select id="selectBusinessLine" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
-        SELECT date dateStr,sum(M_SALES_VOLUME) totalVolume from tb_sta_cat where PLATFORM='天猫' <include refid="dynamicWhere"/> GROUP BY date
-        UNION
-        SELECT date dateStr,sum(M_SALES_VOLUME) totalVolume  from tb_sta_cat where PLATFORM='京东' <include refid="dynamicWhere"/> GROUP BY date
+        SELECT date dateStr,platform,sum(M_SALES_VOLUME) totalVolume from tb_sta_cat
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY date,platform
     </select>
 
     <select id="selectWholeList" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
@@ -137,7 +572,8 @@
         GROUP BY t.S_CAT1_NAME
     </select>
 
-    <select id="selectSalesAndCountByProvince" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+    <select id="selectSalesAndCountByProvince" resultType="com.example.entity.StaCat"
+            parameterType="com.example.entity.StaCat">
         select sum(M_SLAES_COUNT) mSlaesCount, sum(M_SALES_VOLUME) mSalesVolume
         from tb_sta_cat
         <trim prefix="where" prefixOverrides="and | or">
@@ -148,15 +584,26 @@
 
     <select id="selectListByParam" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
         select
-        s_cat1_name sCat1Name,cat1_name cat1Name,cat2_name cat2Name,cat3_name cat3Name,M_SLAES_COUNT mSlaesCount,id
-        from tb_sta_cat t
+        s_cat1_name sCat1Name,cat1_name cat1Name,cat2_name cat2Name,cat3_name cat3Name,sum(M_SLAES_COUNT) mSlaesCount,(@i:=@i+1) id
+        from tb_sta_cat t,(select @i:=0) as it
         <trim prefix="where" prefixOverrides="and | or">
             <include refid="dynamicWhere"/>
         </trim>
+        GROUP BY S_CAT1_NAME,CAT1_NAME,CAT2_NAME,CAT3_NAME
+    </select>
+
+    <select id="selectListGroupByPlatform" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+        select PLATFORM,
+        s_cat1_name sCat1Name,cat1_name cat1Name,cat2_name cat2Name,cat3_name cat3Name,sum(M_SLAES_COUNT) mSlaesCount,(@i:=@i+1) id
+        from tb_sta_cat t,(select @i:=0) as it
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY PLATFORM,S_CAT1_NAME,CAT1_NAME,CAT2_NAME,CAT3_NAME
     </select>
 
     <sql id="dynamicWhere">
-        and (S_CAT1_NAME is not null and CAT1_NAME is not null and  CAT2_NAME is not null  and CAT3_NAME is not null)
+        and s_cat1_name is not null
         <if test="platform!=null">
             AND PLATFORM = #{platform,jdbcType=VARCHAR}
         </if>
@@ -178,9 +625,13 @@
         <if test="city!=null">
             AND CITY = #{city,jdbcType=VARCHAR}
         </if>
+        <if test="remark1!=null">
+            AND REMARK1 = #{remark1,jdbcType=VARCHAR}
+        </if>
     </sql>
 
-    <select id="selectCatNameListGroupByCat" resultType="com.example.entity.StaCat" parameterType="com.example.entity.StaCat">
+    <select id="selectCatNameListGroupByCat" resultType="com.example.entity.StaCat"
+            parameterType="com.example.entity.StaCat">
         select DISTINCT ${name} name
         from tb_sta_cat
         <trim prefix="where" prefixOverrides="and | or">

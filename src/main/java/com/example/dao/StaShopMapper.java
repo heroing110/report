@@ -25,6 +25,8 @@ public interface StaShopMapper {
 
     List<StaShop> selectAreaShopWithPage(StaShop record);
 
+    List<StaShop> selectAreaShopLineShopCountByCity(StaShop record);
+
     List<StaShop> selectAreaShopLine(StaShop record);
 
     int selectAreaShopWithPageCount(StaShop staShop);

@@ -3,8 +3,8 @@ package com.example.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-public class StaProduct extends SortFilter  implements Serializable,IPager {
-    private Integer id;
+public class StaLocalproduct extends SortFilter implements Serializable,IPager {
+    private Date data;
 
     private String year;
 
@@ -20,21 +20,17 @@ public class StaProduct extends SortFilter  implements Serializable,IPager {
 
     private String platform;
 
+    private String catName;
+
+    private String[] catNames;
+
     private String productId;
 
     private String productName;
 
-    private Double salesCount;
+    private String salesCount;
 
     private Double salesVolume;
-
-    private Integer cRankP;
-
-    private Integer cRankC;
-
-    private Integer sRankP;
-
-    private Integer sRankC;
 
     private String unitType;
 
@@ -48,67 +44,46 @@ public class StaProduct extends SortFilter  implements Serializable,IPager {
 
     private String ramark1;
 
-    private String remark1;
-
     private String ramark2;
 
     private String ramark3;
 
-    private String data;
+    private Double totalVolume;
+
+    private Double totalVolumePercent;
+
+    private Double totalCount;
 
     private Integer pageNo;
 
-    private Integer pageSize;
-
     private Integer pageRow;
 
-    private String salesPercent;
+    private Integer pageSize;
 
-    private String countPercent;
+    private String dateStr;
 
     private String dateBegin;
 
     private String dateEnd;
 
-    private String dateStr;
-
-    private Double totalVolume;
-
-    private String type;
-
-    private Double totalSalesCount;
-
-    private Double totalSalesVolume;
-
-    private String sortColumn;
-
-    private String sortType;
+    private String remark1;
 
     private static final long serialVersionUID = 1L;
 
-    public String getSortColumn() {
-        return sortColumn;
+    public String[] getCatNames() {
+        return catNames;
     }
 
-    public void setSortColumn(String sortColumn) {
-        this.sortColumn = sortColumn;
+    public void setCatNames(String[] catNames) {
+        this.catNames = catNames;
     }
 
-    public String getSortType() {
-        return sortType;
+    public String getDateEnd() {
+        return dateEnd;
     }
 
-    public void setSortType(String sortType) {
-        this.sortType = sortType;
-    }
-
-    public Integer getPageRow() {
-        return pageRow;
-    }
-
-    @Override
-    public void setPageRow(Integer pageRow) {
-        this.pageRow = pageRow;
+    public void setDateEnd(String dateEnd) {
+        this.dateEnd = dateEnd;
     }
 
     public String getDateStr() {
@@ -119,54 +94,6 @@ public class StaProduct extends SortFilter  implements Serializable,IPager {
         this.dateStr = dateStr;
     }
 
-    public Double getTotalSalesCount() {
-        return totalSalesCount;
-    }
-
-    public void setTotalSalesCount(Double totalSalesCount) {
-        this.totalSalesCount = totalSalesCount;
-    }
-
-    public Double getTotalSalesVolume() {
-        return totalSalesVolume;
-    }
-
-    public void setTotalSalesVolume(Double totalSalesVolume) {
-        this.totalSalesVolume = totalSalesVolume;
-    }
-
-    public Double getTotalVolume() {
-        return totalVolume;
-    }
-
-    public void setTotalVolume(Double totalVolume) {
-        this.totalVolume = totalVolume;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getSalesPercent() {
-        return salesPercent;
-    }
-
-    public void setSalesPercent(String salesPercent) {
-        this.salesPercent = salesPercent;
-    }
-
-    public String getCountPercent() {
-        return countPercent;
-    }
-
-    public void setCountPercent(String countPercent) {
-        this.countPercent = countPercent;
-    }
-
     public String getDateBegin() {
         return dateBegin;
     }
@@ -175,12 +102,12 @@ public class StaProduct extends SortFilter  implements Serializable,IPager {
         this.dateBegin = dateBegin;
     }
 
-    public String getDateEnd() {
-        return dateEnd;
+    public Double getTotalCount() {
+        return totalCount;
     }
 
-    public void setDateEnd(String dateEnd) {
-        this.dateEnd = dateEnd;
+    public void setTotalCount(Double totalCount) {
+        this.totalCount = totalCount;
     }
 
     @Override
@@ -193,6 +120,15 @@ public class StaProduct extends SortFilter  implements Serializable,IPager {
         this.pageNo = pageNo;
     }
 
+    public Integer getPageRow() {
+        return pageRow;
+    }
+
+    @Override
+    public void setPageRow(Integer pageRow) {
+        this.pageRow = pageRow;
+    }
+
     @Override
     public Integer getPageSize() {
         return pageSize;
@@ -203,12 +139,28 @@ public class StaProduct extends SortFilter  implements Serializable,IPager {
         this.pageSize = pageSize;
     }
 
-    public Integer getId() {
-        return id;
+    public Double getTotalVolumePercent() {
+        return totalVolumePercent;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setTotalVolumePercent(Double totalVolumePercent) {
+        this.totalVolumePercent = totalVolumePercent;
+    }
+
+    public Double getTotalVolume() {
+        return totalVolume;
+    }
+
+    public void setTotalVolume(Double totalVolume) {
+        this.totalVolume = totalVolume;
+    }
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
     }
 
     public String getYear() {
@@ -271,6 +223,14 @@ public class StaProduct extends SortFilter  implements Serializable,IPager {
         this.platform = platform;
     }
 
+    public String getCatName() {
+        return catName;
+    }
+
+    public void setCatName(String catName) {
+        this.catName = catName;
+    }
+
     public String getProductId() {
         return productId;
     }
@@ -287,11 +247,11 @@ public class StaProduct extends SortFilter  implements Serializable,IPager {
         this.productName = productName;
     }
 
-    public Double getSalesCount() {
+    public String getSalesCount() {
         return salesCount;
     }
 
-    public void setSalesCount(Double salesCount) {
+    public void setSalesCount(String salesCount) {
         this.salesCount = salesCount;
     }
 
@@ -301,38 +261,6 @@ public class StaProduct extends SortFilter  implements Serializable,IPager {
 
     public void setSalesVolume(Double salesVolume) {
         this.salesVolume = salesVolume;
-    }
-
-    public Integer getcRankP() {
-        return cRankP;
-    }
-
-    public void setcRankP(Integer cRankP) {
-        this.cRankP = cRankP;
-    }
-
-    public Integer getcRankC() {
-        return cRankC;
-    }
-
-    public void setcRankC(Integer cRankC) {
-        this.cRankC = cRankC;
-    }
-
-    public Integer getsRankP() {
-        return sRankP;
-    }
-
-    public void setsRankP(Integer sRankP) {
-        this.sRankP = sRankP;
-    }
-
-    public Integer getsRankC() {
-        return sRankC;
-    }
-
-    public void setsRankC(Integer sRankC) {
-        this.sRankC = sRankC;
     }
 
     public String getUnitType() {
@@ -397,14 +325,6 @@ public class StaProduct extends SortFilter  implements Serializable,IPager {
 
     public void setRamark3(String ramark3) {
         this.ramark3 = ramark3;
-    }
-
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
     }
 
     @Override
