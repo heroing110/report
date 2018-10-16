@@ -25,7 +25,7 @@ export class EnterprisesAndEmploymentComponent implements OnInit {
     totalCount, increaseCount, increaseCountPercent
   };
 
-  private indexType1 = '电子商务企业数';
+  private indexType1 = '电子商务店铺数';
   private indexType2 = '电子商务从业人数';
 
   constructor(private trendService: TrendService) {
@@ -83,12 +83,12 @@ export class EnterprisesAndEmploymentComponent implements OnInit {
         data: lineVolumeList,
         yAxisIndex: 0,
         type: 'line',
-        name: '电子商务企业数'
+        name: this.indexType1
       }, {
         data: lineCountList,
         yAxisIndex: 1,
         type: 'line',
-        name: '电子商务从业人数'
+        name: this.indexType2
       }]
     };
     this.dataChart.setOption(lineOption);

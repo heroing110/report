@@ -161,11 +161,11 @@ export class QuickViewComponent implements OnInit {
       };
     });
 
-    // 排序，取前9个
-    this.sortDataList = datas.slice(0, 9);
+    // 排序，取前10个
+    this.sortDataList = datas.slice(0, 10);
 
     // 需求前九个排序中，当前登录用户所在省/市必须出现
-    if (datas.length > 9) {
+    if (datas.length > 10) {
       if (this.sortType === 1) {
         sortCurrentArea2Top(this.sortDataList, 'province', this.user.province);
       } else {
@@ -179,7 +179,7 @@ export class QuickViewComponent implements OnInit {
       const predicate = {name};
       const find = chain(list).find(predicate).value();
       if (!find) {
-        list[8] = chain(datas).find(predicate).value();
+        list[10] = chain(datas).find(predicate).value();
       }
     }
 

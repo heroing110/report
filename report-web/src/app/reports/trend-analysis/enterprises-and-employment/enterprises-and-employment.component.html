@@ -3,7 +3,7 @@
                    (datesChange)="setChartOption();dataTable.searchData(true);getParam()"></app-range-month>
 </div>
 
-<app-common-operation title="电商企业数/就业人数变化趋势"
+<app-common-operation title="电商店铺数/就业人数变化趋势"
                       [noExportData]="true"
                       [noPlatform]="true"
                       [noCategory]="true"></app-common-operation>
@@ -12,7 +12,7 @@
   <div style="white-space: nowrap">
     <div layout="row">
       <div style="margin-right: 1em;">
-        <h4 style="margin-top: 4em;">电商企业数</h4>
+        <h4 style="margin-top: 4em;">电商店铺数</h4>
         <div style="font-size: 1.4em">{{param?.totalVolume.toFixed(2)}}</div>
         <!--<small style="white-space: nowrap">
           月环比

@@ -10,6 +10,7 @@ export class CommonDataService {
 
   getPlatformList(): Promise<AjaxResult<OptionItem[]>> {
     const platformList: OptionItem[] = [
+      {label: '全部', value: '天猫'},
       {label: '天猫', value: '天猫'},
       {label: '淘宝', value: '淘宝'},
       {label: '京东', value: '京东'},
@@ -44,7 +45,7 @@ export class CommonDataService {
   getIndexTypeList(): Promise<AjaxResult<OptionItem[]>> {
     const categoryList: OptionItem[] = [
       {label: '电商整体', value: '电商整体'},
-      {label: '企业数', value: '企业数'},
+      {label: '店铺数', value: '店铺数'},
       {label: '从业人数', value: '从业人数'},
       {label: 'B2B', value: 'B2B'},
       {label: '网络零售', value: '网络零售'},

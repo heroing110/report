@@ -29,4 +29,14 @@ export class LocalProductService {
   pagingListview(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<PagingResult<CategoryAndShopDataItem[]>>> {
     return this.http.post<any>('local_product/listview', params).toPromise();
   }
+
+  // 查询 【特色产品监控】 环比数据
+  lineParam(params: PagingParam & CategoryAndShopDataItem): Promise<AjaxResult<any>> {
+    return this.http.post<any>('local_product/line_param', params).toPromise();
+  }
+
+  // 查询 【特色产品监控】 的产品列表
+  getCatname(): Promise<AjaxResult<OptionItem[]>> {
+    return this.http.post<any>('local_product/get_catname', null).toPromise();
+  }
 }

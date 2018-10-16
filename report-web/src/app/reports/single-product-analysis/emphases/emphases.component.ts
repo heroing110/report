@@ -29,6 +29,11 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
 
   dateRange: Date[] = [];
 
+  param: { totalVolume, increaseTotal };
+
+  catList: OptionItem[];
+  categoryName: string;
+
   platformList: OptionItem[];
   legendData: string[];
   private dateAreaStr: string;
@@ -48,6 +53,19 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
         pageSize: pageSize,
       });
     };
+
+    this.localProductService.getCatname().then(result => {
+      this.catList = result.data;
+    });
+  }
+
+  getParam() {
+    const date = this.getDateRangeParam();
+    this.localProductService.lineParam({
+      ...date
+    }).then(res => {
+      this.param = res.data;
+    });
   }
 
   async ngAfterViewInit() {
@@ -208,6 +226,7 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
   getLineChartData(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     const date = this.getDateRangeParam();
     return this.localProductService.queryLine({
+      catName: this.categoryName,
       ...date
     });
   }

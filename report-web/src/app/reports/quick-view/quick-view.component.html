@@ -25,14 +25,14 @@
 </div>
 <div layout="row">
   <div flex>
-    <app-data-chart #dataChart1 [height]="450"></app-data-chart>
+    <app-data-chart #dataChart1 [height]="500"></app-data-chart>
   </div>
   <div>
     <ul class="sortList">
-      <li *ngFor="let data of sortDataList;let i = index" [class.current]="checkCurrent(data.name)"
+      <li *ngFor="let data of sortDataList;" [class.current]="checkCurrent(data.name)"
           layout="row">
         <div flex>{{data.name}}</div>
-        <div>{{i + 1}}</div>
+        <div>{{data.sort}}</div>
       </li>
     </ul>
   </div>

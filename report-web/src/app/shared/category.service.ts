@@ -72,6 +72,7 @@ export class CategoryAndShopDataItem {
   shopName?: string;
   pCount?: number;
   mSlaesCount?: number;
+  catName?: string;
   mSalesVolume?: number;
   mSalesVolumeLevel?: string;
   unitType?: string;
