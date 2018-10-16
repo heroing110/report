@@ -28,9 +28,27 @@ public interface StaTotalService {
 
     List<StaTotal> selectHomeIndex(StaTotal record);
 
+    List<StaTotal> selectCoreCityLine(StaTotal record);
+
     List<StaTotal> selectHomeCountryRank(StaTotal record);
 
     List<StaTotal> selectHomeProvinceRank(StaTotal record);
 
     List<StaTotal> selectHomeBusiness(StaTotal record);
+
+    List<StaTotal> selectCityLine(StaTotal record);
+
+    StaTotal selectTotalVolume(StaTotal record);
+
+    StaTotal selectTotalCount(StaTotal record);
+
+    List<StaTotal> selectMonthVolume(StaTotal record);
+
+    List<StaTotal> selectHomeIndexPeople(StaTotal record);
+
+    List<StaTotal> selectHomeIndexCompany(StaTotal record);
+
+    List<StaTotal> selectAreaWholeWithPage(StaTotal record);
+
+    int selectAreaWholePageCount(StaTotal staTotal);
 }

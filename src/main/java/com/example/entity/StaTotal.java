@@ -3,7 +3,7 @@ package com.example.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-public class StaTotal extends SortFilter implements Serializable {
+public class StaTotal extends SortFilter implements Serializable,IPager {
     private Integer id;
 
     private Integer row;
@@ -62,11 +62,15 @@ public class StaTotal extends SortFilter implements Serializable {
 
     private String ramark1;
 
+    private String remark1;
+
     private String remark2;
 
     private String remark3;
 
     private Integer pageNo;
+
+    private Integer pageRow;
 
     private Integer pageSize;
 
@@ -78,13 +82,82 @@ public class StaTotal extends SortFilter implements Serializable {
 
     private Double totalCountMum;
 
-    private Double qys;
+    private int qys;
 
-    private Double cysr;
+    private int cyrs;
 
     private Double total;
 
+    private Double totalMom;
+
+    private  Boolean doubleParam;
+
+    private String volumeType;
+
+    private String countType;
+
+    private Float qysmom;
+
+    private Float cyrsmom;
+
+    public String getVolumeType() {
+        return volumeType;
+    }
+
+    public void setVolumeType(String volumeType) {
+        this.volumeType = volumeType;
+    }
+
     private static final long serialVersionUID = 1L;
+
+    public Float getQysmom() {
+        return qysmom;
+    }
+
+    public void setQysmom(Float qysmom) {
+        this.qysmom = qysmom;
+    }
+
+    public Float getCyrsmom() {
+        return cyrsmom;
+    }
+
+    public void setCyrsmom(Float cyrsmom) {
+        this.cyrsmom = cyrsmom;
+    }
+
+    public Double getTotalMom() {
+        return totalMom;
+    }
+
+    public void setTotalMom(Double totalMom) {
+        this.totalMom = totalMom;
+    }
+
+    public String getCountType() {
+        return countType;
+    }
+
+    public void setCountType(String countType) {
+        this.countType = countType;
+    }
+
+    public Boolean getDoubleParam() {
+        return doubleParam;
+    }
+
+    public void setDoubleParam(Boolean doubleParam) {
+        this.doubleParam = doubleParam;
+    }
+
+    public Integer getPageRow() {
+        return pageRow;
+    }
+
+    @Override
+    public void setPageRow(Integer pageRow) {
+        this.pageRow = pageRow;
+    }
 
     public String getType() {
         return type;
@@ -110,20 +183,20 @@ public class StaTotal extends SortFilter implements Serializable {
         this.total = total;
     }
 
-    public Double getQys() {
+    public int getQys() {
         return qys;
     }
 
-    public void setQys(Double qys) {
+    public void setQys(int qys) {
         this.qys = qys;
     }
 
-    public Double getCysr() {
-        return cysr;
+    public int getCyrs() {
+        return cyrs;
     }
 
-    public void setCysr(Double cysr) {
-        this.cysr = cysr;
+    public void setCyrs(int cyrs) {
+        this.cyrs = cyrs;
     }
 
     public Double getTotalCountMum() {
@@ -182,18 +255,22 @@ public class StaTotal extends SortFilter implements Serializable {
         this.totalVolume = totalVolume;
     }
 
+    @Override
     public Integer getPageNo() {
         return pageNo;
     }
 
+    @Override
     public void setPageNo(Integer pageNo) {
         this.pageNo = pageNo;
     }
 
+    @Override
     public Integer getPageSize() {
         return pageSize;
     }
 
+    @Override
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
     }
@@ -262,18 +339,22 @@ public class StaTotal extends SortFilter implements Serializable {
         this.country = country;
     }
 
+    @Override
     public String getProvince() {
         return province;
     }
 
+    @Override
     public void setProvince(String province) {
         this.province = province;
     }
 
+    @Override
     public String getCity() {
         return city;
     }
 
+    @Override
     public void setCity(String city) {
         this.city = city;
     }
@@ -404,5 +485,15 @@ public class StaTotal extends SortFilter implements Serializable {
 
     public void setRemark3(String remark3) {
         this.remark3 = remark3;
+    }
+
+    @Override
+    public String getRemark1() {
+        return remark1;
+    }
+
+    @Override
+    public void setRemark1(String remark1) {
+        this.remark1 = remark1;
     }
 }

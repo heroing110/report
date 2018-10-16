@@ -6,6 +6,7 @@ import com.example.service.StaTotalService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 @Service("totalService")
@@ -64,6 +65,11 @@ public class StaTotalServiceImpl implements StaTotalService {
     }
 
     @Override
+    public List<StaTotal> selectCoreCityLine(StaTotal record) {
+        return staTotalMapper.selectCoreCityLine(record);
+    }
+
+    @Override
     public List<StaTotal> selectHomeCountryRank(StaTotal record) {
         return staTotalMapper.selectHomeCountryRank(record);
     }
@@ -75,8 +81,59 @@ public class StaTotalServiceImpl implements StaTotalService {
 
     @Override
     public List<StaTotal> selectHomeBusiness(StaTotal record) {
-        return staTotalMapper.selectHomeBusiness(record);
+        if ("1".equals(record.getType())) {
+            return staTotalMapper.selectHomeBusinessSale(record);
+        } else if ("2".equals(record.getType())) {
+            return staTotalMapper.selectHomeBusinessTrade(record);
+        } else if ("3".equals(record.getType())) {
+            return staTotalMapper.selectHomeBusinessService(record);
+        } else if ("4".equals(record.getType())) {
+            return staTotalMapper.selectHomeBusinessCity(record);
+        }
+        return null;
     }
+
+    @Override
+    public List<StaTotal> selectCityLine(StaTotal record) {
+        return staTotalMapper.selectCityLine(record);
+    }
+
+    @Override
+    public StaTotal selectTotalVolume(StaTotal record) {
+        return staTotalMapper.selectTotalVolume(record);
+    }
+
+    @Override
+    public StaTotal selectTotalCount(StaTotal record) {
+        return staTotalMapper.selectTotalCount(record);
+    }
+
+    @Override
+    public List<StaTotal> selectMonthVolume(StaTotal record) {
+        return staTotalMapper.selectMonthVolume(record);
+    }
+
+    @Override
+    public List<StaTotal> selectHomeIndexPeople(StaTotal record) {
+        return staTotalMapper.selectHomeIndexPeople(record);
+    }
+
+
+    @Override
+    public List<StaTotal> selectHomeIndexCompany(StaTotal record) {
+        return staTotalMapper.selectHomeIndexCompany(record);
+    }
+
+    @Override
+    public List<StaTotal> selectAreaWholeWithPage(StaTotal record) {
+        return staTotalMapper.selectAreaWholeWithPage(record);
+    }
+
+    @Override
+    public int selectAreaWholePageCount(StaTotal staTotal) {
+        return staTotalMapper.selectAreaWholePageCount(staTotal);
+    }
+
 
     @Override
     public List<StaTotal> selectLine(StaTotal record) {

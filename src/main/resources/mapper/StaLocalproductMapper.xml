@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.dao.StaLocalproductMapper">
+    <resultMap id="BaseResultMap" type="com.example.entity.StaLocalproduct">
+        <result column="DATA" property="data" jdbcType="DATE"/>
+        <result column="YEAR" property="year" jdbcType="VARCHAR"/>
+        <result column="MONTH" property="month" jdbcType="VARCHAR"/>
+        <result column="COUNTRY" property="country" jdbcType="VARCHAR"/>
+        <result column="PROVINCE" property="province" jdbcType="VARCHAR"/>
+        <result column="CITY" property="city" jdbcType="VARCHAR"/>
+        <result column="DISTRICT" property="district" jdbcType="VARCHAR"/>
+        <result column="PLATFORM" property="platform" jdbcType="VARCHAR"/>
+        <result column="CAT_NAME" property="catName" jdbcType="VARCHAR"/>
+        <result column="PRODUCT_ID" property="productId" jdbcType="VARCHAR"/>
+        <result column="PRODUCT_NAME" property="productName" jdbcType="VARCHAR"/>
+        <result column="SALES_COUNT" property="salesCount" jdbcType="VARCHAR"/>
+        <result column="SALES_VOLUME" property="salesVolume" jdbcType="DOUBLE"/>
+        <result column="UNIT_TYPE" property="unitType" jdbcType="VARCHAR"/>
+        <result column="INSERT_TIME" property="insertTime" jdbcType="TIMESTAMP"/>
+        <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="UPDATE_USER" property="updateUser" jdbcType="CHAR"/>
+        <result column="STATUS" property="status" jdbcType="INTEGER"/>
+        <result column="RAMARK1" property="ramark1" jdbcType="CHAR"/>
+        <result column="RAMARK2" property="ramark2" jdbcType="CHAR"/>
+        <result column="RAMARK3" property="ramark3" jdbcType="CHAR"/>
+    </resultMap>
+
+    <select id="selectLine" resultType="com.example.entity.StaProduct"
+            parameterType="com.example.entity.StaLocalproduct">
+        select sum(SALES_VOLUME) totalVolume,data dateStr
+        from tb_sta_local_product
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by data
+        ORDER BY data asc
+    </select>
+
+    <select id="selectDistinceCatName" resultType="com.example.entity.StaLocalproduct">
+      select distinct CAT_NAME from tb_sta_local_product
+  </select>
+
+    <!--线上渠道销售额占比-->
+    <select id="selectPlatformTotalVolumePercent" resultType="com.example.entity.StaLocalproduct"
+            parameterType="com.example.entity.StaLocalproduct">
+        select sum(SALES_VOLUME) totalVolume,platform
+        from tb_sta_local_product
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by platform
+        ORDER BY totalVolume desc
+    </select>
+
+    <!--区域销售额占比-->
+    <select id="selectProvinceTotalVolumePercent" resultType="com.example.entity.StaLocalproduct"
+            parameterType="com.example.entity.StaLocalproduct">
+        select sum(SALES_VOLUME) totalVolume,province
+        from tb_sta_local_product
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by province
+        ORDER BY totalVolume desc
+    </select>
+
+    <!--重点品类监测分页-->
+    <select id="selectWithPage" resultType="com.example.entity.StaLocalproduct"
+            parameterType="com.example.entity.StaLocalproduct">
+        SELECT * from (
+        select sum(SALES_VOLUME) totalVolume,sum(sales_count) totalCount,province,platform,cat_name catName
+        from tb_sta_local_product
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by province,platform,cat_name
+        )c
+        limit #{pageRow},#{pageSize}
+    </select>
+
+    <select id="selectWithPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaLocalproduct">
+        select count(1) from (
+        SELECT 1 from tb_sta_local_product
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by province,platform,cat_name
+        )t
+    </select>
+
+    <sql id="dynamicWhere">
+        <if test="catName!=null">
+            AND CAT_NAME = #{catName,jdbcType=VARCHAR}
+        </if>
+        <if test="catNames!=null">
+            AND cat_name in
+            <foreach collection="catNames" index="index" item="item"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="province!=null">
+            AND PROVINCE = #{province,jdbcType=VARCHAR}
+        </if>
+        <if test="city!=null">
+            AND CITY = #{city,jdbcType=VARCHAR}
+        </if>
+        <if test="dateBegin!=null and dateEnd!=null">
+            AND data between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
+        </if>
+    </sql>
+    <insert id="insert" parameterType="com.example.entity.StaLocalproduct">
+    insert into tb_sta_local_product (DATA, YEAR, MONTH, 
+      COUNTRY, PROVINCE, CITY, 
+      DISTRICT, PLATFORM, CAT_NAME, 
+      PRODUCT_ID, PRODUCT_NAME, SALES_COUNT, 
+      SALES_VOLUME, UNIT_TYPE, INSERT_TIME, 
+      UPDATE_TIME, UPDATE_USER, STATUS, 
+      RAMARK1, RAMARK2, RAMARK3)
+    values (#{data,jdbcType=DATE}, #{year,jdbcType=VARCHAR}, #{month,jdbcType=VARCHAR}, 
+      #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{district,jdbcType=VARCHAR}, #{platform,jdbcType=VARCHAR}, #{catName,jdbcType=VARCHAR}, 
+      #{productId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{salesCount,jdbcType=VARCHAR}, 
+      #{salesVolume,jdbcType=DOUBLE}, #{unitType,jdbcType=VARCHAR}, #{insertTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=CHAR}, #{status,jdbcType=INTEGER}, 
+      #{ramark1,jdbcType=CHAR}, #{ramark2,jdbcType=CHAR}, #{ramark3,jdbcType=CHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.example.entity.StaLocalproduct">
+        insert into tb_sta_local_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="data != null">
+                DATA,
+            </if>
+            <if test="year != null">
+                YEAR,
+            </if>
+            <if test="month != null">
+                MONTH,
+            </if>
+            <if test="country != null">
+                COUNTRY,
+            </if>
+            <if test="province != null">
+                PROVINCE,
+            </if>
+            <if test="city != null">
+                CITY,
+            </if>
+            <if test="district != null">
+                DISTRICT,
+            </if>
+            <if test="platform != null">
+                PLATFORM,
+            </if>
+            <if test="catName != null">
+                CAT_NAME,
+            </if>
+            <if test="productId != null">
+                PRODUCT_ID,
+            </if>
+            <if test="productName != null">
+                PRODUCT_NAME,
+            </if>
+            <if test="salesCount != null">
+                SALES_COUNT,
+            </if>
+            <if test="salesVolume != null">
+                SALES_VOLUME,
+            </if>
+            <if test="unitType != null">
+                UNIT_TYPE,
+            </if>
+            <if test="insertTime != null">
+                INSERT_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+            <if test="updateUser != null">
+                UPDATE_USER,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+            <if test="ramark1 != null">
+                RAMARK1,
+            </if>
+            <if test="ramark2 != null">
+                RAMARK2,
+            </if>
+            <if test="ramark3 != null">
+                RAMARK3,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="data != null">
+                #{data,jdbcType=DATE},
+            </if>
+            <if test="year != null">
+                #{year,jdbcType=VARCHAR},
+            </if>
+            <if test="month != null">
+                #{month,jdbcType=VARCHAR},
+            </if>
+            <if test="country != null">
+                #{country,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="district != null">
+                #{district,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                #{platform,jdbcType=VARCHAR},
+            </if>
+            <if test="catName != null">
+                #{catName,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="salesCount != null">
+                #{salesCount,jdbcType=VARCHAR},
+            </if>
+            <if test="salesVolume != null">
+                #{salesVolume,jdbcType=DOUBLE},
+            </if>
+            <if test="unitType != null">
+                #{unitType,jdbcType=VARCHAR},
+            </if>
+            <if test="insertTime != null">
+                #{insertTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=CHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="ramark1 != null">
+                #{ramark1,jdbcType=CHAR},
+            </if>
+            <if test="ramark2 != null">
+                #{ramark2,jdbcType=CHAR},
+            </if>
+            <if test="ramark3 != null">
+                #{ramark3,jdbcType=CHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>

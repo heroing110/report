@@ -2,7 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.dao.StaTotalMapper">
     <resultMap id="BaseResultMap" type="com.example.entity.StaTotal">
-        <id column="ID" jdbcType="INTEGER" property="id"/>
         <result column="DATE" jdbcType="DATE" property="date"/>
         <result column="YEAR" jdbcType="VARCHAR" property="year"/>
         <result column="MONTH" jdbcType="VARCHAR" property="month"/>
@@ -27,7 +26,7 @@
         <result column="REMARK3" jdbcType="VARCHAR" property="remark3"/>
     </resultMap>
     <sql id="Base_Column_List">
-    ID, DATE, YEAR, MONTH, COUNTRY, PROVINCE, CITY, DISTRICT, INDEX_TYPE, INDEX_VALUE, 
+    DATE, YEAR, MONTH, COUNTRY, PROVINCE, CITY, DISTRICT, INDEX_TYPE, INDEX_VALUE,
     MOM, YOY, UNIT_TYPE, RANK_IN_COUNTRY, RANK_IN_PROVINCE, RANK_IN_CITY, INSERT_TIME, 
     UPDATE_TIME, UPDATE_USER, STATUS, RAMARK1, REMARK2, REMARK3
   </sql>
@@ -35,16 +34,50 @@
     <!--首页指标-->
     <select id="selectHomeIndex" resultType="com.example.entity.StaTotal"
             parameterType="com.example.entity.StaTotal">
-        select index_type indexType,sum(INDEX_VALUE) totalVolume from tb_sta_total GROUP BY index_type
+        select index_type indexType,sum(INDEX_VALUE) totalVolume,UNIT_TYPE unitType
+        from tb_sta_total
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY index_type
+    </select>
+
+    <!--首页电子商务就业人数指标-->
+    <select id="selectHomeIndexPeople" resultType="com.example.entity.StaTotal">
+        select INDEX_VALUE totalVolume from tb_sta_total where date = (select max(date) from tb_sta_total where index_type = '电子商务从业人数') and index_type = '电子商务从业人数'
+        <if test="province!=null">
+            AND PROVINCE = #{province,jdbcType=VARCHAR}
+        </if>
+        <if test="city!=null">
+            AND CITY = #{city,jdbcType=VARCHAR}
+        </if>
+        <if test="ramark1!=null">
+            AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <!--首页电子商务企业数指标-->
+    <select id="selectHomeIndexCompany" resultType="com.example.entity.StaTotal">
+        select INDEX_VALUE totalVolume from tb_sta_total where date = (select max(date) from tb_sta_total where index_type = '电子商务企业数') and index_type = '电子商务企业数'
+        <if test="province!=null">
+            AND PROVINCE = #{province,jdbcType=VARCHAR}
+        </if>
+        <if test="city!=null">
+            AND CITY = #{city,jdbcType=VARCHAR}
+        </if>
+        <if test="ramark1!=null">
+            AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
+        </if>
     </select>
 
     <!--首页全国排名-->
     <select id="selectHomeCountryRank" resultType="com.example.entity.StaTotal"
             parameterType="com.example.entity.StaTotal">
         select * from (
-          select PROVINCE,sum(INDEX_VALUE) total, (@i:=@i+1) as row from tb_sta_total,(select @i:=0) as it where INDEX_TYPE='电商整体交易额'
-            <include refid="dynamicWhere"/>
-            GROUP BY PROVINCE)t
+        select PROVINCE,sum(INDEX_VALUE) total, (@i:=@i+1) as row from tb_sta_total,(select @i:=0) as it where
+        INDEX_TYPE='电商整体交易额' and ramark1 = '省级汇总数据'
+        <include refid="dynamicWhere"/>
+        GROUP BY PROVINCE)t
         ORDER BY total desc
     </select>
 
@@ -52,29 +85,116 @@
     <select id="selectHomeProvinceRank" resultType="com.example.entity.StaTotal"
             parameterType="com.example.entity.StaTotal">
         select * from (
-        select CITY,sum(INDEX_VALUE) total, (@i:=@i+1) as row from tb_sta_total,(select @i:=0) as it where INDEX_TYPE='电商整体交易额' <include refid="dynamicWhere"/> GROUP BY CITY)t
+        select CITY,sum(INDEX_VALUE) total, (@i:=@i+1) as row from tb_sta_total,(select @i:=0) as it where
+        INDEX_TYPE='电商整体交易额' and ramark1 = '市级汇总数据'
+        <include refid="dynamicWhere"/>GROUP BY CITY)t
         ORDER BY total desc
     </select>
 
-    <!--首页-电子商务市场结构-->
-    <select id="selectHomeBusiness" resultType="com.example.entity.StaTotal"
+    <!--首页-电子商务市场结构-交易类型-->
+    <select id="selectHomeBusinessSale" resultType="com.example.entity.StaTotal"
             parameterType="com.example.entity.StaTotal">
-            SELECT
-            sum(index_value)*100/(SELECT sum(index_value) from tb_sta_total where INDEX_TYPE in ('B2B交易额','网络零售交易额','大宗商品现货交易额','服务类交易额') <include refid="dynamicWhere"/>) total,'B2B交易额' type
-             from tb_sta_total where INDEX_TYPE in ('B2B交易额') <include refid="dynamicWhere"/>
-            UNION
-            SELECT
-            sum(index_value)*100/(SELECT sum(index_value) from tb_sta_total where INDEX_TYPE in ('B2B交易额','网络零售交易额','大宗商品现货交易额','服务类交易额') <include refid="dynamicWhere"/>) total,'网络零售交易额' type
-             from tb_sta_total where INDEX_TYPE in ('网络零售交易额') <include refid="dynamicWhere"/>
-            UNION
-            SELECT
-            sum(index_value)*100/(SELECT sum(index_value) from tb_sta_total where INDEX_TYPE in ('B2B交易额','网络零售交易额','大宗商品现货交易额','服务类交易额') <include refid="dynamicWhere"/>) total,'大宗商品现货交易额' type
-             from tb_sta_total where INDEX_TYPE in ('大宗商品现货交易额') <include refid="dynamicWhere"/>
-            UNION
-            SELECT
-            sum(index_value)*100/(SELECT sum(index_value) from tb_sta_total where INDEX_TYPE in ('B2B交易额','网络零售交易额','大宗商品现货交易额','服务类交易额') <include refid="dynamicWhere"/>) total,'服务类交易额' type
-            from tb_sta_total where INDEX_TYPE in ('服务类交易额') <include refid="dynamicWhere"/>
+        SELECT
+        sum(index_value) total,'B2B交易额' type
+        from tb_sta_total where INDEX_TYPE in ('B2B交易额')
+        <include refid="dynamicWhere"/>
+        UNION
+        SELECT
+        sum(index_value) total,'网络零售交易额' type
+        from tb_sta_total where INDEX_TYPE in ('网络零售交易额')
+        <include refid="dynamicWhere"/>
+        UNION
+        SELECT
+        sum(index_value) total,'大宗商品现货交易额' type
+        from tb_sta_total where INDEX_TYPE in ('大宗商品现货交易额')
+        <include refid="dynamicWhere"/>
+        UNION
+        SELECT
+        sum(index_value) total,'服务类交易额' type
+        from tb_sta_total where INDEX_TYPE in ('服务类交易额')
+        <include refid="dynamicWhere"/>
     </select>
+
+    <!--首页-电子商务市场结构-进出口-->
+    <select id="selectHomeBusinessTrade" resultType="com.example.entity.StaTotal"
+            parameterType="com.example.entity.StaTotal">
+        SELECT
+        sum(index_value) total,'跨境电商出口额' type
+        from tb_sta_total where INDEX_TYPE in ('跨境电商出口额')
+        <include refid="dynamicWhere"/>
+        UNION
+        SELECT
+        sum(index_value) total,'跨境电商进口额' type
+        from tb_sta_total where INDEX_TYPE in ('跨境电商进口额')
+        <include refid="dynamicWhere"/>
+    </select>
+
+    <!--首页-电子商务市场结构-服务、实物-->
+    <select id="selectHomeBusinessService" resultType="com.example.entity.StaTotal"
+            parameterType="com.example.entity.StaTotal">
+        SELECT
+        sum(index_value) total,'实物商品网购交易额' type
+        from tb_sta_total where INDEX_TYPE in ('实物商品网购交易额')
+        <include refid="dynamicWhere"/>
+        UNION
+        SELECT
+        sum(index_value) total,'服务网购交易额' type
+        from tb_sta_total where INDEX_TYPE in ('服务网购交易额')
+        <include refid="dynamicWhere"/>
+    </select>
+
+    <!--首页-电子商务市场结构-城市/农村-->
+    <select id="selectHomeBusinessCity" resultType="com.example.entity.StaTotal"
+            parameterType="com.example.entity.StaTotal">
+        SELECT
+        sum(index_value) total,'农村电商交易额' type
+        from tb_sta_total where INDEX_TYPE in ('农村电商交易额')
+        <include refid="dynamicWhere"/>
+        UNION
+        SELECT
+        sum(index_value) total,'城市电商交易额' type
+        from tb_sta_total where INDEX_TYPE in ('城市电商交易额')
+        <include refid="dynamicWhere"/>
+    </select>
+
+    <!--各地核心电商指标速览-->
+    <select id="selectCityLine" resultType="com.example.entity.StaTotal" parameterType="com.example.entity.StaTotal">
+        select * from
+        (select sum(INDEX_VALUE) totalVolume,city
+        from tb_sta_total
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="indexType1!=null">
+                AND INDEX_TYPE like CONCAT('%',#{indexType1,jdbcType=VARCHAR},'%')
+            </if>
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by city) t1
+        <if test="indexType2!=null">
+            left join
+            ( select sum(INDEX_VALUE) totalCount,city
+            from tb_sta_total
+            where INDEX_TYPE like CONCAT('%',#{indexType2,jdbcType=VARCHAR},'%')
+            <include refid="dynamicWhere"/>
+            group by city) t2
+            on t1.city=t2.city
+        </if>
+    </select>
+
+    <!--各地核心电商指标速览-->
+    <select id="selectCoreCityLine" resultType="com.example.entity.StaTotal"
+            parameterType="com.example.entity.StaTotal">
+        select sum(INDEX_VALUE) totalVolume,date dateStr,city
+        from tb_sta_total
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="indexType1!=null">
+                AND INDEX_TYPE like CONCAT('%',#{indexType1,jdbcType=VARCHAR},'%')
+            </if>
+            <include refid="dynamicWhere"/>
+        </trim>
+        and city!='全省'
+        group by date,city
+    </select>
+
 
     <select id="selectLine" resultType="com.example.entity.StaTotal" parameterType="com.example.entity.StaTotal">
         select * from
@@ -104,7 +224,184 @@
 
     <select id="selectAllWithPage" resultType="com.example.entity.StaTotal" parameterType="com.example.entity.StaTotal">
         select * from
-        (select sum(INDEX_VALUE) totalVolume,sum(mom) totalMum,date dateStr,id
+        (select sum(INDEX_VALUE) totalVolume,sum(mom) totalMum,date_format(DATE,'%Y-%m') dateStr
+        from tb_sta_total
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="indexType!=null">
+                AND INDEX_TYPE like CONCAT('%',#{indexType,jdbcType=VARCHAR},'%')
+            </if>
+            <include refid="pageDynamicWhere"/>
+        </trim>
+        group by date
+        ORDER BY date asc) t1
+        <if test="indexType2!=null">
+            left join
+            (select sum(INDEX_VALUE) totalCount,sum(mom) totalCountMum,date_format(DATE,'%Y-%m') dateStr2
+            from tb_sta_total
+            <trim prefix="where" prefixOverrides="and | or">
+                <if test="indexType2!=null">
+                    AND INDEX_TYPE like CONCAT('%',#{indexType2,jdbcType=VARCHAR},'%')
+                </if>
+                <include refid="pageDynamicWhere"/>
+            </trim>
+            group by date
+            ORDER BY date asc) t2
+            on t1.dateStr = t2.dateStr2
+        </if>
+        limit #{pageRow},#{pageSize}
+    </select>
+
+    <sql id="pageDynamicWhere">
+        <if test="dateBegin!=null and dateEnd!=null">
+            AND date between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
+        </if>
+        <if test="year!=null">
+            AND YEAR = #{year,jdbcType=VARCHAR}
+        </if>
+        <if test="month!=null">
+            AND MONTH = #{month,jdbcType=VARCHAR}
+        </if>
+        <if test="province!=null">
+            AND PROVINCE = #{province,jdbcType=VARCHAR}
+        </if>
+        <if test="city!=null">
+            AND CITY = #{city,jdbcType=VARCHAR}
+        </if>
+        <if test="ramark1!=null">
+            AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
+        </if>
+    </sql>
+    <!--区域趋势速览-->
+    <select id="selectAreaWithPage" resultType="com.example.entity.StaTotal"
+            parameterType="com.example.entity.StaTotal">
+        select date_format(DATE,'%Y-%m') dateStr,PROVINCE,city,index_type indexType,index_value total,mom totalMom from tb_sta_total
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        ORDER BY CITY,INDEX_TYPE,DATE desc
+        limit #{pageRow},#{pageSize}
+    </select>
+
+    <!--区域整体对比-->
+    <select id="selectAreaWholeWithPage" resultType="com.example.entity.StaTotal"
+            parameterType="com.example.entity.StaTotal">
+        select * from (
+        select date dateStr,PROVINCE,city,index_type indexType,index_value total from tb_sta_total
+        <trim prefixOverrides="and|or" prefix="where">
+            <if test="dateBegin!=null and dateEnd!=null">
+                AND date between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
+            </if>
+            <if test="province!=null">
+                AND PROVINCE = #{province,jdbcType=VARCHAR}
+            </if>
+            <if test="city!=null">
+                AND CITY = #{city,jdbcType=VARCHAR}
+            </if>
+        </trim>
+        and INDEX_TYPE ='电子商务从业人数'
+                ORDER BY date desc limit 1) a
+        UNION
+        select * from (
+        select date dateStr,PROVINCE,city,index_type indexType,index_value total from tb_sta_total
+        <trim prefixOverrides="and|or" prefix="where">
+            <if test="dateBegin!=null and dateEnd!=null">
+                AND date between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
+            </if>
+            <if test="province!=null">
+                AND PROVINCE = #{province,jdbcType=VARCHAR}
+            </if>
+            <if test="city!=null">
+                AND CITY = #{city,jdbcType=VARCHAR}
+            </if>
+        </trim>
+        and INDEX_TYPE ='电子商务店铺数'
+                ORDER BY date desc limit 1) b
+        UNION
+        select * from (
+                select CONCAT(#{dateBegin} ,'  ',#{dateEnd}) dateStr,PROVINCE,city,index_type indexType,sum(index_value) total from tb_sta_total
+        <trim prefixOverrides="and|or" prefix="where">
+            <if test="dateBegin!=null and dateEnd!=null">
+                AND date between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
+            </if>
+            <if test="province!=null">
+                AND PROVINCE = #{province,jdbcType=VARCHAR}
+            </if>
+            <if test="city!=null">
+                AND CITY = #{city,jdbcType=VARCHAR}
+            </if>
+        </trim>
+        and INDEX_TYPE not in('电子商务从业人数','电子商务店铺数')
+        GROUP BY PROVINCE,CITY,INDEX_TYPE
+        ORDER BY CITY,INDEX_TYPE) c
+        limit #{pageRow},#{pageSize}
+    </select>
+
+    <select id="selectAreaPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaTotal">
+        select count(1) from (
+        select 1 from tb_sta_total
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        ) t
+    </select>
+
+    <select id="selectAreaWholePageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaTotal">
+        select count(1) from (
+        select * from (
+        select index_value total from tb_sta_total
+        <trim prefixOverrides="and|or" prefix="where">
+            <if test="dateBegin!=null and dateEnd!=null">
+                AND date between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
+            </if>
+            <if test="province!=null">
+                AND PROVINCE = #{province,jdbcType=VARCHAR}
+            </if>
+            <if test="city!=null">
+                AND CITY = #{city,jdbcType=VARCHAR}
+            </if>
+        </trim>
+        and INDEX_TYPE ='电子商务从业人数'
+        ORDER BY date desc limit 1) a
+        UNION
+        select * from (
+        select index_value total from tb_sta_total
+        <trim prefixOverrides="and|or" prefix="where">
+            <if test="dateBegin!=null and dateEnd!=null">
+                AND date between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
+            </if>
+            <if test="province!=null">
+                AND PROVINCE = #{province,jdbcType=VARCHAR}
+            </if>
+            <if test="city!=null">
+                AND CITY = #{city,jdbcType=VARCHAR}
+            </if>
+        </trim>
+        and INDEX_TYPE ='电子商务店铺数'
+        ORDER BY date desc limit 1) b
+        UNION
+        select * from (
+        select sum(index_value) total from tb_sta_total
+        <trim prefixOverrides="and|or" prefix="where">
+            <if test="dateBegin!=null and dateEnd!=null">
+                AND date between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
+            </if>
+            <if test="province!=null">
+                AND PROVINCE = #{province,jdbcType=VARCHAR}
+            </if>
+            <if test="city!=null">
+                AND CITY = #{city,jdbcType=VARCHAR}
+            </if>
+        </trim>
+        and INDEX_TYPE not in('电子商务从业人数','电子商务店铺数')
+        GROUP BY PROVINCE,CITY,INDEX_TYPE
+        ORDER BY CITY,INDEX_TYPE) c
+        ) t
+    </select>
+
+
+    <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaTotal">
+        select count(1) from (
+        select date dateStr
         from tb_sta_total
         <trim prefix="where" prefixOverrides="and | or">
             <if test="indexType1!=null">
@@ -112,7 +409,7 @@
             </if>
             <include refid="dynamicWhere"/>
         </trim>
-        group by date,index_type
+        group by date
         ORDER BY date asc) t1
         <if test="indexType2!=null">
             left join
@@ -126,42 +423,6 @@
             ORDER BY date asc) t2
             on t1.dateStr = t2.dateStr2
         </if>
-        where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
-    </select>
-
-    <!--各地速览-->
-    <select id="selectAreaWithPage" resultType="com.example.entity.StaTotal"
-            parameterType="com.example.entity.StaTotal">
-        select * from (
-        select
-        <include refid="Base_Column_List"/>
-        from tb_sta_total t
-        <trim prefix="where" prefixOverrides="and | or">
-            <include refid="dynamicWhere"/>
-        </trim>
-        <if test="orderBy!=null">
-            ORDER BY ${orderBy} desc
-        </if>
-        ) t2
-        where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
-    </select>
-
-    <select id="selectAreaPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaTotal">
-        select count(1) from (
-        select 1 from tb_sta_total
-        <trim prefix="where" prefixOverrides="and | or">
-            <include refid="dynamicWhere"/>
-        </trim>
-        ) t
-    </select>
-
-    <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaTotal">
-        select count(1) from (
-        select 1 from tb_sta_total
-        <trim prefix="where" prefixOverrides="and | or">
-            <include refid="dynamicWhere"/>
-        </trim>
-        group by date) t
     </select>
 
     <select id="selectList" parameterType="com.example.entity.StaTotal" resultMap="BaseResultMap">
@@ -177,9 +438,8 @@
             parameterType="com.example.entity.StaTotal">
         select sum(INDEX_VALUE) totalVolume,CITY
         from tb_sta_total
-        <trim prefix="where" prefixOverrides="and | or">
-            <include refid="dynamicWhere"/>
-        </trim>
+        where index_type = '电商整体交易额'
+        <include refid="dynamicWhere"/>
         group by CITY
         ORDER BY totalVolume desc
     </select>
@@ -203,29 +463,29 @@
     <select id="selectAreaQysWithPage" resultType="com.example.entity.StaTotal"
             parameterType="com.example.entity.StaTotal">
         SELECT * from (
-        select t1.date,t1.PROVINCE,t1.city,t1.qys,t2.cyrs from
-        (SELECT date,PROVINCE,city,sum(index_value) qys from tb_sta_total where index_type = '企业数'
+        select t1.dateStr,t1.PROVINCE,t1.city,t1.qys,t2.cyrs,t1.qysmom,t2.cyrsmom from
+        (SELECT date dateStr,PROVINCE,city,sum(index_value) qys,sum(mom) qysmom from tb_sta_total where index_type = '电子商务企业数'
+        <include refid="dynamicWhere"/>
         GROUP BY date,PROVINCE,city) t1
         left JOIN
         (
-        SELECT date,PROVINCE,city,sum(index_value) cyrs from tb_sta_total where index_type = '从业人数'
+        SELECT date dateStr,PROVINCE,city,sum(index_value) cyrs,sum(mom) cyrsmom from tb_sta_total where index_type = '电子商务从业人数'
+        <include refid="dynamicWhere"/>
         GROUP BY date,PROVINCE,city) t2
-        on t1.city = t2.city and t1.date=t2.date and t1.PROVINCE=t2.PROVINCE
+        on t1.city = t2.city and t1.dateStr=t2.dateStr and t1.PROVINCE=t2.PROVINCE
         )c
-        limit (#{pageNo}-1)*#{pageSize},{pageSize}
+        limit #{pageRow},#{pageSize}
     </select>
 
     <select id="selectAreaQysWithPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaTotal">
         select count(1) from (
-            SELECT 1 from tb_sta_total where index_type = '企业数'
-            GROUP BY date,PROVINCE,city
+        SELECT date dateStr,PROVINCE,city from tb_sta_total where index_type = '电子商务企业数'
+        <include refid="dynamicWhere"/>
+          GROUP BY date,PROVINCE,city
         )t
     </select>
 
     <sql id="dynamicWhere">
-        <if test="id!=null">
-            AND ID = #{id,jdbcType=INTEGER}
-        </if>
         <if test="dateBegin!=null and dateEnd!=null">
             AND date between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
         </if>
@@ -252,6 +512,9 @@
         </if>
         <if test="ramark1!=null">
             AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
+        </if>
+        <if test="doubleParam!=null">
+            AND INDEX_TYPE in ('电子商务企业数','电子商务从业人数')
         </if>
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -499,4 +762,122 @@
         </set>
         where ID = #{id,jdbcType=INTEGER}
     </update>
+
+    <!--首页-主要电商平台交易额走势,累计交易额-->
+    <select id="selectTotalVolume" resultType="com.example.entity.StaTotal" parameterType="com.example.entity.StaTotal">
+        select sum(index_value) totalVolume from tb_sta_total
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="dateBegin!=null and dateEnd!=null">
+                AND date between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
+            </if>
+            <if test="year!=null">
+                AND YEAR = #{year,jdbcType=VARCHAR}
+            </if>
+            <if test="month!=null">
+                AND MONTH = #{month,jdbcType=VARCHAR}
+            </if>
+            <if test="province!=null">
+                AND PROVINCE = #{province,jdbcType=VARCHAR}
+            </if>
+            <if test="city!=null">
+                AND CITY = #{city,jdbcType=VARCHAR}
+            </if>
+            <if test="volumeType!=null">
+                AND INDEX_TYPE like CONCAT('%',#{volumeType,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="ramark1!=null">
+                AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
+            </if>
+            <if test="remark1!=null">
+                AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
+            </if>
+            <if test="doubleParam!=null">
+                AND INDEX_TYPE = '电子商务企业数'
+            </if>
+        </trim>
+    </select>
+
+    <!--首页-主要电商平台交易额走势,累计交易量-->
+    <select id="selectTotalCount" resultType="com.example.entity.StaTotal" parameterType="com.example.entity.StaTotal">
+        select sum(index_value) totalCount from tb_sta_total
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="dateBegin!=null and dateEnd!=null">
+                AND date between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
+            </if>
+            <if test="year!=null">
+                AND YEAR = #{year,jdbcType=VARCHAR}
+            </if>
+            <if test="month!=null">
+                AND MONTH = #{month,jdbcType=VARCHAR}
+            </if>
+            <if test="province!=null">
+                AND PROVINCE = #{province,jdbcType=VARCHAR}
+            </if>
+            <if test="city!=null">
+                AND CITY = #{city,jdbcType=VARCHAR}
+            </if>
+            <if test="ramark1!=null">
+                AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
+            </if>
+            <if test="remark1!=null">
+                AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
+            </if>
+            <if test="doubleParam!=null">
+                AND INDEX_TYPE = '电子商务从业人数'
+            </if>
+            <if test="countType!=null">
+                AND INDEX_TYPE like CONCAT('%',#{countType,jdbcType=VARCHAR},'%')
+            </if>
+        </trim>
+    </select>
+
+    <!--首页-主要电商平台交易额走势,增量数据-->
+    <select id="selectMonthVolume" resultType="com.example.entity.StaTotal" parameterType="com.example.entity.StaTotal">
+        select sum(index_value) total,year,month from tb_sta_total where year
+        = year(now()) and month = month(now())
+        <include refid="dynamicWhereForMonthVolume"/>
+        <if test="volumeType!=null">
+            AND INDEX_TYPE like CONCAT('%',#{volumeType,jdbcType=VARCHAR},'%')
+        </if>
+        UNION
+        select sum(index_value) total,year,month from tb_sta_total where  year
+        = year(now()) and month = month(now())-1
+        <include refid="dynamicWhereForMonthVolume"/>
+        <if test="volumeType!=null">
+            AND INDEX_TYPE like CONCAT('%',#{volumeType,jdbcType=VARCHAR},'%')
+        </if>
+        UNION
+        select sum(index_value) total,year,month from tb_sta_total where year
+        = year(now()) and month = month(now())
+        <include refid="dynamicWhereForMonthVolume"/>
+        <if test="countType!=null">
+            AND INDEX_TYPE like CONCAT('%',#{countType,jdbcType=VARCHAR},'%')
+        </if>
+        UNION
+        select sum(index_value) total,year,month from tb_sta_total where year
+        = year(now()) and month = month(now())-1
+        <include refid="dynamicWhereForMonthVolume"/>
+        <if test="countType!=null">
+            AND INDEX_TYPE like CONCAT('%',#{countType,jdbcType=VARCHAR},'%')
+        </if>
+    </select>
+
+    <sql id="dynamicWhereForMonthVolume">
+        <if test="year!=null">
+            AND YEAR = #{year,jdbcType=VARCHAR}
+        </if>
+        <if test="month!=null">
+            AND MONTH = #{month,jdbcType=VARCHAR}
+        </if>
+
+        <if test="province!=null">
+            AND PROVINCE = #{province,jdbcType=VARCHAR}
+        </if>
+        <if test="city!=null">
+            AND CITY = #{city,jdbcType=VARCHAR}
+        </if>
+        <if test="ramark1!=null">
+            AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
+        </if>
+    </sql>
 </mapper>

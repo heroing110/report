@@ -15,13 +15,19 @@ public interface StaCatShopMapper {
 
     int updateByPrimaryKeySelective(StaCatShop record);
 
-    int updateByPrimaryKeyWithBLOBs(StaCatShop record);
-
     int updateByPrimaryKey(StaCatShop record);
-
-    List<StaCatShop> selectList(StaCatShop staCatShop);
 
     List<StaCatShop> selectAllWithPage(StaCatShop staCatShop);
 
+    List<StaCatShop> selectTop10VolumeWithPage(StaCatShop staCatShop);
+
+    List<StaCatShop> selectTop10CountWithPage(StaCatShop staCatShop);
+
+    List<StaCatShop> selectList(StaCatShop staCatShop);
+
     int selectPageCount(StaCatShop staCatShop);
+
+    int selectTop10VolumeWithPageCount(StaCatShop staCatShop);
+
+    int selectTop10CountWithPageCount(StaCatShop staCatShop);
 }

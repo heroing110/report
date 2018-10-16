@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class StaCat extends SortFilter implements Serializable {
+public class StaCat extends SortFilter implements Serializable,IPager {
     private Integer id;
 
     private Integer row;
@@ -18,6 +18,8 @@ public class StaCat extends SortFilter implements Serializable {
     private String province;
 
     private String city;
+
+    private String type;
 
     private String district;
 
@@ -71,9 +73,9 @@ public class StaCat extends SortFilter implements Serializable {
 
     private Integer pageRow;
 
-    private Float salesPercent;
+    private String salesPercent;
 
-    private Float countPercent;
+    private String countPercent;
 
     private String name;
 
@@ -83,12 +85,41 @@ public class StaCat extends SortFilter implements Serializable {
 
     private List<StaCat> children;
 
+    private String sortColumn;
+
+    private String sortType;
+
     private static final long serialVersionUID = 1L;
+
+    public String getSortColumn() {
+        return sortColumn;
+    }
+
+    public void setSortColumn(String sortColumn) {
+        this.sortColumn = sortColumn;
+    }
+
+    public String getSortType() {
+        return sortType;
+    }
+
+    public void setSortType(String sortType) {
+        this.sortType = sortType;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public Integer getPageRow() {
         return pageRow;
     }
 
+    @Override
     public void setPageRow(Integer pageRow) {
         this.pageRow = pageRow;
     }
@@ -141,19 +172,19 @@ public class StaCat extends SortFilter implements Serializable {
         this.children = children;
     }
 
-    public Float getSalesPercent() {
+    public String getSalesPercent() {
         return salesPercent;
     }
 
-    public void setSalesPercent(Float salesPercent) {
+    public void setSalesPercent(String salesPercent) {
         this.salesPercent = salesPercent;
     }
 
-    public Float getCountPercent() {
+    public String getCountPercent() {
         return countPercent;
     }
 
-    public void setCountPercent(Float countPercent) {
+    public void setCountPercent(String countPercent) {
         this.countPercent = countPercent;
     }
 
@@ -173,18 +204,19 @@ public class StaCat extends SortFilter implements Serializable {
         this.dateEnd = dateEnd;
     }
 
+    @Override
     public Integer getPageNo() {
         return pageNo;
     }
-
+    @Override
     public void setPageNo(Integer pageNo) {
         this.pageNo = pageNo;
     }
-
+    @Override
     public Integer getPageSize() {
         return pageSize;
     }
-
+    @Override
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
     }
@@ -220,19 +252,19 @@ public class StaCat extends SortFilter implements Serializable {
     public void setCountry(String country) {
         this.country = country;
     }
-
+    @Override
     public String getProvince() {
         return province;
     }
-
+    @Override
     public void setProvince(String province) {
         this.province = province;
     }
-
+    @Override
     public String getCity() {
         return city;
     }
-
+    @Override
     public void setCity(String city) {
         this.city = city;
     }
@@ -364,11 +396,11 @@ public class StaCat extends SortFilter implements Serializable {
     public void setStatus(Long status) {
         this.status = status;
     }
-
+    @Override
     public String getRemark1() {
         return remark1;
     }
-
+    @Override
     public void setRemark1(String remark1) {
         this.remark1 = remark1;
     }

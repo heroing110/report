@@ -27,11 +27,11 @@
 
 		<javaClientGenerator type="XMLMAPPER" targetProject="C:\Users\heying\IdeaProjects\report\src\main\java" targetPackage="com.example.dao"/>
 
-		<table schema="root" tableName="tb_sta_cat_shop"
-			   enableUpdateByExample="false" enableSelectByExample="false"
-			   enableDeleteByExample="false" enableCountByExample="false"
-			   domainObjectName="StaCatShop">
-		</table>
+		<!--<table schema="root" tableName="tb_sta_local_product"-->
+			   <!--enableUpdateByExample="false" enableSelectByExample="false"-->
+			   <!--enableDeleteByExample="false" enableCountByExample="false"-->
+			   <!--domainObjectName="StaLocalproduct">-->
+		<!--</table>-->
 
 	</context>
 </generatorConfiguration>

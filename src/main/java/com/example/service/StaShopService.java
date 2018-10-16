@@ -18,4 +18,6 @@ public interface StaShopService {
     int selectAreaShopWithPageCount(StaShop staShop);
 
     List<StaShop> selectAreaShopLine(StaShop record);
+
+    List<StaShop> selectAreaShopLineShopCountByCity(StaShop record);
 }

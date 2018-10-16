@@ -42,4 +42,9 @@ public class StaShopServiceImpl implements StaShopService {
     public List<StaShop> selectAreaShopLine(StaShop record) {
         return staShopMapper.selectAreaShopLine(record);
     }
+
+    @Override
+    public List<StaShop> selectAreaShopLineShopCountByCity(StaShop record) {
+        return staShopMapper.selectAreaShopLineShopCountByCity(record);
+    }
 }

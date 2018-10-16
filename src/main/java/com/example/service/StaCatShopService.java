@@ -12,4 +12,12 @@ public interface StaCatShopService {
     List<StaCatShop> selectList(StaCatShop staCatShop);
 
     int selectPageCount(StaCatShop staCatShop);
+
+    List<StaCatShop> selectTop10VolumeWithPage(StaCatShop staCatShop);
+
+    List<StaCatShop> selectTop10CountWithPage(StaCatShop staCatShop);
+
+    int selectTop10VolumeWithPageCount(StaCatShop staCatShop);
+
+    int selectTop10CountWithPageCount(StaCatShop staCatShop);
 }

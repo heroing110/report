@@ -43,23 +43,18 @@
         </trim>
     </select>
 
-    <select id="selectAllWithPage" resultMap="BaseResultMap" parameterType="com.example.entity.StaShop">
+    <select id="selectAllWithPage" resultType="com.example.entity.StaShop" parameterType="com.example.entity.StaShop">
         select * from (
-        select
-        <include refid="Base_Column_List"/>,
-        sales_volume*100/(select sum(sales_volume) from tb_sta_shop t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and
-        t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM ) salesPercent,
-        sales_COUNT*100/(select sum(sales_COUNT) from tb_sta_shop t1 where t1.YEAR = t.year and t1.MONTH = t.MONTH and
-        t1.PROVINCE = t.PROVINCE and t1.PLATFORM = t.PLATFORM) countPercent
-        from tb_sta_shop t
+        select PROVINCE,PLATFORM,SHOP_NAME shopName,sum(SALES_COUNT) salesCount,sum(SALES_VOLUME) salesVolume from tb_sta_shop
         <trim prefix="where" prefixOverrides="and | or">
             <include refid="dynamicWhere"/>
         </trim>
+        GROUP BY PROVINCE,PLATFORM,SHOP_NAME
+        ) t2
         <if test="orderBy!=null">
             ORDER BY ${orderBy} desc
         </if>
-        ) t2
-        where ID > (#{pageNo}-1)*#{pageSize} limit #{pageSize}
+        limit #{pageRow},#{pageSize}
     </select>
 
     <select id="selectPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaShop">
@@ -71,99 +66,396 @@
         </trim>
     </select>
 
-    <!--区域-店铺销售额分布,分页-->
-    <select id="selectAreaShopWithPage" resultType="com.example.entity.StaShop"
-            parameterType="com.example.entity.StaShop">
-        select * from (
-           select sum(SALES_VOLUME)*100/(select sum(SALES_VOLUME) from tb_sta_shop  t1 where t1.PROVINCE = t.PROVINCE and t1.year = t.year and t.month = t1.month) salesPercent,
-			min(SALES_VOLUME) minSalesVolume,max(SALES_VOLUME) maxSalesVolume,
-        PROVINCE,CITY,date
+    <select id="selectAreaShopLineShopCountByCity" resultType="com.example.entity.StaShop" parameterType="com.example.entity.StaShop">
+        select count(1) shopCount,city from (
+        select sum(SALES_VOLUME) totalSalesVolume,
+        CITY
         from tb_sta_shop t
-        where city is not null
-         group by PROVINCE,CITY,date
-        ORDER BY date desc
-        ) t
-        limit (#{pageNo}-1)*#{pageSize},{pageSize}
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        group by CITY,SHOP_NAME
+        )t
+        GROUP BY t.city
     </select>
-
 
     <!--区域-店铺销售额分布,柱形图-->
     <select id="selectAreaShopLine" resultType="com.example.entity.StaShop" parameterType="com.example.entity.StaShop">
-        select count(1),city ,'0-20000' from (
-        select sum(SALES_VOLUME) totalSalesVolume,
-        CITY,SHOP_NAME
-        from tb_sta_shop t
+        <!--select count(1) shopCount,city ,'0-20000' as 'range' from (-->
+        <!--select sum(SALES_VOLUME) totalSalesVolume,-->
+        <!--CITY,SHOP_NAME-->
+        <!--from tb_sta_shop t-->
+        <!--<trim prefix="where" prefixOverrides="and | or">-->
+            <!--<include refid="dynamicWhere"/>-->
+        <!--</trim>-->
+        <!--group by CITY,SHOP_NAME-->
+        <!--)t-->
+        <!--where t.totalSalesVolume<![CDATA[<]]>20000-->
+        <!--GROUP BY t.city-->
+
+        <!--UNION-->
+
+        <!--select count(1) shopCount,city,'20000-50000' as 'range' from (-->
+        <!--select sum(SALES_VOLUME) totalSalesVolume,-->
+        <!--CITY,SHOP_NAME-->
+        <!--from tb_sta_shop t-->
+        <!--<trim prefix="where" prefixOverrides="and | or">-->
+            <!--<include refid="dynamicWhere"/>-->
+        <!--</trim>-->
+        <!--group by CITY,SHOP_NAME-->
+        <!--)t-->
+        <!--where t.totalSalesVolume<![CDATA[>=]]>20000 and t.totalSalesVolume<![CDATA[<]]>50000-->
+        <!--GROUP BY t.city-->
+
+        <!--UNION-->
+
+        <!--select count(1) shopCount,city,'50000-100000' as 'range' from (-->
+        <!--select sum(SALES_VOLUME) totalSalesVolume,-->
+        <!--CITY,SHOP_NAME-->
+        <!--from tb_sta_shop t-->
+        <!--<trim prefix="where" prefixOverrides="and | or">-->
+            <!--<include refid="dynamicWhere"/>-->
+        <!--</trim>-->
+        <!--group by CITY,SHOP_NAME-->
+        <!--)t-->
+        <!--where t.totalSalesVolume<![CDATA[>=]]>50000 and t.totalSalesVolume<![CDATA[<]]>100000-->
+        <!--GROUP BY t.city-->
+
+        <!--UNION-->
+
+        <!--select count(1) shopCount,city,'100000-1000000' as 'range' from (-->
+        <!--select sum(SALES_VOLUME) totalSalesVolume,-->
+        <!--CITY,SHOP_NAME-->
+        <!--from tb_sta_shop t-->
+        <!--<trim prefix="where" prefixOverrides="and | or">-->
+            <!--<include refid="dynamicWhere"/>-->
+        <!--</trim>-->
+        <!--group by CITY,SHOP_NAME-->
+        <!--)t-->
+        <!--where t.totalSalesVolume<![CDATA[>=]]>100000 and t.totalSalesVolume<![CDATA[<]]>1000000-->
+        <!--GROUP BY t.city-->
+
+        <!--UNION-->
+
+        <!--select count(1) shopCount,city,'1000000+' as 'range' from (-->
+        <!--select sum(SALES_VOLUME) totalSalesVolume,-->
+        <!--CITY,SHOP_NAME-->
+        <!--from tb_sta_shop t-->
+        <!--<trim prefix="where" prefixOverrides="and | or">-->
+            <!--<include refid="dynamicWhere"/>-->
+        <!--</trim>-->
+        <!--group by CITY,SHOP_NAME-->
+        <!--)t-->
+        <!--where t.totalSalesVolume<![CDATA[>=]]>1000000-->
+        <!--GROUP BY t.city-->
+
+        SELECT
+        T1.province,
+        T1.city,
+        T1.platform,
+        T1.type AS 'range',
+        FORMAT(T1.shopCount/T2.shopCount*100,2) AS shopCount
+        FROM(
+        SELECT
+        T3.province,
+        T3.city,
+        T3.platform,
+        T3.type,
+        COUNT(DISTINCT T3.SHOP_ID) AS shopCount
+        FROM
+        (SELECT
+        T.PROVINCE AS province,
+        T.CITY AS city,
+        '全部' AS PLATFORM,
+        CASE WHEN SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 50 THEN '[0,50万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 50 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 100 THEN '(50万,100万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 100 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 500 THEN '(100万,500万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 500 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 1000 THEN '(500万,1000万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 1000 THEN '1000万以上'
+        END AS type,
+        T.SHOP_ID
+        FROM tb_sta_shop T
         <trim prefix="where" prefixOverrides="and | or">
             <include refid="dynamicWhere"/>
         </trim>
-        group by CITY,SHOP_NAME
-        )t
-        where t.totalSalesVolume<![CDATA[<]]>20000
-        GROUP BY t.city
-
-        UNION
-
-        select count(1),city,'20000-50000' from (
-        select sum(SALES_VOLUME) totalSalesVolume,
-        CITY,SHOP_NAME
-        from tb_sta_shop t
+        GROUP BY
+        T.SHOP_ID) T3
+        GROUP BY
+        T3.province,
+        T3.city,
+        T3.PLATFORM,
+        T3.type)T1
+        LEFT JOIN (SELECT
+        T.PROVINCE AS PROVINCE,
+        T.CITY AS city,
+        '全部' AS PLATFORM,
+        COUNT(DISTINCT T.SHOP_ID) AS shopCount
+        FROM tb_sta_shop T
         <trim prefix="where" prefixOverrides="and | or">
             <include refid="dynamicWhere"/>
         </trim>
-        group by CITY,SHOP_NAME
-        )t
-        where t.totalSalesVolume<![CDATA[>=]]>20000 and t.totalSalesVolume<![CDATA[<]]>50000
-        GROUP BY t.city
-
-        UNION
-
-        select count(1),city,'50000-100000' from (
-        select sum(SALES_VOLUME) totalSalesVolume,
-        CITY,SHOP_NAME
-        from tb_sta_shop t
+        GROUP BY
+        T.PROVINCE,
+        T.CITY) T2 ON T1.city = T2.city
+        UNION ALL
+        SELECT
+        T1.province,
+        T1.city,
+        T1.platform,
+        T1.type,
+        T1.shopCount/T2.shopCount*100 AS percent
+        FROM(
+        SELECT
+        T3.province,
+        T3.city,
+        T3.platform,
+        T3.type,
+        COUNT(DISTINCT T3.SHOP_ID) AS shopCount
+        FROM
+        (SELECT
+        T.PROVINCE AS PROVINCE,
+        T.CITY AS city,
+        T.PLATFORM AS PLATFORM,
+        CASE WHEN SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 50 THEN '[0,50万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 50 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 100 THEN '(50万,100万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 100 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 500 THEN '(100万,500万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 500 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 1000 THEN '(500万,1000万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 1000 THEN '1000万以上'
+        END AS type,
+        T.SHOP_ID
+        FROM tb_sta_shop T
         <trim prefix="where" prefixOverrides="and | or">
             <include refid="dynamicWhere"/>
         </trim>
-        group by CITY,SHOP_NAME
-        )t
-        where t.totalSalesVolume<![CDATA[>=]]>50000 and t.totalSalesVolume<![CDATA[<]]>100000
-        GROUP BY t.city
-
-        UNION
-
-        select count(1),city,'100000-1000000' from (
-        select sum(SALES_VOLUME) totalSalesVolume,
-        CITY,SHOP_NAME
-        from tb_sta_shop t
+        GROUP BY
+        T.SHOP_ID) T3
+        GROUP BY
+        T3.PROVINCE,
+        T3.city,
+        T3.PLATFORM,
+        T3.type)T1
+        LEFT JOIN (SELECT
+        T.PROVINCE AS PROVINCE,
+        T.CITY AS city,
+        T.PLATFORM AS PLATFORM,
+        COUNT(DISTINCT T.SHOP_ID) AS shopCount
+        FROM tb_sta_shop T
         <trim prefix="where" prefixOverrides="and | or">
             <include refid="dynamicWhere"/>
         </trim>
-        group by CITY,SHOP_NAME
-        )t
-        where t.totalSalesVolume<![CDATA[>=]]>100000 and t.totalSalesVolume<![CDATA[<]]>1000000
-        GROUP BY t.city
-
-        UNION
-
-        select count(1),city,'1000000+' from (
-        select sum(SALES_VOLUME) totalSalesVolume,
-        CITY,SHOP_NAME
-        from tb_sta_shop t
-        <trim prefix="where" prefixOverrides="and | or">
-            <include refid="dynamicWhere"/>
-        </trim>
-        group by CITY,SHOP_NAME
-        )t
-        where t.totalSalesVolume<![CDATA[>=]]>1000000
-        GROUP BY t.city
+        GROUP BY
+        T.PROVINCE,
+        T.CITY,
+        T.PLATFORM) T2 ON T1.city = T2.city
     </select>
+
+    <!--区域-店铺销售额分布,分页-->
+    <select id="selectAreaShopWithPage" resultType="com.example.entity.StaShop"
+            parameterType="com.example.entity.StaShop">
+        SELECT
+        T1.province,
+        T1.city,
+        T1.platform,
+        T1.type,
+        FORMAT(T1.shopCount/T2.shopCount*100,2) AS percent
+        FROM(
+        SELECT
+        T3.province,
+        T3.city,
+        T3.platform,
+        T3.type,
+        COUNT(DISTINCT T3.SHOP_ID) AS shopCount
+        FROM
+        (SELECT
+        T.PROVINCE AS province,
+        T.CITY AS city,
+        '全部' AS PLATFORM,
+        CASE WHEN SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 50 THEN '[0,50万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 50 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 100 THEN '(50万,100万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 100 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 500 THEN '(100万,500万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 500 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 1000 THEN '(500万,1000万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 1000 THEN '1000万以上'
+        END AS type,
+        T.SHOP_ID
+        FROM tb_sta_shop T
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY
+        T.SHOP_ID) T3
+        GROUP BY
+        T3.province,
+        T3.city,
+        T3.PLATFORM,
+        T3.type)T1
+        LEFT JOIN (SELECT
+        T.PROVINCE AS PROVINCE,
+        T.CITY AS city,
+        '全部' AS PLATFORM,
+        COUNT(DISTINCT T.SHOP_ID) AS shopCount
+        FROM tb_sta_shop T
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY
+        T.PROVINCE,
+        T.CITY) T2 ON T1.city = T2.city
+        UNION ALL
+        SELECT
+        T1.province,
+        T1.city,
+        T1.platform,
+        T1.type,
+        T1.shopCount/T2.shopCount*100 AS percent
+        FROM(
+        SELECT
+        T3.province,
+        T3.city,
+        T3.platform,
+        T3.type,
+        COUNT(DISTINCT T3.SHOP_ID) AS shopCount
+        FROM
+        (SELECT
+        T.PROVINCE AS PROVINCE,
+        T.CITY AS city,
+        T.PLATFORM AS PLATFORM,
+        CASE WHEN SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 50 THEN '[0,50万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 50 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 100 THEN '(50万,100万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 100 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 500 THEN '(100万,500万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 500 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 1000 THEN '(500万,1000万]'
+        WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 1000 THEN '1000万以上'
+        END AS type,
+        T.SHOP_ID
+        FROM tb_sta_shop T
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY
+        T.SHOP_ID) T3
+        GROUP BY
+        T3.PROVINCE,
+        T3.city,
+        T3.PLATFORM,
+        T3.type)T1
+        LEFT JOIN (SELECT
+        T.PROVINCE AS PROVINCE,
+        T.CITY AS city,
+        T.PLATFORM AS PLATFORM,
+        COUNT(DISTINCT T.SHOP_ID) AS shopCount
+        FROM tb_sta_shop T
+        <trim prefix="where" prefixOverrides="and | or">
+          <include refid="dynamicWhere"/>
+        </trim>
+        GROUP BY
+        T.PROVINCE,
+        T.CITY,
+        T.PLATFORM) T2 ON T1.city = T2.city
+        limit #{pageRow},#{pageSize}
+    </select>
+
+
 
     <select id="selectAreaShopWithPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaShop">
         select count(1) from (
-        select 1 from tb_sta_shop t
-        where city is not null
-         group by PROVINCE,CITY,date
-        ) t
+            SELECT
+            T1.province,
+            T1.city,
+            T1.platform,
+            T1.type,
+            FORMAT(T1.shopCount/T2.shopCount*100,2) AS percent
+            FROM(
+            SELECT
+            T3.province,
+            T3.city,
+            T3.platform,
+            T3.type,
+            COUNT(DISTINCT T3.SHOP_ID) AS shopCount
+            FROM
+            (SELECT
+            T.PROVINCE AS province,
+            T.CITY AS city,
+            '全部' AS PLATFORM,
+            CASE WHEN SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 50 THEN '[0,50万]'
+            WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 50 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 100 THEN '(50万,100万]'
+            WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 100 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 500 THEN '(100万,500万]'
+            WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 500 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 1000 THEN '(500万,1000万]'
+            WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 1000 THEN '1000万以上'
+            END AS type,
+            T.SHOP_ID
+            FROM tb_sta_shop T
+            <trim prefix="where" prefixOverrides="and | or">
+                <include refid="dynamicWhere"/>
+            </trim>
+            GROUP BY
+            T.SHOP_ID) T3
+            GROUP BY
+            T3.province,
+            T3.city,
+            T3.PLATFORM,
+            T3.type)T1
+            LEFT JOIN (SELECT
+            T.PROVINCE AS PROVINCE,
+            T.CITY AS city,
+            '全部' AS PLATFORM,
+            COUNT(DISTINCT T.SHOP_ID) AS shopCount
+            FROM tb_sta_shop T
+            <trim prefix="where" prefixOverrides="and | or">
+                <include refid="dynamicWhere"/>
+            </trim>
+            GROUP BY
+            T.PROVINCE,
+            T.CITY) T2 ON T1.city = T2.city
+            UNION ALL
+            SELECT
+            T1.province,
+            T1.city,
+            T1.platform,
+            T1.type,
+            T1.shopCount/T2.shopCount*100 AS percent
+            FROM(
+            SELECT
+            T3.province,
+            T3.city,
+            T3.platform,
+            T3.type,
+            COUNT(DISTINCT T3.SHOP_ID) AS shopCount
+            FROM
+            (SELECT
+            T.PROVINCE AS PROVINCE,
+            T.CITY AS city,
+            T.PLATFORM AS PLATFORM,
+            CASE WHEN SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 50 THEN '[0,50万]'
+            WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 50 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 100 THEN '(50万,100万]'
+            WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 100 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 500 THEN '(100万,500万]'
+            WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 500 AND SUM(T.SALES_VOLUME)/10000<![CDATA[<=]]> 1000 THEN '(500万,1000万]'
+            WHEN SUM(T.SALES_VOLUME)/10000 <![CDATA[>]]> 1000 THEN '1000万以上'
+            END AS type,
+            T.SHOP_ID
+            FROM tb_sta_shop T
+            <trim prefix="where" prefixOverrides="and | or">
+                <include refid="dynamicWhere"/>
+            </trim>
+            GROUP BY
+            T.SHOP_ID) T3
+            GROUP BY
+            T3.PROVINCE,
+            T3.city,
+            T3.PLATFORM,
+            T3.type)T1
+            LEFT JOIN (SELECT
+            T.PROVINCE AS PROVINCE,
+            T.CITY AS city,
+            T.PLATFORM AS PLATFORM,
+            COUNT(DISTINCT T.SHOP_ID) AS shopCount
+            FROM tb_sta_shop T
+            <trim prefix="where" prefixOverrides="and | or">
+                <include refid="dynamicWhere"/>
+            </trim>
+            GROUP BY
+            T.PROVINCE,
+            T.CITY,
+            T.PLATFORM) T2 ON T1.city = T2.city
+        )a
     </select>
 
     <sql id="dynamicWhere">
@@ -172,6 +464,12 @@
         </if>
         <if test="dateBegin!=null and dateEnd!=null">
             AND date between #{dateBegin,jdbcType=VARCHAR} and #{dateEnd,jdbcType=VARCHAR}
+        </if>
+        <if test="province!=null">
+            AND PROVINCE = #{province,jdbcType=VARCHAR}
+        </if>
+        <if test="city!=null">
+            AND CITY = #{city,jdbcType=VARCHAR}
         </if>
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">

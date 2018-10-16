@@ -2,13 +2,15 @@ package com.example.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-public class StaCatShop extends SortFilter  implements Serializable {
+public class StaCatShop extends SortFilter implements Serializable,IPager {
     private Integer id;
 
-    private String year;
+    private Date date;
 
-    private String[] years;
+    private String year;
 
     private String month;
 
@@ -52,28 +54,49 @@ public class StaCatShop extends SortFilter  implements Serializable {
 
     private String remark3;
 
-    private String date;
+    private Integer pageNo;
+
+    private Integer pageSize;
+
+    private Integer pageRow;
+
+    private Double salesPercent;
+
+    private Double countPercent;
+
+    private Double totalVolume;
+
+    private Double totalCount;
 
     private String dateBegin;
 
     private String dateEnd;
 
-    private Integer pageNo;
-
-    private Integer pageSize;
-
-    private String salesPercent;
-
-    private String countPercent;
-
     private static final long serialVersionUID = 1L;
 
-    public String getCountPercent() {
-        return countPercent;
+    public Double getTotalVolume() {
+        return totalVolume;
     }
 
-    public void setCountPercent(String countPercent) {
-        this.countPercent = countPercent;
+    public void setTotalVolume(Double totalVolume) {
+        this.totalVolume = totalVolume;
+    }
+
+    public Double getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(Double totalCount) {
+        this.totalCount = totalCount;
+    }
+
+    public Integer getPageRow() {
+        return pageRow;
+    }
+
+    @Override
+    public void setPageRow(Integer pageRow) {
+        this.pageRow = pageRow;
     }
 
     public String getDateBegin() {
@@ -92,34 +115,38 @@ public class StaCatShop extends SortFilter  implements Serializable {
         this.dateEnd = dateEnd;
     }
 
-    public String getSalesPercent() {
+    public Double getSalesPercent() {
         return salesPercent;
     }
 
-    public void setSalesPercent(String salesPercent) {
+    public void setSalesPercent(Double salesPercent) {
         this.salesPercent = salesPercent;
     }
 
-    public String[] getYears() {
-        return years;
+    public Double getCountPercent() {
+        return countPercent;
     }
 
-    public void setYears(String[] years) {
-        this.years = years;
+    public void setCountPercent(Double countPercent) {
+        this.countPercent = countPercent;
     }
 
+    @Override
     public Integer getPageNo() {
         return pageNo;
     }
 
+    @Override
     public void setPageNo(Integer pageNo) {
         this.pageNo = pageNo;
     }
 
+    @Override
     public Integer getPageSize() {
         return pageSize;
     }
 
+    @Override
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
     }
@@ -130,6 +157,14 @@ public class StaCatShop extends SortFilter  implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public String getYear() {
@@ -156,18 +191,22 @@ public class StaCatShop extends SortFilter  implements Serializable {
         this.country = country;
     }
 
+    @Override
     public String getProvince() {
         return province;
     }
 
+    @Override
     public void setProvince(String province) {
         this.province = province;
     }
 
+    @Override
     public String getCity() {
         return city;
     }
 
+    @Override
     public void setCity(String city) {
         this.city = city;
     }
@@ -283,11 +322,11 @@ public class StaCatShop extends SortFilter  implements Serializable {
     public void setStatus(Integer status) {
         this.status = status;
     }
-
+    @Override
     public String getRemark1() {
         return remark1;
     }
-
+    @Override
     public void setRemark1(String remark1) {
         this.remark1 = remark1;
     }
@@ -308,11 +347,4 @@ public class StaCatShop extends SortFilter  implements Serializable {
         this.remark3 = remark3;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
 }

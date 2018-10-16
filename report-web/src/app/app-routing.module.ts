@@ -17,7 +17,7 @@ const routes: Routes = [
   },
 
   {path: 'login', loadChildren: './login/login.module#LoginModule'}, // 登录模块
-  {path: 'no-authority', component: NoAuthorityComponent}, // 无权限访问
+  {path: 'no-autoSetParam', component: NoAuthorityComponent}, // 无权限访问
   {path: '**', component: NotFoundComponent}, // 未找到页面
 ];
 

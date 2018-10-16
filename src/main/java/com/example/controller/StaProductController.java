@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -22,22 +23,27 @@ import java.util.List;
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("/product")
-public class StaProductController {
+public class StaProductController extends CommonController{
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Resource
     private StaProductService staProductService;
 
+    /**
+     * 销售额TOP50单品
+     * @param staProduct
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/listview", method = RequestMethod.POST)
     @ResponseBody
-    public Result<PagingResult> listview(@RequestBody StaProduct staProduct) {
+    public Result<PagingResult> listview(@RequestBody StaProduct staProduct, HttpServletRequest request) {
         logger.info("/product/listview");
         Result<PagingResult> result = new Result<>();
         List<StaProduct> list = null;
-        if (staProduct.getPageNo() == null || staProduct.getPageSize() == null) {
-            staProduct.setPageNo(1);
-            staProduct.setPageSize(10);
-        }
+
         try {
+            setParamByPager(staProduct,request);
+            autoSetProvinceOrCityParamByPager(staProduct,request);
             list = this.staProductService.selectAllWithPage(staProduct);
             PagingResult<List<StaProduct>> pagingResult = new PagingResult<>(list);
             pagingResult.setPageIndex(staProduct.getPageNo());
@@ -57,10 +63,11 @@ public class StaProductController {
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ResponseBody
-    public Result<List<StaProduct>> list(@RequestBody StaProduct staProduct) {
+    public Result<List<StaProduct>> list(@RequestBody StaProduct staProduct,HttpServletRequest request) {
         logger.info("/product/list");
         Result<List<StaProduct>> result = new Result<>();
         try {
+            autoSetParam(staProduct,request);
             List<StaProduct> list = this.staProductService.selectList(staProduct);
             result.setData(list);
         } catch (Exception e) {
@@ -74,10 +81,11 @@ public class StaProductController {
 
     @RequestMapping(value = "/pie", method = RequestMethod.POST)
     @ResponseBody
-    public Result<List<StaProduct>> pie(@RequestBody StaProduct staProduct) {
+    public Result<List<StaProduct>> pie(@RequestBody StaProduct staProduct,HttpServletRequest request) {
         logger.info("/product/pie");
         Result<List<StaProduct>> result = new Result<>();
         try {
+            autoSetParam(staProduct,request);
             List<StaProduct> productList = this.staProductService.selectPie(staProduct);
             result.setData(productList);
         } catch (Exception e) {
@@ -91,10 +99,11 @@ public class StaProductController {
 
     @RequestMapping(value = "/line", method = RequestMethod.POST)
     @ResponseBody
-    public Result<List<StaProduct>> line(@RequestBody StaProduct staProduct) {
+    public Result<List<StaProduct>> line(@RequestBody StaProduct staProduct,HttpServletRequest request) {
         logger.info("/product/line");
         Result<List<StaProduct>> result = new Result<>();
         try {
+            autoSetParam(staProduct,request);
             List<StaProduct> productList = this.staProductService.selectLine(staProduct);
             result.setData(productList);
         } catch (Exception e) {

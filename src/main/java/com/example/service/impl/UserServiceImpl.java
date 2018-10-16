@@ -1,6 +1,7 @@
 package com.example.service.impl;
 
 import com.example.dao.UserDao;
+import com.example.dao.UserMapper;
 import com.example.entity.User;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,24 +15,17 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
 
     @Resource
-    private UserDao userDao;
+    private UserMapper userMapper;
 
     @Override
-    public User getUserById(int userId) {
-        return userDao.selectByPrimaryKey(userId);
-    }
-
-    @Override
-    public boolean addUser(User record){
-        boolean result = false;
-        try {
-            userDao.insertSelective(record);
-            result = true;
-        } catch (Exception e) {
-            e.printStackTrace();
+    public User login(User user) {
+        if (user!=null && user.getLoginName()!=null && user.getMd5Password()!=null) {
+            List<User> users = userMapper.selectUserSelective(user);
+            if (users!=null && users.size()>0) {
+                return users.get(0);
+            }
         }
-
-        return result;
+        return null;
     }
 
 }
