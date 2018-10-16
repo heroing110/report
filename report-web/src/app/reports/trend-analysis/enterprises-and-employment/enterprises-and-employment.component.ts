@@ -76,8 +76,8 @@ export class EnterprisesAndEmploymentComponent implements OnInit {
         trigger: 'axis'
       },
       yAxis: [
-        {type: 'value'},
-        {type: 'value'},
+        {name: '个', type: 'value'},
+        {name: '人', type: 'value'},
       ],
       series: [{
         data: lineVolumeList,
