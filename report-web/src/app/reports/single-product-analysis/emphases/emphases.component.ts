@@ -213,14 +213,16 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
   getProvincePie(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     const date = this.getDateRangeParam();
     return this.localProductService.queryProvincePie({
-      ...date
+      ...date,
+      catName: this.categoryName || null
     });
   }
 
   getPlatformPieData(): Promise<AjaxResult<CategoryAndShopDataItem[]>> {
     const date = this.getDateRangeParam();
     return this.localProductService.queryPlatformPie({
-      ...date
+      ...date,
+      catName: this.categoryName || null
     });
   }
 

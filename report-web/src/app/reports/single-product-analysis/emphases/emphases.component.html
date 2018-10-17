@@ -6,7 +6,7 @@
 <app-common-operation title="重点品类监测"
                       [categoryList]="catList"
                       [(category)]="categoryName"
-                      (categoryChange)="setChartOption()"
+                      (categoryChange)="setChartOption();getParam()"
                       [noExportData]="true"
                       [noPlatform]="true"></app-common-operation>
 
