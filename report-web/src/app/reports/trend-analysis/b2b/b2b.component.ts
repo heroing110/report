@@ -31,7 +31,7 @@ export class B2bComponent implements OnInit {
       const date = this.getDateRangeParam();
       return this.trendService.pagingTrendListView({
         ...date,
-        indexType1: this.indexType,
+        indexType: this.indexType,
         pageNo: pageIndex,
         pageSize: pageSize,
       });

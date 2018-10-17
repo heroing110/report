@@ -10,7 +10,6 @@ export class CommonDataService {
 
   getPlatformList(): Promise<AjaxResult<OptionItem[]>> {
     const platformList: OptionItem[] = [
-      {label: '全部', value: '天猫'},
       {label: '天猫', value: '天猫'},
       {label: '淘宝', value: '淘宝'},
       {label: '京东', value: '京东'},

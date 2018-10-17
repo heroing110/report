@@ -62,7 +62,8 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
   getParam() {
     const date = this.getDateRangeParam();
     this.localProductService.lineParam({
-      ...date
+      ...date,
+      catName: this.categoryName || null
     }).then(res => {
       this.param = res.data;
     });
@@ -130,7 +131,7 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
 
     const platformPieOption = {
       title: {
-        text: `销售额 \n ${totalVolume}`,
+        text: `销售额 \n ${totalVolume.toFixed(1)}`,
         y: 'center',
         x: 'center',
         textStyle: {align: 'center'}
@@ -175,7 +176,7 @@ export class EmphasesComponent implements OnInit, AfterViewInit {
 
     const provincePieOption = {
       title: {
-        text: `销售额 \n ${province_totalVolume}`,
+        text: `销售额 \n ${province_totalVolume.toFixed(1)}`,
         y: 'center',
         x: 'center',
         textStyle: {align: 'center'}

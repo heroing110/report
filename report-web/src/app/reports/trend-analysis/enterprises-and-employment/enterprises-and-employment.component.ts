@@ -108,7 +108,7 @@ export class EnterprisesAndEmploymentComponent implements OnInit {
       {column: 'dateStr', title: '时间'},
       {column: 'province', title: '省份'},
       {column: 'city', title: '城市'},
-      {column: 'qys', title: '电子电商店铺数'},
+      {column: 'qys', title: '电商店铺数'},
       // {column: 'qysmom', title: '电商企业数环比'},
       {column: 'cyrs', title: '电商从业人数'},
       // {column: 'cyrsmom', title: '电商从业人数环比'}
