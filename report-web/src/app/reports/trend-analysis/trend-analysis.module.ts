@@ -11,6 +11,7 @@ import {KindOnlineShoppingComponent} from './kind-online-shopping/kind-online-sh
 import {CountrysideComponent} from './countryside/countryside.component';
 import {CrossBorderComponent} from './cross-border/cross-border.component';
 import {B2bComponent} from './b2b/b2b.component';
+import {NetworkSellOutComponent} from './network-sell-out/network-sell-out.component';
 
 @NgModule({
   imports: [
@@ -21,7 +22,7 @@ import {B2bComponent} from './b2b/b2b.component';
     EnterprisesAndEmploymentComponent, CrossBorderImportComponent,
     CrossBorderExportComponent, VirtualOnlineShoppingComponent,
     KindOnlineShoppingComponent, CountrysideComponent,
-    CrossBorderComponent, B2bComponent]
+    CrossBorderComponent, B2bComponent, NetworkSellOutComponent]
 })
 export class TrendAnalysisModule {
 }

@@ -90,6 +90,7 @@ export class CategoryAndShopDataItem {
   data?: string;
   type?: string;
   doubleParam?: string | boolean;
+  companyAndPerson?: boolean;
   volumeType?: string;
   countType?: string;
   indexType?: string;

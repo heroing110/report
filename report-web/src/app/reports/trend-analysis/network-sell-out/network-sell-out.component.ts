@@ -5,13 +5,12 @@ import {DataChartComponent} from '../../../shared/data-chart/data-chart.componen
 import {TrendService} from '../../../shared/trend.service';
 import * as moment from 'moment';
 
-
 @Component({
-  selector: 'app-network-retailing',
-  templateUrl: './network-retailing.component.html',
-  styleUrls: ['./network-retailing.component.less']
+  selector: 'app-network-sell-out',
+  templateUrl: './network-sell-out.component.html',
+  styleUrls: ['./network-sell-out.component.less']
 })
-export class NetworkRetailingComponent implements OnInit {
+export class NetworkSellOutComponent implements OnInit {
 
   trendConfigs: ColumnItem[];
   getTrendTableDataFn: GetTableDataFn;
@@ -26,7 +25,8 @@ export class NetworkRetailingComponent implements OnInit {
     totalCount, increaseCount, increaseCountPercent
   };
 
-  private indexType1 = '网络零售交易额';
+  private indexType1 = '网络零售卖出额';
+  private indexType2 = '网络零售交易量';
 
   constructor(private trendService: TrendService) {
   }
@@ -39,6 +39,7 @@ export class NetworkRetailingComponent implements OnInit {
       return this.trendService.pagingTrendListView({
         ...date,
         indexType: this.indexType1,
+        indexType2: this.indexType2,
         pageNo: pageIndex,
         pageSize: pageSize,
       });
@@ -49,6 +50,7 @@ export class NetworkRetailingComponent implements OnInit {
     const date = this.getDateRangeParam();
     this.trendService.getTrendLineParam({
       volumeType: this.indexType1,
+      countType: this.indexType2,
       ...date
     }).then(res => {
       this.param = res.data;
@@ -59,11 +61,13 @@ export class NetworkRetailingComponent implements OnInit {
     const lineSourceData = (await this.getLineChartData()).data;
 
     const lineCategoryList = [],
-      lineVolumeList = [];
+      lineVolumeList = [],
+      lineCountList = [];
     for (let i = 0; i < lineSourceData.length; i++) {
       const data = lineSourceData[i];
       lineCategoryList.push(data.dateStr);
       lineVolumeList.push(data.totalVolume || 0);
+      lineCountList.push(data.totalCount || 0);
     }
 
     const lineOption = {
@@ -75,13 +79,19 @@ export class NetworkRetailingComponent implements OnInit {
         trigger: 'axis'
       },
       yAxis: [
-        {name: '亿元', type: 'value'}
+        {name: '亿元', type: 'value'},
+        {type: 'value'},
       ],
       series: [{
         data: lineVolumeList,
         yAxisIndex: 0,
         type: 'line',
-        name: '交易额'
+        name: '卖出额'
+      }, {
+        data: lineCountList,
+        yAxisIndex: 1,
+        type: 'line',
+        name: '交易量'
       }]
     };
     this.dataChart.setOption(lineOption);
@@ -98,7 +108,7 @@ export class NetworkRetailingComponent implements OnInit {
   private createColumnConfigs() {
     const configs: ColumnItem[] = [
       {column: 'dateStr', title: '时间'},
-      {column: 'totalVolume', title: '交易额'},
+      {column: 'totalVolume', title: '卖出额'},
       // {
       //   column: 'totalMum', title: '交易额环比',
       //   formatter: (row, val) => {

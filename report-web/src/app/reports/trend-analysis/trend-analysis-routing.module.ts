@@ -10,6 +10,7 @@ import {VirtualOnlineShoppingComponent} from './virtual-online-shopping/virtual-
 import {CrossBorderExportComponent} from './cross-border-export/cross-border-export.component';
 import {CrossBorderImportComponent} from './cross-border-import/cross-border-import.component';
 import {EnterprisesAndEmploymentComponent} from './enterprises-and-employment/enterprises-and-employment.component';
+import {NetworkSellOutComponent} from './network-sell-out/network-sell-out.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'quick-view'},
@@ -22,6 +23,9 @@ const routes: Routes = [
 
   // 网络零售交易走势
   {path: 'network-retailing', component: NetworkRetailingComponent},
+
+  // 网络零卖出量走势
+  {path: 'network-sell-out', component: NetworkSellOutComponent},
 
   // 跨境电商交易走势
   {path: 'cross-border', component: CrossBorderComponent},

@@ -48,6 +48,7 @@ export class EnterprisesAndEmploymentComponent implements OnInit {
     const date = this.getDateRangeParam();
     this.trendService.getTrendLineParam({
       doubleParam: true,
+      companyAndPerson: true,
       ...date
     }).then(res => {
       this.param = res.data;
