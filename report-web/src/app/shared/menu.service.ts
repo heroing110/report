@@ -22,7 +22,7 @@ export class MenuService {
       children: [
         {name: '电商总体交易走势', path: '/reports/trend-analysis/e-commerce-overall'},
         {name: 'B2B交易走势', path: '/reports/trend-analysis/B2B'},
-        {name: '网络零售交易走势', path: '/reports/trend-analysis/network-retailing'},
+        {name: '网络零售买入额走势', path: '/reports/trend-analysis/network-retailing'},
         {name: '网络零售卖出额走势', path: '/reports/trend-analysis/network-sell-out'},
         {name: '跨境电商交易走势', path: '/reports/trend-analysis/cross-border'},
         {name: '农村电商交易走势', path: '/reports/trend-analysis/countryside'},

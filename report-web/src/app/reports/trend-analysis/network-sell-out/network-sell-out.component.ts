@@ -101,6 +101,7 @@ export class NetworkSellOutComponent implements OnInit {
     const date = this.getDateRangeParam();
     return this.trendService.getTrendLineData({
       indexType1: this.indexType1,
+      indexType2: this.indexType2,
       ...date
     });
   }
