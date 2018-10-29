@@ -47,7 +47,7 @@ export class CommonDataService {
       {label: '店铺数', value: '店铺数'},
       {label: '从业人数', value: '从业人数'},
       {label: 'B2B', value: 'B2B'},
-      {label: '网络零售', value: '网络零售'},
+      {label: '网络零售交易额', value: '网络零售交易额'},
       {label: '跨境电商', value: '跨境电商'},
       {label: '农村电商', value: '农村电商'},
     ];
