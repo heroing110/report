@@ -50,8 +50,6 @@ export class CommonDataService {
       {label: '网络零售', value: '网络零售'},
       {label: '跨境电商', value: '跨境电商'},
       {label: '农村电商', value: '农村电商'},
-      {label: '跨境电商', value: '跨境电商'},
-      {label: '跨境电商', value: '跨境电商'},
     ];
     return Promise.resolve({data: categoryList});
   }

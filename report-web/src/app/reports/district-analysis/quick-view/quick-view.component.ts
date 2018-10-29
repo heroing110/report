@@ -24,7 +24,7 @@ export class QuickViewComponent implements OnInit {
 
   loading = false;
   categoryList: OptionItem[];
-  category = '电商整体';
+  category = '网络零售交易额';
 
   constructor(private homeService: HomeService,
               private commonDataService: CommonDataService,
