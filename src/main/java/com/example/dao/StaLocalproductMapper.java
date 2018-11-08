@@ -11,6 +11,10 @@ public interface StaLocalproductMapper {
 
     List<StaLocalproduct> selectLine(StaLocalproduct staLocalproduct);
 
+    StaLocalproduct selectTotalVolume(StaLocalproduct staLocalproduct);
+
+    StaLocalproduct selectIncreaseTotal(StaLocalproduct staLocalproduct);
+
     List<StaLocalproduct> selectPlatformTotalVolumePercent(StaLocalproduct staLocalproduct);
 
     List<StaLocalproduct> selectProvinceTotalVolumePercent(StaLocalproduct staLocalproduct);

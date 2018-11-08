@@ -54,6 +54,8 @@ public class StaLocalproduct extends SortFilter implements Serializable,IPager {
 
     private Double totalCount;
 
+    private Double increaseTotal;
+
     private Integer pageNo;
 
     private Integer pageRow;
@@ -69,6 +71,14 @@ public class StaLocalproduct extends SortFilter implements Serializable,IPager {
     private String remark1;
 
     private static final long serialVersionUID = 1L;
+
+    public Double getIncreaseTotal() {
+        return increaseTotal;
+    }
+
+    public void setIncreaseTotal(Double increaseTotal) {
+        this.increaseTotal = increaseTotal;
+    }
 
     public String[] getCatNames() {
         return catNames;

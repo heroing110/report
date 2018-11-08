@@ -36,6 +36,8 @@ public interface StaTotalMapper {
 
     List<StaTotal> selectAllWithPage(StaTotal record);
 
+    List<StaTotal> selectLastCompanyAndPeople(StaTotal record);
+
     List<StaTotal> selectAreaWithPage(StaTotal record);
 
     List<StaTotal> selectAreaWholeWithPage(StaTotal record);

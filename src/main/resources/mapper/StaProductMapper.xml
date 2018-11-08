@@ -81,7 +81,7 @@
         <trim prefix="where" prefixOverrides="and | or">
             <include refid="dynamicWhere"/>
         </trim>
-        GROUP BY PROVINCE,PLATFORM,PRODUCT_NAME
+        GROUP BY PROVINCE,PLATFORM,PRODUCT_ID
         ) t2
         ORDER BY ${orderBy} desc
         limit #{pageRow}, #{pageSize}
@@ -97,7 +97,7 @@
             <trim prefix="where" prefixOverrides="and | or">
                 <include refid="dynamicWhere"/>
             </trim>
-            GROUP BY PROVINCE,PLATFORM,PRODUCT_NAME
+            GROUP BY PROVINCE,PLATFORM,PRODUCT_ID
         )t
     </select>
 
@@ -116,6 +116,9 @@
         </if>
         <if test="city!=null">
             AND CITY = #{city,jdbcType=VARCHAR}
+        </if>
+        <if test="ramark1!=null">
+            AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
         </if>
     </sql>
     <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">

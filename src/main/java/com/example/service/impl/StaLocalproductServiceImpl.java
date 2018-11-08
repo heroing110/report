@@ -42,4 +42,14 @@ public class StaLocalproductServiceImpl implements StaLocalproductService {
     public int selectWithPageCount(StaLocalproduct record) {
         return staLocalproductMapper.selectWithPageCount(record);
     }
+
+    @Override
+    public StaLocalproduct selectTotalVolume(StaLocalproduct staLocalproduct) {
+        return staLocalproductMapper.selectTotalVolume(staLocalproduct);
+    }
+
+    @Override
+    public StaLocalproduct selectIncreaseTotal(StaLocalproduct staLocalproduct) {
+        return staLocalproductMapper.selectIncreaseTotal(staLocalproduct);
+    }
 }

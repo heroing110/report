@@ -139,7 +139,7 @@ public class StaToalController extends CommonController {
         List<StaTotal> list = null;
 
         try {
-            autoSetParamByPager(staTotal, request);
+            autoSetParamByPagerParallelWay(staTotal, request);
             list = this.staTotalService.selectAreaQysWithPage(staTotal);
             PagingResult<List<StaTotal>> pagingResult = new PagingResult<>(list);
             pagingResult.setPageIndex(staTotal.getPageNo());
@@ -348,7 +348,7 @@ public class StaToalController extends CommonController {
                     total.setId(2);
                 } else if ("网络零售交易额".equals(total.getIndexType())) {
                     total.setId(3);
-                } else if ("网络零售卖出金额".equals(total.getIndexType())) {
+                } else if ("网络零售卖出额".equals(total.getIndexType())) {
                     total.setId(4);
                 } else if ("农村电商交易额".equals(total.getIndexType())) {
                     total.setId(5);
@@ -358,7 +358,7 @@ public class StaToalController extends CommonController {
                     total.setId(99);
                 }
 
-                if("电子商务企业数".equals(total.getIndexType())){
+                if("电子商务店铺数".equals(total.getIndexType())){
                     List<StaTotal> staTotalList1 = this.staTotalService.selectHomeIndexCompany(staTotal);
                     if (staTotalList1!=null && staTotalList1.size()>0) {
                         StaTotal staTotal1 = staTotalList1.get(0);
@@ -469,8 +469,23 @@ public class StaToalController extends CommonController {
         try {
             autoSetParamParallelWay(staTotal, request);
             Map<String, Object> map = new HashMap<>();
-            StaTotal staCatTotal = this.staTotalService.selectTotalVolume(staTotal);
-            StaTotal staCatCount = this.staTotalService.selectTotalCount(staTotal);
+            StaTotal staCatTotal = null;
+            StaTotal staCatCount = null;
+            if (staTotal.getCompanyAndPerson()!=null && staTotal.getCompanyAndPerson()) {
+                List<StaTotal> list = this.staTotalService.selectLastCompanyAndPeople(staTotal);
+                if (list!=null && list.size()>0) {
+                    for (StaTotal total : list) {
+                        if ("person".equals(total.getType())) {
+                            staCatTotal = total;
+                        }else if ("company".equals(total.getType())) {
+                            staCatCount = total;
+                        }
+                    }
+                }
+            }else{
+                staCatTotal = this.staTotalService.selectTotalVolume(staTotal);
+                staCatCount = this.staTotalService.selectTotalCount(staTotal);
+            }
             List<StaTotal> staCats = this.staTotalService.selectMonthVolume(staTotal);
 
             map.put("totalVolume", staCatTotal == null ? 0 : staCatTotal.getTotalVolume());

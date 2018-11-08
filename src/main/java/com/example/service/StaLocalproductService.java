@@ -16,4 +16,8 @@ public interface StaLocalproductService {
     List<StaLocalproduct> selectWithPage(StaLocalproduct staLocalproduct);
 
     int selectWithPageCount(StaLocalproduct record);
+
+    StaLocalproduct selectTotalVolume(StaLocalproduct staLocalproduct);
+
+    StaLocalproduct selectIncreaseTotal(StaLocalproduct staLocalproduct);
 }

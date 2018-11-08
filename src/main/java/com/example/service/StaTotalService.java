@@ -51,4 +51,6 @@ public interface StaTotalService {
     List<StaTotal> selectAreaWholeWithPage(StaTotal record);
 
     int selectAreaWholePageCount(StaTotal staTotal);
+
+    List<StaTotal> selectLastCompanyAndPeople(StaTotal record);
 }

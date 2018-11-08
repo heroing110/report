@@ -138,7 +138,7 @@ public class StaCatController extends CommonController{
         List<StaCat> list = null;
         DecimalFormat   decimalFormat  =   new  DecimalFormat("##0.00");
         try {
-            setParamByPager(staCat,request);
+            autoSetParamByPagerParallelWay(staCat,request);
             list = this.staCatService.selectCatDetailWithPage(staCat);
 
             List<StaCat> platformList = this.staCatService.selectTotalVolumeByPlatformList(staCat);

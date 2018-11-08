@@ -36,6 +36,48 @@
         ORDER BY data asc
     </select>
 
+    <select id="selectTotalVolume" resultType="com.example.entity.StaLocalproduct"
+            parameterType="com.example.entity.StaLocalproduct">
+        select sum(SALES_VOLUME) totalVolume from tb_sta_local_product
+        <trim prefix="where" prefixOverrides="and | or">
+            <include refid="dynamicWhere"/>
+        </trim>
+    </select>
+
+    <select id="selectIncreaseTotal" resultType="com.example.entity.StaLocalproduct"
+            parameterType="com.example.entity.StaLocalproduct">
+        select last_total-last_before_total as increaseTotal from
+        (
+           select IFNULL(sum(sales_volume),0) last_total from tb_sta_local_product
+           where YEAR = (select date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%Y') from dual) and MONTH = (select date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%m') from dual)
+            <if test="catNames!=null">
+                AND cat_name in
+                <foreach collection="catNames" index="index" item="item"
+                         open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="catName!=null and catName!=''">
+                AND CAT_NAME = #{catName,jdbcType=VARCHAR}
+            </if>
+           )a,
+        (
+           select IFNULL(sum(sales_volume),0) last_before_total from tb_sta_local_product
+           where YEAR = (select date_format(DATE_SUB(curdate(), INTERVAL 2 MONTH),'%Y') from dual) and MONTH = (select date_format(DATE_SUB(curdate(), INTERVAL 2 MONTH),'%m') from dual)
+            <if test="catNames!=null">
+                AND cat_name in
+                <foreach collection="catNames" index="index" item="item"
+                         open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="catName!=null and catName!=''">
+                AND CAT_NAME = #{catName,jdbcType=VARCHAR}
+            </if>
+        )b
+
+    </select>
+
     <select id="selectDistinceCatName" resultType="com.example.entity.StaLocalproduct">
       select distinct CAT_NAME from tb_sta_local_product
   </select>
@@ -89,7 +131,7 @@
     </select>
 
     <sql id="dynamicWhere">
-        <if test="catName!=null">
+        <if test="catName!=null and catName!=''">
             AND CAT_NAME = #{catName,jdbcType=VARCHAR}
         </if>
         <if test="catNames!=null">

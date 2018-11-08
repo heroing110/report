@@ -21,7 +21,7 @@
         <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="UPDATE_USER" jdbcType="VARCHAR" property="updateUser"/>
         <result column="STATUS" jdbcType="INTEGER" property="status"/>
-        <result column="RAMARK1" jdbcType="VARCHAR" property="ramark1"/>
+        <result column="RAMARK1" jdbcType="VARCHAR" property="remark1"/>
         <result column="REMARK2" jdbcType="VARCHAR" property="remark2"/>
         <result column="REMARK3" jdbcType="VARCHAR" property="remark3"/>
     </resultMap>
@@ -51,22 +51,22 @@
         <if test="city!=null">
             AND CITY = #{city,jdbcType=VARCHAR}
         </if>
-        <if test="ramark1!=null">
-            AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
+        <if test="remark1!=null">
+            AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
         </if>
     </select>
 
-    <!--首页电子商务企业数指标-->
+    <!--首页电子商务店铺数指标-->
     <select id="selectHomeIndexCompany" resultType="com.example.entity.StaTotal">
-        select INDEX_VALUE totalVolume from tb_sta_total where date = (select max(date) from tb_sta_total where index_type = '电子商务企业数') and index_type = '电子商务企业数'
+        select INDEX_VALUE totalVolume from tb_sta_total where date = (select max(date) from tb_sta_total where index_type = '电子商务店铺数') and index_type = '电子商务店铺数'
         <if test="province!=null">
             AND PROVINCE = #{province,jdbcType=VARCHAR}
         </if>
         <if test="city!=null">
             AND CITY = #{city,jdbcType=VARCHAR}
         </if>
-        <if test="ramark1!=null">
-            AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
+        <if test="remark1!=null">
+            AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
         </if>
     </select>
 
@@ -191,7 +191,6 @@
             </if>
             <include refid="dynamicWhere"/>
         </trim>
-        and city!='全省'
         group by date,city
     </select>
 
@@ -267,8 +266,8 @@
         <if test="city!=null">
             AND CITY = #{city,jdbcType=VARCHAR}
         </if>
-        <if test="ramark1!=null">
-            AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
+        <if test="remark1!=null">
+            AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
         </if>
     </sql>
     <!--区域趋势速览-->
@@ -297,6 +296,9 @@
             <if test="city!=null">
                 AND CITY = #{city,jdbcType=VARCHAR}
             </if>
+            <if test="remark1!=null">
+                AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
+            </if>
         </trim>
         and INDEX_TYPE ='电子商务从业人数'
                 ORDER BY date desc limit 1) a
@@ -313,6 +315,9 @@
             <if test="city!=null">
                 AND CITY = #{city,jdbcType=VARCHAR}
             </if>
+            <if test="remark1!=null">
+                AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
+            </if>
         </trim>
         and INDEX_TYPE ='电子商务店铺数'
                 ORDER BY date desc limit 1) b
@@ -328,6 +333,9 @@
             </if>
             <if test="city!=null">
                 AND CITY = #{city,jdbcType=VARCHAR}
+            </if>
+            <if test="remark1!=null">
+                AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
             </if>
         </trim>
         and INDEX_TYPE not in('电子商务从业人数','电子商务店铺数')
@@ -359,6 +367,9 @@
             <if test="city!=null">
                 AND CITY = #{city,jdbcType=VARCHAR}
             </if>
+            <if test="remark1!=null">
+                AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
+            </if>
         </trim>
         and INDEX_TYPE ='电子商务从业人数'
         ORDER BY date desc limit 1) a
@@ -375,6 +386,9 @@
             <if test="city!=null">
                 AND CITY = #{city,jdbcType=VARCHAR}
             </if>
+            <if test="remark1!=null">
+                AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
+            </if>
         </trim>
         and INDEX_TYPE ='电子商务店铺数'
         ORDER BY date desc limit 1) b
@@ -390,6 +404,9 @@
             </if>
             <if test="city!=null">
                 AND CITY = #{city,jdbcType=VARCHAR}
+            </if>
+            <if test="remark1!=null">
+                AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
             </if>
         </trim>
         and INDEX_TYPE not in('电子商务从业人数','电子商务店铺数')
@@ -464,7 +481,7 @@
             parameterType="com.example.entity.StaTotal">
         SELECT * from (
         select t1.dateStr,t1.PROVINCE,t1.city,t1.qys,t2.cyrs,t1.qysmom,t2.cyrsmom from
-        (SELECT date dateStr,PROVINCE,city,sum(index_value) qys,sum(mom) qysmom from tb_sta_total where index_type = '电子商务企业数'
+        (SELECT date dateStr,PROVINCE,city,sum(index_value) qys,sum(mom) qysmom from tb_sta_total where index_type = '电子商务店铺数'
         <include refid="dynamicWhere"/>
         GROUP BY date,PROVINCE,city) t1
         left JOIN
@@ -479,7 +496,7 @@
 
     <select id="selectAreaQysWithPageCount" resultType="java.lang.Integer" parameterType="com.example.entity.StaTotal">
         select count(1) from (
-        SELECT date dateStr,PROVINCE,city from tb_sta_total where index_type = '电子商务企业数'
+        SELECT date dateStr,PROVINCE,city from tb_sta_total where index_type = '电子商务店铺数'
         <include refid="dynamicWhere"/>
           GROUP BY date,PROVINCE,city
         )t
@@ -510,11 +527,11 @@
         <if test="indexType!=null">
             AND INDEX_TYPE like CONCAT('%',#{indexType,jdbcType=VARCHAR},'%')
         </if>
-        <if test="ramark1!=null">
-            AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
+        <if test="remark1!=null">
+            AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
         </if>
         <if test="doubleParam!=null">
-            AND INDEX_TYPE in ('电子商务企业数','电子商务从业人数')
+            AND INDEX_TYPE in ('电子商务店铺数','电子商务从业人数')
         </if>
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -608,7 +625,7 @@
             <if test="status != null">
                 STATUS,
             </if>
-            <if test="ramark1 != null">
+            <if test="remark1 != null">
                 RAMARK1,
             </if>
             <if test="remark2 != null">
@@ -679,7 +696,7 @@
             <if test="status != null">
                 #{status,jdbcType=INTEGER},
             </if>
-            <if test="ramark1 != null">
+            <if test="remark1 != null">
                 #{ramark1,jdbcType=VARCHAR},
             </if>
             <if test="remark2 != null">
@@ -750,7 +767,7 @@
             <if test="status != null">
                 STATUS = #{status,jdbcType=INTEGER},
             </if>
-            <if test="ramark1 != null">
+            <if test="remark1 != null">
                 RAMARK1 = #{ramark1,jdbcType=VARCHAR},
             </if>
             <if test="remark2 != null">
@@ -785,14 +802,14 @@
             <if test="volumeType!=null">
                 AND INDEX_TYPE like CONCAT('%',#{volumeType,jdbcType=VARCHAR},'%')
             </if>
-            <if test="ramark1!=null">
-                AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
+            <if test="remark1!=null">
+                AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
             </if>
             <if test="remark1!=null">
                 AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
             </if>
             <if test="doubleParam!=null">
-                AND INDEX_TYPE = '电子商务企业数'
+                AND INDEX_TYPE = '电子商务店铺数'
             </if>
         </trim>
     </select>
@@ -816,9 +833,6 @@
             <if test="city!=null">
                 AND CITY = #{city,jdbcType=VARCHAR}
             </if>
-            <if test="ramark1!=null">
-                AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
-            </if>
             <if test="remark1!=null">
                 AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
             </if>
@@ -831,31 +845,69 @@
         </trim>
     </select>
 
+    <select id="selectLastCompanyAndPeople" resultType="com.example.entity.StaTotal" parameterType="com.example.entity.StaTotal">
+        select index_value totalVolume,'company' type from tb_sta_total
+        <trim prefix="where" prefixOverrides="and|or">
+            AND index_type = '电子商务店铺数'
+            and year  = year(now())
+            AND month = month(now())-1
+            <if test="province!=null">
+                AND PROVINCE = #{province,jdbcType=VARCHAR}
+            </if>
+            <if test="city!=null">
+                AND CITY = #{city,jdbcType=VARCHAR}
+            </if>
+            <if test="remark1!=null">
+                AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
+            </if>
+        </trim>
+        union
+        select index_value totalCount,'person' type from tb_sta_total
+        <trim prefix="where" prefixOverrides="and|or">
+            AND index_type = '电子商务从业人数'
+            AND month = month(now())-1
+            and year  = year(now())
+            <if test="province!=null">
+                AND PROVINCE = #{province,jdbcType=VARCHAR}
+            </if>
+            <if test="city!=null">
+                AND CITY = #{city,jdbcType=VARCHAR}
+            </if>
+            <if test="remark1!=null">
+                AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </select>
+
     <!--首页-主要电商平台交易额走势,增量数据-->
     <select id="selectMonthVolume" resultType="com.example.entity.StaTotal" parameterType="com.example.entity.StaTotal">
-        select sum(index_value) total,year,month from tb_sta_total where year
-        = year(now()) and month = month(now())
-        <include refid="dynamicWhereForMonthVolume"/>
-        <if test="volumeType!=null">
-            AND INDEX_TYPE like CONCAT('%',#{volumeType,jdbcType=VARCHAR},'%')
-        </if>
-        UNION
-        select sum(index_value) total,year,month from tb_sta_total where  year
+        select sum(index_value) total,year,month,
+        'lastVolume' type from tb_sta_total where year
         = year(now()) and month = month(now())-1
         <include refid="dynamicWhereForMonthVolume"/>
         <if test="volumeType!=null">
             AND INDEX_TYPE like CONCAT('%',#{volumeType,jdbcType=VARCHAR},'%')
         </if>
         UNION
-        select sum(index_value) total,year,month from tb_sta_total where year
-        = year(now()) and month = month(now())
+        select sum(index_value) total,year,month,
+        'lastBeforeVolume' type from tb_sta_total where  year
+        = year(now()) and month = month(now())-2
+        <include refid="dynamicWhereForMonthVolume"/>
+        <if test="volumeType!=null">
+            AND INDEX_TYPE like CONCAT('%',#{volumeType,jdbcType=VARCHAR},'%')
+        </if>
+        UNION
+        select sum(index_value) total,year,month,
+        'lastCount' type from tb_sta_total where year
+        = year(now()) and month = month(now())-1
         <include refid="dynamicWhereForMonthVolume"/>
         <if test="countType!=null">
             AND INDEX_TYPE like CONCAT('%',#{countType,jdbcType=VARCHAR},'%')
         </if>
         UNION
-        select sum(index_value) total,year,month from tb_sta_total where year
-        = year(now()) and month = month(now())-1
+        select sum(index_value) total,year,month,
+        'lastBeforeCount' type from tb_sta_total where year
+        = year(now()) and month = month(now())-2
         <include refid="dynamicWhereForMonthVolume"/>
         <if test="countType!=null">
             AND INDEX_TYPE like CONCAT('%',#{countType,jdbcType=VARCHAR},'%')
@@ -876,8 +928,8 @@
         <if test="city!=null">
             AND CITY = #{city,jdbcType=VARCHAR}
         </if>
-        <if test="ramark1!=null">
-            AND RAMARK1 = #{ramark1,jdbcType=VARCHAR}
+        <if test="remark1!=null">
+            AND RAMARK1 = #{remark1,jdbcType=VARCHAR}
         </if>
     </sql>
 </mapper>

@@ -92,6 +92,8 @@ public class StaTotal extends SortFilter implements Serializable,IPager {
 
     private  Boolean doubleParam;
 
+    private  Boolean companyAndPerson;
+
     private String volumeType;
 
     private String countType;
@@ -99,6 +101,14 @@ public class StaTotal extends SortFilter implements Serializable,IPager {
     private Float qysmom;
 
     private Float cyrsmom;
+
+    public Boolean getCompanyAndPerson() {
+        return companyAndPerson;
+    }
+
+    public void setCompanyAndPerson(Boolean companyAndPerson) {
+        this.companyAndPerson = companyAndPerson;
+    }
 
     public String getVolumeType() {
         return volumeType;

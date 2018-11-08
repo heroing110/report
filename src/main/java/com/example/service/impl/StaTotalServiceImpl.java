@@ -134,6 +134,11 @@ public class StaTotalServiceImpl implements StaTotalService {
         return staTotalMapper.selectAreaWholePageCount(staTotal);
     }
 
+    @Override
+    public List<StaTotal> selectLastCompanyAndPeople(StaTotal record) {
+        return staTotalMapper.selectLastCompanyAndPeople(record);
+    }
+
 
     @Override
     public List<StaTotal> selectLine(StaTotal record) {

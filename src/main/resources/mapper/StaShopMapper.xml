@@ -471,6 +471,9 @@
         <if test="city!=null">
             AND CITY = #{city,jdbcType=VARCHAR}
         </if>
+        <if test="remark1!=null">
+            AND REMARK1 = #{remark1,jdbcType=VARCHAR}
+        </if>
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
